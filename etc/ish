@@ -7,13 +7,13 @@ alias ls="ls -G"
 alias py="python3"
 alias gp="git add *; git commit -am saving; git push --quiet;  git  status -s"
 alias ish="$Ish/etc/ish "     
-alias vi='vim -u $Ish/etc/etcvimrc'  
-alias tmux='tmux -f $Ish/etc/etctmux'
+alias vi='vim -u $Ish/etc/dotvimrc'  
+alias tmux='tmux -f $Ish/etc/dottmux'
 PATH="$PATH:$Ish/etc"
 
 here() { cd $1; basename `pwd`; }
 
-PROMPT_COMMAND='echo -ne "⭐️ $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
+PROMPT_COMMAND='echo -ne "🔆 $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
 
 gps() {
   for d in $Ish/*; do
