@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+Ish=$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )/..
+chmod +x $Ish/etc/ish
+
+alias ls="ls -G"    
+alias py="python3"
+alias gp="git add *; git commit -am saving; git push --quiet;  git  status -s"
+alias ish="$Ish/etc/ish "     
+alias vi='vim -u $Ish/etc/etcvimrc'  
+alias tmux='tmux -f $Ish/etc/etctmux'
+PATH="$PATH:$Ish/etc"
+
+here() { cd $1; basename `pwd`; }
+
+PROMPT_COMMAND='echo -ne "⭐️ $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
+
+gps() {
+  for d in $Ish/*; do
+    (cd $d; echo "--- $(PWD) "| stress; gp)
+  done
+}
+
+Want="$HOME/.gitignore_global"
+if [ ! -f "$Want" ]; then
+   cp $Ish/etc/.gitignore $Want
+   git config --global core.excludesfile "$Want"
+fi
+
+
+if [ "$1" == "-d" ]; then
+  art | gawk '
+   BEGIN {srand('$RANDOM'); RS="";FS=""}
+         {N[rand()] = $0}
+   END   {for(i in N) { print N[i]; break}}'
+  echo -e "\033[0m" 
+  #date +"%H %M %S" |figlet -f big
+  python3 -m bnbad2 -T | redgreen
+  exit $?
+fi

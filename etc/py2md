@@ -1,0 +1,11 @@
+#!/usr/bin/env gawk -f
+
+BEGIN           { In=0; Once=0 }
+/#.*vim:/       { next }
+/#!usr.bin.env/ { next }
+gsub(/^"""/,"") { if (Once) print In ? "```" : "```python"
+                  In = 1 - N;
+                  Once = 1
+                  next }
+                { print $0 }
+END { if (In) print "```\n\n" }
