@@ -7,26 +7,30 @@
 
 ## Install
 
-You need two files:
+You need two files in the same directory
 
 - es.py : the core system
 - etc.py : misc support files
 
 Optionally, for test suites and a command-line interface.
 
-- eg.pu
+- eg.py
+
+To test your install
+
+     ./eg.py -h
 
 ## Files
 
-- /data : example data files. In my data files, names are
+- `/data` : example data files. In my data files, names are
   shown in row1. Upper case names are numerics (others are symbolic).
   Numbers ending with `+,-` are goals to be minimized or maximzed
-- /etc : low-level suppport files. e.g. vim config files.
-- /.gitignore :  things not to save in git
-- /eg.py : demos of the working system
-- /es.py : the core system
-- /etc.py : misc support routones. 
-- /ish : bash development short cuts. Not essential.
+- `/etc : low-level suppport files. e.g. vim config files.
+- `/.gitignore` :  things not to save in git
+- `/eg.py` : demos of the working system
+- `/es.py` : the core system
+- `/etc.py` : misc support routones. 
+- `/ish` : bash development short cuts. Not essential.
 
 ## License
 
