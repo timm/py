@@ -115,3 +115,17 @@ def Tab():
     best = min(THE.best,len(rows)//2)
     return rows[:best], rows[-best:]
   return i + locals()
+
+
+def ints(m1, m2, s1, s2):
+    # coefficients of quadratic equation ax^2 + bx + c = 0
+    if s1==s2: return (m1+m2)/2
+    a = (s1**2.0) - (s2**2.0)
+    b = 2 * (m1 * s2**2.0 - m2 * s1**2.0)
+    c = m2**2.0 * s1**2.0 - m1**2.0 * s2**2.0 - 2 * s1**2.0 * s2**2.0 * math.log(s1/s2)
+    x1 = (-b + math.sqrt(b**2.0 - 4.0 * a * c)) / (2.0 * a)
+    x2 = (-b - math.sqrt(b**2.0 - 4.0 * a * c)) / (2.0 * a)
+    return x1, x2
+print(ints(5.28, 8.45, 0.91, 1.36))
+print(ints(10, 12, 1,1.1))
+
