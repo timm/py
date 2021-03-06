@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
-import es
+from es import Tab,csv,THE
 
-sys.dont_write_bytecode 
+t= Tab().adds(csv("data/auto93.csv"))
+a, b = t.extremes(THE)
