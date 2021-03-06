@@ -1,5 +1,6 @@
 # vim: filetype=python ts=2 sw=2 sts=2 et :
 import re,math,argparse
+from types import FunctionType as fun
 
 class obj:
   "All you ever neeed: one tiny object."
@@ -22,7 +23,7 @@ def csv(file):
     for line in fp: 
       line = re.sub(r'([\n\t\r ]|#.*)','',line)
       if line:
-        yield [atom(x) for x in line.splobj(",")]
+        yield [atom(x) for x in line.split(",")]
 
 def valley(m1,s1,m2,s2):
   "https://stackoverflow.com/questions/41368653/intersection-between-gaussian"
@@ -57,4 +58,3 @@ def args(what="",doc="",d={}):
   for key,(default,txt) in d.items():
     do.add_argument("-"+key, **arg(default,txt))
   return vars(do.parse_args()) 
-

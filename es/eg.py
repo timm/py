@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import sys
-from eg import csv,THE
-from es import Tab,Counts
+from es import THE, Tab,Counts,csv
 
 t= Tab().adds(csv("data/auto93.csv"))
 a, b = t.poles(THE)

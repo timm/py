@@ -3,7 +3,7 @@
 """
 espy
 """
-from etc import obj, valley
+from etc import csv, obj, valley
 import functools, math, re
 from types import FunctionType as fun
 
@@ -80,10 +80,10 @@ def Skip(pos=0, txt=""):
 
 def Cols():
   i = obj(all=[], y=[], x=[], klass=None, head=[]) 
-  def updateFromRow(i, row): return [col.add(ros[col.pos]) for col in i.all]  
+  def updateFromRow(i, row): return [col.add(row[col.pos]) for col in i.all]  
   # ---- define goal types ------------------
-  def _nump(x) : return LESS  in x or MORE in x   or x[0].isupper()
-  def _goalp(x): return KLASS in x or LESS in txt or MORE in txt
+  def _nump(x) : return LESS  in x or MORE in x or x[0].isupper()
+  def _goalp(x): return KLASS in x or LESS in x or MORE in x
   # ---- initialize columns -------------------------------
   def cols(i, lst):
     i.all = [_col(i,n,x) for n,x in enumerate(lst)]
