@@ -6,6 +6,7 @@ Espy=$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )
 ############# assert dirs exist
 mkdir -p $Espy/etc
 chmod +x $Espy/ish
+chmod +x $Espy/eg.py
 
 ############# ensure files exist
 f=etc/tmux-conf; [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f

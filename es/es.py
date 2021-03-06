@@ -1,11 +1,12 @@
 import math,re
 
 LO = -math.inf
-HI =  math.ing
+HI =  math.inf
 NO =  "?"
 LESS = "<"
 MORE = ">"
 
+def es(x): return x
 class it:
   def __init__(i, **d)   : i.__dict__.update(d)
   def __add__(i,j): 
