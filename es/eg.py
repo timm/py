@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from es import Tab,csv,THE,Counts
+from eg import csv,THE
+from es import Tab,Counts
 
 t= Tab().adds(csv("data/auto93.csv"))
 a, b = t.poles(THE)
@@ -9,10 +10,5 @@ b = t.clone(b)
 print(a.ys())
 print(b.ys())
 
-
-t= Tab().adds(csv("data/auto93.csv"))
-Counts(THE,t)
-
-
-
-
+# t= Tab().adds(csv("data/auto93.csv"))
+# Counts(THE,t)
