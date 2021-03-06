@@ -1,9 +1,19 @@
+#!/usr/bin/env python3
 # vim: filetype=python ts=2 sw=2 sts=2 et :
-
-
+"""
+espy
+"""
+from etc import obj, valley
 import functools, math, re
 from types import FunctionType as fun
 
+OPTIONS= dict(
+  file  = ("auto93.csv", "csv file to load"),
+  dir   = ("../data",    "path to data"),
+  best  = (50,           "how many best/worse samples to use"),
+  size  = (.7,           "spliit 'n' numbers into bins of size 'n**size'"))
+
+THE   = obj(**{k:v for k,(v,_) in OPTIONS.items()})
 LO    = -math.inf
 HI    =  math.inf
 NO    =  "?"
@@ -11,42 +21,22 @@ LESS  = "-"
 MORE  = "+"
 KLASS = "!"
 
-def es(x): return x
-
-class it:
-  def __init__(i, **d)   : i.__dict__.update(d)
-  def __repr__(i): 
-    return "{"+ ', '.join(
-           [f":{k} {v}" for k, v in sorted(i.__dict__.items()) 
-                        if type(v)!=fun and k[0] != "_"])+"}"
-  def __add__(i,d):
-    def method(i,f): return lambda *lst, **kw: f(i, *lst, **kw)
-    for k,v in d.items():
-      if k[0] != "_":
-        if type(v)==fun: i.__dict__[k] = method(i,v)
-    return i
-
-THE = it(m=1, k=2, best=50, size=0.5)
-
-def csv(file):
-  def atom(x):
-    try: return float(x)
-    except Exception: return x
-  with open(file) as fp:
-    for line in fp: 
-      line = re.sub(r'([\n\t\r ]|#.*)','',line)
-      if line:
-        yield [atom(x) for x in line.split(",")]
-
 def Span(down=LO, up=HI):
-  i = it(down=down, up=up)
+  # Keep 
+  i = obj(down=down, up=up)
   def has(i,x): 
     return (x==i.down) if (i.down==i.up) else (i.down <= x < i.up)
   return i + locals()
  
 def Num(pos=0,txt=""):
-  i = it(n=0, pos=pos, txt=txt, _all=[], ok=False,
+  "Stores numerics, sorted. Can report, median, sd, low, high etc"
+  i = obj(n=0, pos=pos, txt=txt, _all=[], ok=False,
          lo=HI, hi=LO, w= -1 if LESS in txt else 1)
+  # ---- Keep and report sorted contents --------------
+  def all(i):
+    i._all = i._all if i.ok else sorted(i._all)
+    i.ok = True
+    return i._all
   def add(i,x):
     if x != NO:
       i.n    += 1
@@ -55,31 +45,22 @@ def Num(pos=0,txt=""):
       i.hi    = max(i.hi,x)
       i.lo    = min(i.lo,x)
     return x
-  def all(i):
-    i._all = i._all if i.ok else sorted(i._all)
-    i.ok = True
     return i._all
-  def mid(i):    a=i.all(); return a[int(len(a)/2)]
-  def norm(i,x): a=i.all(); return (x-a[0])/(a[-1] - a[0])
-  def sd(i):     a=i.all(); return (a[int(.9*len(a))] - a[int(.1*len(a))])/2.56
+  # ---- stats reports -----------------------------
+  def sd(i):     return (i.per(.9) - i,per(.1))/2.56
+  def mid(i):    return i.per(.5)
+  def per(i,p):  a=i.all(); return a[int(p*len(a))]
+  def norm(i,x): a=i.all(); return (x-a[0])/(a[-1] - a[0] + 10**-64)
+  # ---- Discretize ------------------------------
   def spans(i,j):
-    "https://stackoverflow.com/questions/41368653/intersection-between-gaussian"
-    m1,m2 = i.mid(), j.mid()
-    s1,s2 = i.sd(),  j.sd()
-    if s1==s2:
-      mid = (m1+m2)/2
-    else:
-      a  = (s1**2) - (s2**2)
-      b  = 2 * (m1 * s2**2 - m2 * s1**2)
-      c  = m2**2 * s1**2 - m1**2 * s2**2 - 2 * s1**2 * s2**2 * math.log(s1/s2)
-      x1 = (-b + math.sqrt(b**2 - 4 * a * c)) / (2 * a)
-      x2 = (-b - math.sqrt(b**2 - 4 * a * c)) / (2 * a)
-      mid = x1 if m1 <= x1 <= m2 else x2
-    return [Span(up=mid), Span(down=mid)] 
+    div = valley(i.mid(), i.sd(), j.mid(), j.sd())
+    if div < i.per(.1) or div > i.per(.9) :
+       div = i.per(.1 if div < i.mid() else .9)
+    return [Span(up=div), Span(down=div)] 
   return i + locals()
 
 def Sym(pos=0,txt=""):
-  i = it(n=0, pos=pos, txt=txt, seen={},most=0,mode=None)
+  i = obj(n=0, pos=pos, txt=txt, seen={},most=0,mode=None)
   def add(i,x):
     if x != NO:
       i.n += 1
@@ -93,14 +74,14 @@ def Sym(pos=0,txt=""):
   return i + locals()
 
 def Skip(pos=0, txt=""):
-  i = it(pos=pos, txt=txt, n=0)
+  i = obj(pos=pos, txt=txt, n=0)
   def add(i,x):
     if x != NO: i.n += 1
     return x
   return i + locals()
 
 def Cols():
-  i = it(all=[], y=[], x=[], klass=None, head=[]) 
+  i = obj(all=[], y=[], x=[], klass=None, head=[]) 
   def adds(i, lst): 
     return [col.add(lst[col.pos]) for col in i.all]  
   def cols(i, lst):
@@ -117,7 +98,7 @@ def Cols():
   return i + locals()
 
 def Tab():
-  i = it(rows=[], cols=Cols())
+  i = obj(rows=[], cols=Cols())
   def adds(i,src): 
     for lst in src:
       if    i.cols.all: i.rows += [i.cols.adds(lst)]
@@ -147,7 +128,7 @@ def Tab():
   return i + locals()
 
 def Counts(THE,tab):
-  i = it(counts={}, klasses={}, totals={})
+  i = obj(counts={}, klasses={}, totals={})
   def count(tab1, label):
     def bin(x,bins):
       if x != NO:
@@ -167,3 +148,5 @@ def Counts(THE,tab):
     count(nth,"best")
     count(sth,"rest")
     return out
+
+def es(x): return x
