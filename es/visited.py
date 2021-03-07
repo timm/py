@@ -41,14 +41,15 @@ def visited(gen,d=2,alpha=.9, bins=16,keep=10000):
   #print("\nflatten",list(sorted(a,reverse=True)))
   a=gen(m,alpha,bins)
   s      = sum(a)
-  kept   = [x for x in a if int(keep*x/s) > 0]
+  kept   = [x for x in a if x > 1/keep]
   visited= sorted([int(100*x/sum(kept)) for x in kept], reverse=True)
   visited= [(None if x < 0.001 else x)  for x in visited if x > 0.01]
-  print(f"at alpha={alpha}, {len(m)} vars visit {len(kept):>4} = {int(100*len(kept)/ len(a)):>3} % states at p>s{1/keep}",end="")
+  print(f"at alpha={alpha}, {len(m)} vars visit {len(kept):>4} = {int(100*len(kept)/ len(a)):>3} % states at p>{1/keep}",end="")
   print(". Visited:", sparklines(visited)[0])
 
 keep=10000
 for alpha in [.3,.5,.7,.9]:
+    print("")
     visited(twod,d=2,keep=keep,alpha=alpha, bins=10)
     visited(threed,d=3,keep=keep,alpha=alpha, bins=10)
     visited(fourd,d=4,keep=keep,alpha=alpha, bins=10)
