@@ -22,10 +22,10 @@ To test your install
 
 ## Files
 
-- `/data` : example data files. In my data files, names are
+- /lib : suppport files. e.g. data and vim config files.
+- /lib/data : example data files. In my data files, names are
   shown in row1. Upper case names are numerics (others are symbolic).
   Numbers ending with `+,-` are goals to be minimized or maximzed
-- `/etc : low-level suppport files. e.g. vim config files.
 - `/.gitignore` :  things not to save in git
 - `/eg.py` : demos of the working system
 - `/es.py` : the core system
