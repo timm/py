@@ -25,18 +25,22 @@ def csv(file):
       if line:
         yield [atom(x) for x in line.split(",")]
 
-def valley(m1,s1,m2,s2):
-  "https://stackoverflow.com/questions/41368653/intersection-between-gaussian"
-  if s1==s2:
+def valley(m1,std1,m2,std2):
+  """https://stackoverflow.com/questions/22579434/
+  python-finding-the-intersection-point-of-two-gaussian-curves"""
+  if std1 < 0.0001: return (m1+m2)/2
+  if std2 < 0.0001: return (m1+m2)/2
+  if abs(std1-std2) < 0.01: 
     return (m1+m2)/2
-  a  = (s1**2) - (s2**2)
-  b  = 2 * (m1 * s2**2 - m2 * s1**2)
-  c  = m2**2 * s1**2 - m1**2 * s2**2 - 2 * s1**2 * s2**2 * math.log(s1/s2)
-  x1 = (-b + math.sqrt(b**2 - 4 * a * c)) / (2 * a)
-  x2 = (-b - math.sqrt(b**2 - 4 * a * c)) / (2 * a)
-  return x1 if m1 <= x1 <= m2 else x2
+  else:
+    a  = 1/(2*std1**2) - 1/(2*std2**2)
+    b  = m2/(std2**2) - m1/(std1**2)
+    c  = m1**2 /(2*std1**2) - m2**2 / (2*std2**2) - math.log(std2/std1)
+    x1 = (-b + math.sqrt(b**2 - 4 * a * c)) / (2 * a)
+    x2 = (-b - math.sqrt(b**2 - 4 * a * c)) / (2 * a)
+    return x1 if m1 <= x1 <= m2 else x2
 
-def args(what="",doc="",d={}):
+def args(what="",doc="",**d):
   def arg(x,txt):
     isa, a = isinstance, None
     if isa(x, list):
@@ -58,3 +62,27 @@ def args(what="",doc="",d={}):
   for key,(default,txt) in d.items():
     do.add_argument("-"+key, **arg(default,txt))
   return vars(do.parse_args()) 
+
+def flair(**d):
+  c = dict(
+    HEADER    = '\033[95m',
+    OKBLUE    = '\033[94m',
+    OKCYAN    = '\033[96m',
+    OKGREEN   = '\033[92m',
+    WARNING   = '\033[93m',
+    FAIL      = '\033[91m',
+    ENDC      = '\033[0m',
+    BOLD      = '\033[1m',
+    UNDERLINE = '\033[4m')
+  for k,v in d.items():
+    return c[k] + c["BOLD"] + str(v) + c["ENDC"]
+
+def eg(f,*l,**kw):
+  print(flair(HEADER= ("# " + f.__name__ + " : " + (f.__doc__ or ""))))
+  try: f(*l,*kw)
+  except Exception: ok(False, "function ran?")
+  return f
+
+def ok(x, txt=""):
+  if x: print("\t" + txt + flair(OKGREEN=" PASS"))
+  else: print("\t" + txt + flair(FAIL   =" FAIL"))
