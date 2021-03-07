@@ -71,7 +71,7 @@ def Num(pos=0,txt=""):
   def discretize(i,j):
     div = valley(i.mid(), i.sd(), j.mid(), j.sd())
     if div < _per(i,.1) or div > _per(i,.9) :
-       div = _per(i,.1 if div < i.mid() else .9)
+      div = _per(i,.1 if div < i.mid() else .9)
     return [Bin(up=div), Bin(down=div)] 
   return i + locals()
 
