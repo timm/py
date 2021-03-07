@@ -30,9 +30,8 @@ def main(com,funs):
      [print(f"{k:>15} :", v.__doc__) for k,v in funs.items()]
   if com.egs: 
     [etc.eg(v,com) for k,v in funs.items()]
-         
-    
 
-main(etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS)),
-     locals())
+THE = etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS))
+
+main(THE, locals())
 

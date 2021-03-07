@@ -144,7 +144,7 @@ def merge(b4):
     a = b4[j]
     if j < n - 1:
       b  = b4[j+1]
-      if a.also.mode == b.also.mode: # ok for n=2 classes. But for N>2, need?entropy
+      if a.also.mode == b.also.mode: #ok for n=2 classes but use entropy for n>2
         a = Bin(a.down, b.up)
         a.also = a.also.merge(b.also)
         j += 1

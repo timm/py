@@ -35,13 +35,25 @@ def flatten(m, alpha, bins):
        a = np.multiply(a, m[d])
   return a
 
+import numpy as np
+import itertools
+from math import prod
+
+
+def flatten(m, alpha, bins):
+    a = list(itertools.product(*m))
+    b = []
+    for item in a:
+        b+= [prod(item)]
+    return b
+
 def visited(gen,d=2,alpha=.9, bins=16,keep=10000):
   m      = [v(alpha, bins) for _ in range(d)]
   a      = flatten(m,alpha,bins)
   #print("\nflatten",list(sorted(a,reverse=True)))
   a=gen(m,alpha,bins)
   s      = sum(a)
-  kept   = [x for x in a if x > 1/keep]
+  kept   = [x for x in a if x > int(keep*x/s)]
   visited= sorted([int(100*x/sum(kept)) for x in kept], reverse=True)
   visited= [(None if x < 0.001 else x)  for x in visited if x > 0.01]
   print(f"at alpha={alpha}, {len(m)} vars visit {len(kept):>4} = {int(100*len(kept)/ len(a)):>3} % states at p>{1/keep}",end="")
