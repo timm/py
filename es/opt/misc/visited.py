@@ -21,7 +21,7 @@ def v(a,n):
 def flatten(m):
   return [prod(item) for item in list(itertools.product(*m))]
 
-def visited(d=2,alpha=.9, bins=16,keep=10**-3):
+def visited(d=2,alpha=.9, bins=16,keep=10**-4):
   m    = [v(alpha, bins) for _ in range(d)]
   a    = sorted(flatten(m),reverse=True)
   kept = [x for x in a if x > keep]
