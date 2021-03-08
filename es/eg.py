@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import es
 import etc
+import datetime
 
 def eg1(THE):
   "basic table test"
@@ -13,7 +14,13 @@ def eg1(THE):
 
 def eg2(THE):
   "generating rules"
-  rows = etc.csv(THE.dir + "/" + THE.file)
+  now = datetime.datetime.now()
+  print(f"{'now':>10} :",now.strftime("%Y-%m-%d %H:%M:%S"))
+  file = THE.dir + "/" + THE.file
+  print(f"{'file':>10} :",file)
+  print(f"{'seed':>10} :",THE.seed)
+  print("")
+  rows = etc.csv(file)
   t= es.Tab().adds(rows)
   c = es.Counts(t).badBetter(THE)
   model = es.Learn(c,THE)
@@ -23,21 +30,21 @@ def eg2(THE):
     print("")
     for rule in rules:
      found = es.selects(t,rule)
-     if found.rows:
+     if len(found.rows) >= THE.support:
        report = [f"{len(found.rows):>4}"] + [etc.show(x,w=5,d=1) for x in found.ys()]
        ', '.join(report)
-       print(f"{k:>10} :", ', '.join(report), es.showRule(rule))
+       print(f"{k:>10} :", ', '.join(report), " if ",es.showRule(rule))
 
 
 def main(com,funs):
   funs = {k:v for k,v in funs.items() if k[:2]=="eg" and type(v) == etc.fun}
   if com.eg:
     for k,v in funs.items():
-      if com.eg in k: etc.eg(v,com)
+      if com.eg in k: etc.eg(v,com.seed,com)
   if com.ls: 
      [print(f"{k:>15} :", v.__doc__) for k,v in funs.items()]
   if com.egs: 
-    [etc.eg(v,com) for k,v in funs.items()]
+    [etc.eg(v,com.seed,com) for k,v in funs.items()]
 
 THE = etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS))
 

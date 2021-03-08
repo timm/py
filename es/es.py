@@ -27,14 +27,16 @@ OPTIONS = dict(
   min   = (30,           "if less that 'min' data then use best=.5"),
   eg    = ("",           "run some demos"),
   egs   = (False,        "run all demos functions"),
-  size  = (.5,            "initially, div nums into bins of size n**'size'"),
+  size  = (.5,           "initially, div nums into bins of size n**'size'"),
   cohen = (.3,           "subsequently, ignore differences less than 'cohen'*sd"),
   quiet = (False,        "dont print information text"),
+  support= (20,          "rules need to select at least this many examples"),
   ls    = (False,        "list all demo functions"),
   lives = (128,          "rule repeats"),
   k     = (1,            "bayes low frequency k"),
   m     = (2,            "bayes low frequency m"),
   beam  = (10,           "keep 'beam' number of rules"),
+  seed  = (1,            "random  number seed"),
   best  = (.25,          "how many best/worse samples to use"))
 
 # convert 'OPTIONS' into the default options

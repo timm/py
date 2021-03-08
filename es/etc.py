@@ -1,5 +1,5 @@
 # vim: filetype=python ts=2 sw=2 sts=2 et :
-import re,sys,math,argparse
+import re,sys,math,random,argparse
 from types import FunctionType as fun
 
 class obj:
@@ -83,7 +83,8 @@ def flair(**d):
   for k,v in d.items():
     return c[k] + c["BOLD"] + str(v) + c["ENDC"]
 
-def eg(f,*l,**kw):
+def eg(f,s,*l,**kw):
+  random.seed(s)
   print(flair(HEADER= ("# " + f.__name__ + " : " + (f.__doc__ or ""))))
   try: f(*l,*kw)
   except Exception: ok(False, "function ran?")
