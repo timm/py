@@ -4,22 +4,30 @@ import etc
 
 def eg1(THE):
   "basic table test"
-  t= es.Tab().adds(etc.csv("data/auto93.csv"))
+  rows = etc.csv(THE.dir + "/" + THE.file)
+  t= es.Tab().adds(rows)
   rows  = t.ordered(THE)
   a,b = t.clone(rows[:30]), t.clone(rows[-30:])
-  print(a.ys())
-  print(b.ys())
+  etc.ok([4499.0, 12.0, 10.0] == b.ys(), "bad?")
+  etc.ok([1975.0, 18.8, 40.0] == a.ys(), "better?")
 
 def eg2(THE):
   "generating rules"
-  t= es.Tab().adds(etc.csv("data/auto93.csv"))
+  rows = etc.csv(THE.dir + "/" + THE.file)
+  t= es.Tab().adds(rows)
   c = es.Counts(t).badBetter(THE)
   model = es.Learn(c,THE)
+  names = '  '.join([f"{col.txt:>6}" for col in t.cols.y])
+  print(f"\n{' ':11} {'N':>5}"+ names)
   for k,rules in model.items(): 
+    print("")
     for rule in rules:
-     print(k, es.showRule(rule))
+     found = es.selects(t,rule)
+     if found.rows:
+       report = [f"{len(found.rows):>4}"] + [etc.show(x,w=5,d=1) for x in found.ys()]
+       ', '.join(report)
+       print(f"{k:>10} :", ', '.join(report), es.showRule(rule))
 
-eg2(es.THE)
 
 def main(com,funs):
   funs = {k:v for k,v in funs.items() if k[:2]=="eg" and type(v) == etc.fun}
@@ -32,6 +40,8 @@ def main(com,funs):
     [etc.eg(v,com) for k,v in funs.items()]
 
 THE = etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS))
+
+eg2(THE)
 
 main(THE, locals())
 

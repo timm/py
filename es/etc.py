@@ -1,5 +1,5 @@
 # vim: filetype=python ts=2 sw=2 sts=2 et :
-import re,math,argparse
+import re,sys,math,argparse
 from types import FunctionType as fun
 
 class obj:
@@ -15,10 +15,16 @@ class obj:
         i.__dict__[k] = method(v)
     return i
 
+def show(x,w=5,d=3):
+  fmt = f"%{w}.{d}f"
+  return (" " * w)  if x is None else (fmt % x)
+
 def csv(file):
   def atom(x):
-    try: return float(x)
-    except Exception: return x
+    try: return int(x)
+    except Exception: 
+      try:              return float(x)
+      except Exception: return x
   with open(file) as fp:
     for line in fp: 
       line = re.sub(r'([\n\t\r ]|#.*)','',line)

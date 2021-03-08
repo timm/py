@@ -1,28 +1,28 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 ####
 
-Espy=$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )
+Espy=$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )/..
 
 ############# assert dirs exist
-mkdir -p $Espy/lib
-chmod +x $Espy/ish
+mkdir -p $Espy/opt
+chmod +x $Espy/opt/ish
 chmod +x $Espy/eg.py
 
 ############# ensure files exist
-f=lib/tmux-conf; [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
-f=lib/vimrc;     [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
-f=lib/pics;      [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
-f=lib/gitignore; [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
-f=gitignore;     [ -f "$Espy/.$f" ] || cp $Espy/lib/$f $Espy/.$f
+f=opt/tmux-conf; [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
+f=opt/vimrc;     [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
+f=opt/pics;      [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
+f=opt/gitignore; [ -f "$Espy/$f"  ] || wget -q -O $Espy/$f $web/$f
+f=gitignore;     [ -f "$Espy/.$f" ] || cp $Espy/opt/$f $Espy/.$f
 
-git add $Espy/lib/* $Espy/.gitignore
+git add $Espy/opt/* $Espy/.gitignore
 
 ############## aliases
 alias gp="git add *; git commit -am saving; git push; git status"
 alias ls="ls -G"
 alias repl="rlwrap sbcl --noinform "
-alias tmux="$(which tmux) -f $Espy/lib/tmux-conf "
-alias vi="vim -u $Espy/lib/vimrc "
+alias tmux="$(which tmux) -f $Espy/opt/tmux-conf "
+alias vi="vim -u $Espy/opt/vimrc "
 alias vims="vim +PluginInstall +qall"         
 
 here() { cd $1; basename `pwd`; }
@@ -39,7 +39,7 @@ hi() {
 EOF
   tput sgr0
   tput bold; tput setaf 0
-  awk '/^alias/ {print $0}'   $Espy/ish
+  awk '/^alias/ {print $0}'   $Espy/opt/ish
   echo ""
   tput sgr0
 }
@@ -50,15 +50,15 @@ mytmux() {
   $Tmux start-server
   sleep 1
   $Tmux new-session -d -s $session  
-  $Tmux send-keys ". $Espy/ish"  C-m  "sleep 0.5; clear; vi keys.lisp" C-m
+  $Tmux send-keys ". $Espy/opt/ish"  C-m  "sleep 0.5; clear; vi keys.lisp" C-m
 
   $Tmux splitw -h -p 20
   $Tmux selectp -t 1
-  $Tmux send-keys ".  $Espy/ish"  C-m  "clear; hi" C-m
+  $Tmux send-keys ".  $Espy/opt/ish"  C-m  "clear; hi" C-m
 
   $Tmux splitw -v  -p 5
   $Tmux selectp -t 2
-  $Tmux send-keys ".  $Espy/ish"  C-m  "htop"  C-m
+  $Tmux send-keys ".  $Espy/opt/ish"  C-m  "htop"  C-m
 
   $Tmux attach-session -t $session
 }
