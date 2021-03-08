@@ -41,7 +41,6 @@ def main(com,funs):
 
 THE = etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS))
 
-eg2(THE)
 
 main(THE, locals())
 
