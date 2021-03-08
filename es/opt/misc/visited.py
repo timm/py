@@ -18,7 +18,6 @@ def v(a,n):
   x = sorted([y/s for y in x])
   return x
 
-
 def flatten(m):
   return [prod(item) for item in list(itertools.product(*m))]
 
