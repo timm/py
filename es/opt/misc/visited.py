@@ -26,11 +26,11 @@ def visited(d=2,alpha=.9, bins=16,keep=10**-3):
   a    = sorted(flatten(m),reverse=True)
   kept = [x for x in a if x > keep]
   ignored = 100*(1- len(kept)/len(a))
-  print(d,f"{alpha:3.2f} {len(kept):3} {len(a):10}", 
-        f"{ignored:7.3f}",
+  print(d,f"{alpha:3.2f} {len(kept):3} {len(a):10} {ignored:7.3f}",
         sparklines([x for x in kept if x>.01])[0])
 
 p= sorted([random.random() for _ in range(20)],reverse=True)
+
 for alpha in p:
   visited(d=3,bins=10,alpha=alpha)
 
