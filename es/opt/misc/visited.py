@@ -29,11 +29,8 @@ def visited(d=2,alpha=.9, bins=16,keep=10**-3):
   print(d,f"{alpha:3.2f} {len(kept):3} {len(a):10} {ignored:7.3f}",
         sparklines([x for x in kept if x>.01])[0])
 
-p= sorted([random.random() for _ in range(20)],reverse=True)
+p= sorted([random.random() for _ in range(5)],reverse=True)
 
-for alpha in p:
-  visited(d=3,bins=10,alpha=alpha)
-
-for alpha in p:
-  visited(d=6,bins=10,alpha=alpha)
+for d in [2,4,6,8, 10]:
+  for alpha in p: visited(d=d,bins=5,alpha=alpha)
 
