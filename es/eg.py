@@ -22,7 +22,7 @@ def eg2(THE):
   print("")
   rows = etc.csv(file)
   t= es.Tab().adds(rows)
-  c = es.Counts(t).badBetter(THE)
+  c = es.Counts(t,THE)
   model = es.Learn(c,THE)
   names = '  '.join([f"{col.txt:>6}" for col in t.cols.y])
   print(f"\n{' ':11} {'N':>5}"+ names)
@@ -49,5 +49,6 @@ def main(com,funs):
 THE = etc.obj(**etc.args(what="./es.py", doc=es.__doc__,**es.OPTIONS))
 
 
-main(THE, locals())
+eg2(THE)
+#main(THE, locals())
 

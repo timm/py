@@ -8,12 +8,12 @@ class obj:
   def __repr__(i)     : return "{"+ ', '.join(
                              [f":{k} {v}" for k, v in sorted(i.__dict__.items()) 
                              if type(v)!=fun and k[0] != "_"])+"}"
-  def __add__(i,d):
-    def method(f): return lambda *lst, **kw: f(i, *lst, **kw)
-    for k,v in d.items():
-      if type(v)==fun and k[0] != "_": 
-        i.__dict__[k] = method(v)
-    return i
+  # def __add__(i,d):
+  #   def method(f): return lambda *lst, **kw: f(i, *lst, **kw)
+  #   for k,v in d.items():
+  #     if type(v)==fun and k[0] != "_": 
+  #       i.__dict__[k] = method(v)
+  #   return i
 
 def show(x,w=5,d=3):
   fmt = f"%{w}.{d}f"

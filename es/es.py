@@ -55,11 +55,10 @@ LOVE    = "better"
 HATE    = "bad"
 
 #------------------------------------------------------------
-def Bin(down=LO, up=HI):
+class Bin(obj):
   """Models some x variable running 'down' to 'up' where, along
   the way, we see the y variables in 'also'."""
-  i = obj(down=down, up=up, also=Sym())
-  def has(i,x): return (x==i.down) if (i.down==i.up) else (i.down <= x < i.up)
+  def __init__(i,down=LO, up=HI): i.down, i.up, i.also= down,up,Sym()
   def show(i,short=False):  return (
     f"{i.up}"     if short and i.down == i.up  else (
     f"={i.up}"    if  i.down == i.up           else (
@@ -68,20 +67,20 @@ def Bin(down=LO, up=HI):
     f">={i.down}" if i.up == HI                else (
     f"{i.up}"     if short                     else (
     f"[{i.down}..{i.up})")))))))
-  return i + locals()
+  def has(i,x): return (x==i.down) if (i.down==i.up) else (i.down <= x < i.up)
 
 #------------------------------------------------------------
-def Skip(pos=0, txt=""):
-  i = obj(pos=pos, txt=txt, n=0)
+class Skip(obj):
+  def __init__(i): i.pos, i.txt, i.n = pos,txt,n
   def add(i,x):
     if x != NO: i.n += 1
     return x
   def mid(i):           assert False, "you talking to me?"
   def discretize(i,_,): assert False, "you talking to me?"
-  return i + locals()
 
-def Sym(pos=0,txt=""):
-  i = obj(n=0, pos=pos, txt=txt, seen={},most=0,mode=None)
+class Sym(obj):
+  def __init__(i, pos=0,txt=""):
+    i.pos,i.txt,i.n,i.most,i.seen,i.mode = pos,txt,0,0,{},None
   # ---- Keep counts of seen symbols--------------
   def add(i,x, n=1):
     if x != NO:
@@ -108,12 +107,12 @@ def Sym(pos=0,txt=""):
     for seen in [i.seen, j.seen]:
       for x,n in seen.items(): k.add(x,n)
     return k
-  return i + locals()
 
-def Num(pos=0,txt=""):
+class Num(obj):
   "Stores numerics, sorted. Can report, median, sd, low, high etc"
-  i = obj(n=0, pos=pos, txt=txt, _all=[], ok=False,
-          w= -1 if LESS in txt else 1)
+  def __init__(i, pos=0,txt=""):
+    i.pos,i.txt,i.n,i._all,i.ok = pos,txt,0,[],False
+    i.w = -1 if LESS in txt else 1
   # ---- Keep and report sorted contents --------------
   def _alls(i):
     i._all = i._all if i.ok else sorted(i._all)
@@ -126,15 +125,14 @@ def Num(pos=0,txt=""):
       i.ok    = False
     return x
   # ---- stats reports -----------------------------
-  def sd(i):     return (_per(i,.9) - _per(i,.1))/2.56
-  def mid(i):    return _per(i,.5) if i._all else None 
-  def _per(i,p): a= _alls(i); return a[int(p*len(a))]
-  def norm(i,x): a= _alls(i); return (x-a[0])/(a[-1] - a[0] + TINY)
+  def sd(i):     return (i._per(.9) - i._per(.1))/2.56
+  def mid(i):    return i._per(.5) if i._all else None 
+  def _per(i,p): a= i._alls(); return a[int(p*len(a))]
+  def norm(i,x): a= i._alls(); return (x-a[0])/(a[-1] - a[0] + TINY)
   def discretize(i,j,THE):
     xy  = [(better,LOVE) for better in i._all] + [(bad,HATE) for bad in j._all]
     tmp = div(xy, tooSmall=i.sd()*THE.cohen, width=len(xy)**THE.size)
     return merge(tmp)
-  return i + locals()
 
 #------------------------------------------------------------
  # ## Discretization
@@ -176,8 +174,8 @@ def merge(b4):
  
 #------------------------------------------------------------
 #  'Tab's store rows, summarized into 'Cols'
-def Tab():
-  i = obj(rows=[], cols=Cols())
+class Tab(obj):
+  def __init__(i): i.rows, i.cols = [], Cols()
   # ---- update with contents of rows ----------------
   def adds(i,rows): 
     for row in rows:
@@ -195,7 +193,7 @@ def Tab():
       s2   -= math.e**(w*(b-a)/n)
     return s1/n < s2/n
   def ordered(i,THE): 
-    gt= lambda a,b: 0 if id(a)==id(b) else (-1 if _better(i,a,b) else 1)
+    gt= lambda a,b: 0 if id(a)==id(b) else (-1 if i._better(a,b) else 1)
     return sorted(i.rows, key=functools.cmp_to_key(gt))
   # ---- factory to make a table like me ---------------
   def clone(i,inits=[]):
@@ -205,36 +203,35 @@ def Tab():
   # ---- report contents -------------------------------
   def ys(i):
     return [col.mid() for col in i.cols.y]
-  return i + locals()
 
-def Cols():
+class Cols(obj):
   """helper for Tab. Maintains columns grouped into 'all', 'x'', 'y'
   for all, independent, dependent attributes. Also, given column header
   names, this code creates the appropriate columns. Note one trick:
   if we are 'Skip'ing any column then it gets added to 'all' but
   not 'x' or 'y'. So to process all the columns except the 'Skip'ped ones,
   just use 'x' or 'y'"""
-  i = obj(all=[], y=[], x=[], klass=None, head=[],named={}) 
+  def __init__(i): 
+     i.all, i.y, i.x, i.head, i.named, i.klass = [],[],[],[],{},None
   def updateFromRow(i, row): return [col.add(row[col.pos]) for col in i.all]  
   # ---- define goal types ------------------
-  def _nump(x) : return LESS  in x or MORE in x or x[0].isupper()
-  def _goalp(x): return KLASS in x or LESS in x or MORE in x
+  def _nump(i,x) : return LESS  in x or MORE in x or x[0].isupper()
+  def _goalp(i,x): return KLASS in x or LESS in x or MORE in x
   # ---- initialize columns -------------------------------
   def cols(i, lst):
     i.head = lst
-    i.all = [_col(i,n,x) for n,x in enumerate(lst)]
+    i.all = [i._col(n,x) for n,x in enumerate(lst)]
     return i.all
   def _col(i,pos,txt):
-    what = Skip if NO in txt else (Num if _nump(txt)  else Sym)
+    what = Skip if NO in txt else (Num if i._nump(txt)  else Sym)
     col  = what(pos, txt)
-    ([] if NO in txt else (i.y if _goalp(txt) else i.x)).append(col)
+    ([] if NO in txt else (i.y if i._goalp(txt) else i.x)).append(col)
     if KLASS in txt: i.klass = col
     i.named[txt] = col
     return col
-  return i + locals()
 
 #------------------------------------------------------------
-def Counts(tab):
+def Counts(tab,THE):
   i = obj(f={}, h={}, n=0)
   def _bin(x,bins):
     if x != NO:
@@ -245,25 +242,23 @@ def Counts(tab):
       if b := _bin(row[col.pos], bins):
         v= (label, col.txt, (b.down, b.up))
         i.f[v] = i.f.get(v,0) + 1
-  #-----------------------------------
-  def badBetter(i,THE):
-    if len(tab.rows)*THE.best < THE.min: 
-      THE.best = .5
-      return i.bestRest(THE)
-    rows = tab.ordered(THE)
-    size = int(len(rows)*THE.best)
-    better = tab.clone(rows[:size])
-    bad    = tab.clone(rows[size:])
-    i.n = len(rows)
-    i.h[LOVE] = size
-    i.h[HATE] = len(rows) - size
-    for col1,col2, in zip(better.cols.x, bad.cols.x):
-      bins = col1.discretize(col2, THE)
-      THE.quiet or print(f"{col1.txt:>10} :", ', '.join([bin.show() for bin in bins]))
-      _count(better.rows, col1, bins, LOVE)
-      _count(bad.rows,    col1, bins, HATE)
-    return i
-  return i + locals()
+  if len(tab.rows)*THE.best < THE.min: 
+    THE.best = .5
+    return i.bestRest(THE)
+  #------------------------
+  rows = tab.ordered(THE)
+  size = int(len(rows)*THE.best)
+  better = tab.clone(rows[:size])
+  bad    = tab.clone(rows[size:])
+  i.n = len(rows)
+  i.h[LOVE] = size
+  i.h[HATE] = len(rows) - size
+  for col1,col2, in zip(better.cols.x, bad.cols.x):
+    bins = col1.discretize(col2, THE)
+    THE.quiet or print(f"{col1.txt:>10} :", ', '.join([bin.show() for bin in bins]))
+    _count(better.rows, col1, bins, LOVE)
+    _count(bad.rows,    col1, bins, HATE)
+  return i
 
 #------------------------------------------------------------
 def Learn(counts, THE):
