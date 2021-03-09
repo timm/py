@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # vim: filetype=python ts=2 sw=2 sts=2 et :
 import math,re
+CONTROL = dict(k=1,m=2,best=.5, size=.5,cohen=.2)
 LO= -math.inf
 HI=  math.inf
 TINY=1E-32
@@ -11,8 +12,6 @@ class obj:
   def __repr__(i): 
     lst=sorted(i.__dict__.items())
     return "{"+ ', '.join( [f":{k} {v}" for k,v in lst if k[0] != "_"])+"}"
-
-DEFAULTS  = obj(k=1,m=2,best=.5, size=.5,cohen=.2)
 
 class Tab(obj):
   def __init__(i,src):
@@ -147,7 +146,6 @@ def csv(file):
 import sys
 
 def cli(want):
-  want = want.__dict__
   got, args, out = {}, sys.argv, {k:want[k] for k in want}
   while args:
     arg,*args = args
@@ -163,15 +161,18 @@ def cli(want):
                               int(new)   if type(old) == int   else (
                               new)))
             except Exception: print(f"W: {new} not of type {type(old).__name__}")
-  return obj(**out)
+  return out
 
-print(cli(DEFAULTS))
-t=Tab(csv("auto93.csv"))
-rows = sorted(t.rows)
-u=t.clone(rows[:100])
-v=t.clone(rows[100:])
-for col1,col2 in zip(u.xs,v.xs):
-  print("")
-  print(col1.txt)
-  for b in col1.discretize(col2,THE):
-    print(b)
+def main():
+  the = cli(CONTROL)
+  t=Tab(csv("auto93.csv"))
+  rows = sorted(t.rows)
+  u=t.clone(rows[:100])
+  v=t.clone(rows[100:])
+  for col1,col2 in zip(u.xs,v.xs):
+    print("")
+    print(col1.txt)
+    for b in col1.discretize(col2,the):
+      print(b)
+
+main()
