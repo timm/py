@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # vim: filetype=python ts=2 sw=2 sts=2 et :
-import math,re
-CONTROL = dict(k=1,m=2,best=.5, size=.5,cohen=.2)
+"""hello
+"""
+import math,sys,re
+HELP = dict(k=(1,"asdsaa"),m=(2,""),best=(.5,""), size=(.5,""),cohen=(.2,""))
 LO= -math.inf
 HI=  math.inf
 TINY=1E-32
@@ -143,28 +145,32 @@ def csv(file):
       if line:
         yield  line.split(",")
 
-import sys
-
-def cli(want):
+def cli(xpect):
+  "nake it work raw on 2 plced control"
+  want = {k:v for k,(v,_) in xpect.items()}
+  help = {k:v for k,(_,v) in xpect.items()}
   got, args, out = {}, sys.argv, {k:want[k] for k in want}
   while args:
     arg,*args = args
     mark = arg[0]
     if mark in "+-":
        flag = arg[1:]
-       if flag not in want: print(f"W: ignoring {flag} (not defined)")
+       if   flag=="h": 
+         print(__doc__)
+         print('\n'.join(f" -{k:10} {v}" for k,v in help.items()))
+       elif flag not in want: print(f"W: ignoring {flag} (not defined)")
+       elif not args: print(f"W: missing argument for {flag}")
        else:
-         if not args: print(f"W: missing argument for {flag}")
-         else:
-            old,new   = want[flag],args[0]
-            try: out[flag] = (float(new) if type(old) == float else (
-                              int(new)   if type(old) == int   else (
-                              new)))
-            except Exception: print(f"W: {new} not of type {type(old).__name__}")
+          old,new   = want[flag],args[0]
+          try: out[flag] = (float(new) if type(old) == float else (
+                            int(new)   if type(old) == int   else (
+                            new)))
+          except Exception: print(f"W: {new} not of type {type(old).__name__}")
   return out
 
 def main():
-  the = cli(CONTROL)
+  the = obj(**cli(HELP))
+  return True
   t=Tab(csv("auto93.csv"))
   rows = sorted(t.rows)
   u=t.clone(rows[:100])
