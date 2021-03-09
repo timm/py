@@ -155,9 +155,15 @@ def cli(xpect):
     mark = arg[0]
     if mark in "+-":
        flag = arg[1:]
-       if   flag=="h": 
+       if flag=="h": 
          print(__doc__)
-         print('\n'.join(f" -{k:10} {v}" for k,v in help.items()))
+         for k,v in want.items():
+           m =("  " if v==False else (
+               " I" if type(v)==int else (
+               " F" if type(v)==float else (
+               " S"))))
+           h =help[k]
+           print(f" +{k:12} {h}" if v==False else f" -{k+m:12} {h}")
        elif flag not in want: print(f"W: ignoring {flag} (not defined)")
        elif not args: print(f"W: missing argument for {flag}")
        else:
