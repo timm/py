@@ -7,13 +7,12 @@ TINY=1E-32
 NO= "?"
 
 class obj:
-  "All you ever neeed: one tiny object."
   def __init__(i, **d): i.__dict__.update(d)
   def __repr__(i): 
     lst=sorted(i.__dict__.items())
     return "{"+ ', '.join( [f":{k} {v}" for k,v in lst if k[0] != "_"])+"}"
 
-THE=obj(k=1,m=2,best=.5, size=.5,cohen=.2)
+DEFAULTS  = obj(k=1,m=2,best=.5, size=.5,cohen=.2)
 
 class Tab(obj):
   def __init__(i,src):
@@ -55,7 +54,7 @@ class Sym(obj):
   def ent(i): return sum(-v/i.n * math.log(v/i.n) for v in i.seen.values())
   def discretize(i,j,_): 
     return [Bin(k,k) for k in (i.seen | j.seen)]
-  def removeSpuriousDistinctions(i,j):
+  def simplified(i,j):
     k     = i.merge(j)
     e1,n1 = i.ent(), i.n
     e2,n2 = j.ent(), j.n
@@ -130,7 +129,7 @@ def merge(b4):
     a = b4[j]
     if j < n - 1:
       b  = b4[j+1]
-      if c := a.also.removeSpuriousDistinctions(b.also):
+      if c := a.also.simplified(b.also):
         a = Bin(a.down, b.up)
         a.also = c
         j += 1
@@ -145,6 +144,28 @@ def csv(file):
       if line:
         yield  line.split(",")
 
+import sys
+
+def cli(want):
+  want = want.__dict__
+  got, args, out = {}, sys.argv, {k:want[k] for k in want}
+  while args:
+    arg,*args = args
+    mark = arg[0]
+    if mark in "+-":
+       flag = arg[1:]
+       if flag not in want: print(f"W: ignoring {flag} (not defined)")
+       else:
+         if not args: print(f"W: missing argument for {flag}")
+         else:
+            old,new   = want[flag],args[0]
+            try: out[flag] = (float(new) if type(old) == float else (
+                              int(new)   if type(old) == int   else (
+                              new)))
+            except Exception: print(f"W: {new} not of type {type(old).__name__}")
+  return obj(**out)
+
+print(cli(DEFAULTS))
 t=Tab(csv("auto93.csv"))
 rows = sorted(t.rows)
 u=t.clone(rows[:100])
