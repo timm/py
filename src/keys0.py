@@ -1,21 +1,25 @@
 #!/usr/bin/env python3.9
 """
 Keys0: baseline keys-based stochastic explainer/controller
-(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org
+(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org 
 If you can really explain 'it', you can also control 'it'.
 
-Usage: ./keys0 [OPTIONS]
+Usage: ./keys0.py [OPTIONS] 
 
 OPTIONS:
   -D            dump defaults
   -Do           list all doable things
   -data   FILE  set input file
-  -do     S     name of the example to run (and 'all' means run all)
+  -do     S     example to run (and 'all' means run all)
   -enough F     do not divide less than 2*|rows|^F
   -far    P     points are far away if they are over P% distant
   -h            print help
   -seed   I     random number seed 
   -y      S     set format string for reals
+
+INSTALL: 
+1. Download keys0.py from https://github.com/timm/py/tree/main/src
+2. chmod +x keys0.py
 """
 import re,sys,copy,random
 
@@ -54,12 +58,12 @@ class _col(o):
     i.skip = "?" in txt
   def add(i,x) : return x
   def mid(i)   : return "?"
-  def norm(i,x): pass
-  def dist(i,j): pass
+  def var(i)   : return 0
+  def norm(i,x): return 0
+  def dist(i,j): return 0
 
-class Skip(_col):
+class Skip(_col): 
   "Black hole. Used for ignoring a column of data."
-  def __init__(*l,**k): super().__init__(*l,**k)
 
 class Sym(_col):
   "summarize symbolic data"
