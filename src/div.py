@@ -91,7 +91,7 @@ class Item(Thing):
     mid = len(mid)//2
     return rows[:mid], rows[mid:]
 
-for line,meta in lines("data/auto93.csv"):   
+for line,meta in lines("data/auto93.csv"):      
   print(meta)
 
 
