@@ -23,7 +23,7 @@ class Table(Thing):
   def i.row(lst): 
     return Row(i, [it.add(x) for it,x in zip(i.cols,x)])
   def i.columns(lst):
-    out = [Item(at,pos) for at,pos in enumerate(lst)]
+    out = [Column(at,pos) for at,pos in enumerate(lst)]
     for it in out:
       if "?" not in it.skip:
         if it.goal    : i.y += [it]
@@ -47,7 +47,7 @@ class Row(Thing):
     tmp=[(i.dist(j,the,cols or i._tbl.x),j) for j in rows]
     return sorted(tmp)[the.faraway*len(tmp)//1]
   
-class Item(Thing):
+class Column(Thing):
   def __init__(i,at,txt): 
     i.at, i.txt, i.ako, i.lo = at, txt, None, float('inf'); i.hi=-i.lo
     i.w    = -1 if "-" in txt else 1
