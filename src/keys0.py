@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.9
 """
 Keys0: baseline keys-based stochastic explainer/controller   
+"If you can really explain 'it', then you can control 'it'."        
 (c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org    
-If you can really explain 'it', you can also control 'it'.   
    
 Usage: ./keys0.py [OPTIONS]    
    
