@@ -1,26 +1,28 @@
 #!/usr/bin/env python3.9
 """
-Keys0: baseline keys-based stochastic explainer/controller
-(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org 
-If you can really explain 'it', you can also control 'it'.
+Keys0: baseline keys-based stochastic explainer/controller   
+(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org    
+If you can really explain 'it', you can also control 'it'.   
+   
+Usage: ./keys0.py [OPTIONS]    
+   
+OPTIONS:   
 
-Usage: ./keys0.py [OPTIONS] 
+  -D            dump defaults   
+  -Do           list all doable things   
+  -data   FILE  set input file   
+  -do     S     example to run (and 'all' means run all)   
+  -enough F     do not divide less than 2*|rows|^F   
+  -far    P     points are far away if they are over P% distant   
+  -h            print help   
+  -seed   I     random number seed    
+  -y      S     set format string for reals   
+   
+INSTALL:    
 
-OPTIONS:
-  -D            dump defaults
-  -Do           list all doable things
-  -data   FILE  set input file
-  -do     S     example to run (and 'all' means run all)
-  -enough F     do not divide less than 2*|rows|^F
-  -far    P     points are far away if they are over P% distant
-  -h            print help
-  -seed   I     random number seed 
-  -y      S     set format string for reals
-
-INSTALL: 
-1. Download keys0.py from https://github.com/timm/py/tree/main/src
-2. chmod +x keys0.py
-"""
+1. Download keys0.py from https://github.com/timm/py/tree/main/src   
+2. chmod +x keys0.py   
+"""   
 import re,sys,copy,random
 
 Y="%6.2"
@@ -36,6 +38,8 @@ DEFAULTS=dict(
 
 # ---------------------------------
 # ## Classes
+# ### Base
+
 class o(object):
   "base class for everything"
   def __init__(i,**k): i.__dict__.update(**k)
@@ -43,6 +47,7 @@ class o(object):
       return i.__class__.__name__ + str(
              {k:v for k,v in  i.__dict__.items() if k[0] != "_"})
 
+# ### Col
 def Col(at,txt):
   "Factory for making columns"
   what= Skip if "?" in txt       else (
@@ -62,9 +67,11 @@ class _col(o):
   def norm(i,x): return 0
   def dist(i,j): return 0
 
+# ### Skip
 class Skip(_col): 
   "Black hole. Used for ignoring a column of data."
 
+# ### Sym
 class Sym(_col):
   "summarize symbolic data"
   def __init__(*lst):
@@ -82,11 +89,11 @@ class Sym(_col):
   def mid(i): return i.mode
   def var(i): return i.entropy()
   def entropy(i): 
-    return sum(-v/i.n*math.log(v/i.n)/math.log(2) 
-               for v in i.seen.values())
+    return sum(-v/i.n*math.log(v/i.n,2) for v in i.seen.values())
 
   def dist(i,x,y): return 0 if x==y else 1
 
+# ### Num
 class Num(_col):
   "summarize numeric data."
   def __init__(*l,**k):
@@ -120,7 +127,7 @@ class Num(_col):
   def norm(i,x):
     return x if x=="?" else (x-i.lo())/(i.hi()-i.lo()+1E-32)
 
-  
+# ### Row  
 class Row(o):
   "Place to store on example."
   def __init__(i,tbl,cells): i._tbl, i.cells = tbl, cells
@@ -148,6 +155,7 @@ class Row(o):
       s2 -= math.e**(col.w * (b - a) / n)
     return s1 / n < s2 / n
 
+# ### Table
 class Table(o):
   def __init__(i): i.rows, i.header,i.cols, i.x, i.y = [],[],[],[],[]
   def read(i,f)  : [self.add(line) for line in lines(f)]
@@ -276,5 +284,7 @@ class Eg:
     "another simple print"
     print(2)
 
+# ---------------------------
+# ## Main
 if __name__ == "__main__":
   Eg.all(cli(DEFAULTS,__doc__))
