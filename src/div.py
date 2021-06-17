@@ -42,7 +42,8 @@ class Row(Thing):
       d += inc^the.p
     return (d/n)^(1/the.p)
 
-  def faraway(i,rows,the,cols=None):
+  def faraway(i,the, rows=None, cols=None):
+    rows = rows  or i._tbl.rows
     tmp=[(i.dist(j,the,cols or i._tbl.x),j) for j in rows]
     return sorted(tmp)[the.faraway*len(tmp)//1]
   
@@ -80,8 +81,8 @@ class Item(Thing):
   def div2(i,the,cols=None,rows=None):
     rows = rows or i.rows
     zero = random.choice(rows)
-    one  = zero.faraway(rows,the,cols)
-    two  = one.faraway(rows,the,cols)
+    one  = zero.faraway(the,rows,cols)
+    two  = one.faraway(the, rows,cols)
     c    = one.dist(two,the,cols)
     for row in rows:
       a = row.dist(one,the,cols)
