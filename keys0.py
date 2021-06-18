@@ -59,7 +59,7 @@ def Col(at,txt):
 # Abstract super class for column summaries.
 class _col(o):
   def __init__(i,at=0,txt="", inits=[]): 
-    i.at, i.txt = at,txt
+    i.at, i.txt,i.n = at,txt,0
     i.w    = -1 if "-" in txt else 1
     i.goal = "-" in txt or "+" in txt or "!" in txt
     i.skip = "?" in txt
@@ -78,7 +78,7 @@ class Skip(_col): pass
 # Summarize symbolic data.
 class Sym(_col):
   def __init__(i,*l,**kw):
-    i.n, i.seen, i.most, i.mode = 0,{},0,None
+    i.seen, i.most, i.mode = {},0,None
     super().__init__(*l,**kw)
 
   def add(i,x,n=1):
@@ -110,6 +110,11 @@ class Sym(_col):
       for x, n in seen.items(): k.add(x, n)
     return k
 
+  def discretize(i, j, _):
+    for k in (i.seen | j.seen):  
+      yield o(n=i.n, m=i.seen.get(k, 0), at=i.at,klass=True, lo=k, hi=k)
+      yield o(n=i.n, m=j.seen.get(k, 0), at=i.at,klass=False, lo=k, hi=k)
+
 # ### Num
 # Summarize numeric data.
 class Num(_col):
@@ -119,6 +124,7 @@ class Num(_col):
     
   def add(i,x):
     if x !="?":
+      i.n  += 1
       x = float(x)
       i._all += [x]
       i.ready = False
@@ -143,20 +149,33 @@ class Num(_col):
     return abs(x-y)
 
   def norm(i,x):
-    if x=="?": return x
-    tmp = (x - i.lo()) / (i.hi() - i.lo()+1E-32)
-    return min(1, max(0, tmp))
+    return x if x=="?" else min(1,max(0,(x-i.lo())/(i.hi()-i.lo()+1E-32)))
 
   def discretize(i, j, the):
     xy = [(better, True)  for better in i._all] + [
           (bad,    False) for bad    in j._all]
-    ni,nj = len(i._all), len(j._all)
-    sd    = (i.sd()*ni + j.sd()*nj) / (ni + nj)
-    tmp   = div(xy, sd * my.cohen, len(xy)**my.size)
+    sd    = (i.sd()*i.n + j.sd()*j.n) / (i.n + j.n)
+    tmp   = cut(xy, sd * the.cohen, len(xy)**the.enough)
     tmp   = merge(tmp)
     for bin in tmp:
-      for klass, n in bin.also.seen.items():
-         yield n, klass, (bin.down, bin.up)
+      for klass, m in bin.also.seen.items():
+        yield o(n=i.n if klass else  j.n, m=m, at=i.at,  klass=klass, 
+                lo=bin.down, hi=bin.up)
+
+class Some(_col):
+  # `add` up to `max` items (and if full, sometimes replace old items)."
+  # Not  currently used but if reasoning over large data, can be useful.
+  def __init__(i, *l, keep=1024, **kw): 
+    i.all=[]; i.keep=keep
+    super().__init__(*l,**kw)
+  def add(i,x) : 
+    if  x != "?":
+      i.n += 1
+      x= float(x)
+      a, r = i.all, random.random
+      if len(a) < i.keep : a += [x]
+      elif r()  < i.keep / i.n : a[int(r()*len(a))] = x
+    return x
 
 # ### Row  
 # Place to store on example.
@@ -267,11 +286,11 @@ def bestRest(tbl,the,out, cols=None,rows=None,path=0):
       bestRest(tbl, the,out,cols=cols,rows=right,path=2)
   return sorted(out)
 
-class Bin(obj):
+class Bin(o):
   def __init__(i, down=-math.inf, up=math.inf): 
      i.down, i.up, i.also = down, up, Sym()
 
-def div(xy, epsilon, width):
+def cut(xy, epsilon, width):
   while width < 4 and width < len(xy) / 2:
     width *= 1.2
   xy  = sorted(xy)
@@ -418,6 +437,18 @@ class Eg:
     bestRest(t, the, leafs)
     for t1 in leafs: 
       print(len(t1.rows), t1.ys())
+
+  def egdiscrete1(the):
+    t = Table().read("data/auto93.csv")
+    leafs = []
+    best,rest=bestRest(t, the, leafs)
+    print(t.ys(),"<== all")
+    print(best.ys(),"<== best")
+    print(rest.ys(),"<== rest")
+    for great,dull in zip(best.x,rest.x):
+      print("")
+      for x in great.discretize(dull,the):
+        print(x)
 
 # ---------------------------
 # ## Main
