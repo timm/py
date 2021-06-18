@@ -27,7 +27,8 @@ INSTALL:
 import re,sys,copy,math,random
 
 FMT="%8.2f"
-DEFAULTS=dict(D      = 0
+DEFAULTS=dict(cohen  = .3
+             ,D      = 0
              ,Do     = 0
              ,data   = "data/auto93.csv"
              ,do     = "all"
@@ -80,10 +81,10 @@ class Sym(_col):
     i.n, i.seen, i.most, i.mode = 0,{},0,None
     super().__init__(*l,**kw)
 
-  def add(i,x):
+  def add(i,x,n=1):
     if x!="?":
-      i.n += 1
-      i.seen[x] = i.seen.get(x,0) + 1
+      i.n += n
+      i.seen[x] = i.seen.get(x,0) + n
       if i.seen[x] > i.most:
         i.most, i.mode = i.seen[x],x
     return x
@@ -95,11 +96,25 @@ class Sym(_col):
 
   def dist(i,x,y): return 0 if x==y else 1
 
+  def simplified(i, j):
+    k      = i.merge(j)
+    e1, n1 = i.entropy(), i.n
+    e2, n2 = j.entropy(), j.n
+    e, n   = k.entropy(), k.n
+    if e1+e2 < 0.01 or e*.95 < n1/n*e1 + n2/n*e2:
+      return k
+
+  def merge(i, j):
+    k = Sym(at=i.at, txt=i.txt)
+    for seen in [i.seen, j.seen]:
+      for x, n in seen.items(): k.add(x, n)
+    return k
+
 # ### Num
 # Summarize numeric data.
 class Num(_col):
   def __init__(i,*l,**k):
-    i._all, i.ready =  [],True
+    i._all, i.ready =  [], True
     super().__init__(*l,**k)
     
   def add(i,x):
@@ -111,7 +126,7 @@ class Num(_col):
 
   def all(i): 
     if not i.ready: i._all.sort()
-    i.ready=True
+    i.ready = True
     return i._all
 
   def lo(i):  return i.all()[0]
@@ -128,7 +143,20 @@ class Num(_col):
     return abs(x-y)
 
   def norm(i,x):
-    return x if x=="?" else (x-i.lo())/(i.hi()-i.lo()+1E-32)
+    if x=="?": return x
+    tmp = (x - i.lo()) / (i.hi() - i.lo()+1E-32)
+    return min(1, max(0, tmp))
+
+  def discretize(i, j, the):
+    xy = [(better, True)  for better in i._all] + [
+          (bad,    False) for bad    in j._all]
+    ni,nj = len(i._all), len(j._all)
+    sd    = (i.sd()*ni + j.sd()*nj) / (ni + nj)
+    tmp   = div(xy, sd * my.cohen, len(xy)**my.size)
+    tmp   = merge(tmp)
+    for bin in tmp:
+      for klass, n in bin.also.seen.items():
+         yield n, klass, (bin.down, bin.up)
 
 # ### Row  
 # Place to store on example.
@@ -168,11 +196,11 @@ class Row(o):
 # ### Table
 class Table(o):
   def __init__(i): i.rows,i.header,i.cols,i.x,i.y = [],[],[],[],[]
-  def read(i,f)  : [i.add(line) for line in lines(f)]; return i
+  def __lt__(i,j): return Row(i,i.mid()) < Row(i,j.mid())
   def row(i,lst) : return Row(i, [col.add(x) for col,x in zip(i.cols,lst)])
+  def read(i,f)  : [i.add(line) for line in lines(f)]; return i
   def mid(i)     : return [col.mid() for col in i.cols]
   def ys(i)      : return [col.mid() for col in i.y]
-  def __lt__(i,j): return Row(i,i.mid()) < Row(i,j.mid())
 
   def add(i,lst):
     if type(lst)==Row: return i.add(lst.cells)
@@ -193,7 +221,7 @@ class Table(o):
 
   def clone(i,rows=None):
     out=Table()
-    out.add([i.header])
+    out.add(i.header)
     [out.add(row) for row in rows or []]
     return out
    
@@ -214,31 +242,66 @@ class Table(o):
 # ---------------------------
 # ## High-level drivers
 # Build binary tree on all the data, clustering on x-values.
-def cluster(tbl,the,cols=None,rows=None,out=[]):
+def cluster(tbl,the,out,cols=None,rows=None):
   rows = rows or tbl.rows 
   cols = cols or tbl.x
-  if len(rows)< 2*len(tbl.rows)**the.enough:
+  if len(rows) < 2*len(tbl.rows)**the.enough:
     out += [tbl.clone(rows=rows)]
   else:
     left,right = tbl.div(the,cols,rows)
-    cluster(tbl, the, cols=cols, rows=left,  out=out)
-    cluster(tbl, the, cols=cols, rows=right, out=out)
+    cluster(tbl, the, out, cols=cols, rows=left)
+    cluster(tbl, the, out, cols=cols, rows=right)
   return out
 
 # Return most left and most right leaves of binary tree.
-def bestRest(tbl,the,cols=None,rows=None,out=None,path=0):
+def bestRest(tbl,the,out, cols=None,rows=None,path=0):
   rows = rows or tbl.rows
   cols = cols or tbl.x
-  out  = out or []
-  if len(rows)< the.enough*2:
+  if len(rows) < 2*len(tbl.rows)**the.enough:
     out += [tbl.clone(rows=rows)]
   else:
     left,right = tbl.div(the,cols,rows)
     if path==0 or path==1:
-      tbl.cluster(the,cols=cols,rows=left,out=out,path=1)
+      bestRest(tbl, the,out,cols=cols,rows=left,path=1)
     if path==0 or path==2:
-      tbl.cluster(the,cols=cols,rows=right,out=out,path=2)
-  return sort(out)
+      bestRest(tbl, the,out,cols=cols,rows=right,path=2)
+  return sorted(out)
+
+class Bin(obj):
+  def __init__(i, down=-math.inf, up=math.inf): 
+     i.down, i.up, i.also = down, up, Sym()
+
+def div(xy, epsilon, width):
+  while width < 4 and width < len(xy) / 2:
+    width *= 1.2
+  xy  = sorted(xy)
+  x   = xy[0][0]
+  now = Bin(down=x, up=x)
+  out = [now]
+  for j, (x, y) in enumerate(xy):
+    if j < len(xy) - width:
+      if now.also.n >= width:
+        if x != xy[j + 1][0]:
+          if now.up - now.down > epsilon:
+            now = Bin(down=x, up=x)
+            out += [now]
+    now.up = x
+    now.also.add(y)
+  return out
+
+def merge(b4):
+  j, tmp, n = 0, [], len(b4)
+  while j < n:
+    a = b4[j]
+    if j < n - 1:
+      b = b4[j + 1]
+      if c := a.also.simplified(b.also):
+        a = Bin(a.down, b.up)
+        a.also = c
+        j += 1
+    tmp += [a]
+    j += 1
+  return merge(tmp) if len(tmp) < len(b4) else b4
 
 # ---------------------------
 # ## Misc utils
@@ -340,17 +403,21 @@ class Eg:
   def egclone(the):
     t = Table().read("data/auto93.csv")
     t1 = t.clone(rows = t.rows)
-    print([col.goal for col in t.cols])
-    #print(t1.x)
-    #print(len(t1.rows))
+    assert [x for x in t.ys()] == [x for x in t1.ys()]
 
   def egdiv(the):
     t = Table().read("data/auto93.csv")
-    print(len(t.y))
-    print(t.ys())
-    #leafs=[]
-    #cluster(t, the, out=leafs)
-    #for t1 in leafs: print(t1.mid())
+    leafs=[]
+    cluster(t, the,leafs)
+    for t1 in sorted(leafs): 
+      print(len(t1.rows), t1.ys())
+
+  def egbestRest(the):
+    t = Table().read("data/auto93.csv")
+    leafs = []
+    bestRest(t, the, leafs)
+    for t1 in leafs: 
+      print(len(t1.rows), t1.ys())
 
 # ---------------------------
 # ## Main
