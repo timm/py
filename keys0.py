@@ -15,6 +15,7 @@ OPTIONS:
   -enough F     do not divide less than 2*|rows|^F   
   -far    P     points are far away if they are over P% distant   
   -h            print help   
+  -p      I     coefficient in  distance calcs
   -seed   I     random number seed    
   -y      S     set format string for reals   
    
@@ -23,44 +24,46 @@ INSTALL:
 1. Download keys0.py from https://github.com/timm/py/tree/main/src   
 2. chmod +x keys0.py   
 """   
-import re,sys,copy,random
+import re,sys,copy,math,random
 
-Y="%6.2"
+FMT="%8.2f"
 DEFAULTS=dict(
-           y      = "%6.2",
-           data   = "data/auto93.csv",
-           Do     = 0,
-           D      = 0,
-           do     = "all",
-           far    = .8,
-           enough = .5,
-           seed   =  1)
+            D      = 0
+           ,Do     = 0
+           ,data   = "data/auto93.csv"
+           ,do     = "all"
+           ,enough = .5
+           ,far    = 90
+           ,fmt    = "%8.2f"
+           ,p      = 2
+           ,seed   = 1)
 
 # ---------------------------------
 # ## Classes
 # ### Base
+# Base class for everything.
 
 class o(object):
-  "base class for everything"
   def __init__(i,**k): i.__dict__.update(**k)
   def __repr__(i): 
       return i.__class__.__name__ + str(
              {k:v for k,v in  i.__dict__.items() if k[0] != "_"})
 
 # ### Col
+# Factory for making columns.
 def Col(at,txt):
-  "Factory for making columns"
   what= Skip if "?" in txt       else (
         Num  if txt[0].isupper() else Sym)
   return what(at,txt)
 
+# Abstract super class for column summaries.
 class _col(o):
-  "Abstract super class for column summaries."
-  def __init__(i,at=0,txt=""): 
+  def __init__(i,at=0,txt="", inits=[]): 
     i.at, i.txt = at,txt
     i.w    = -1 if "-" in txt else 1
     i.goal = "-" in txt or "+" in txt or "!" in txt
     i.skip = "?" in txt
+    [i.add(x) for x in inits]
   def add(i,x) : return x
   def mid(i)   : return "?"
   def var(i)   : return 0
@@ -68,15 +71,15 @@ class _col(o):
   def dist(i,j): return 0
 
 # ### Skip
-class Skip(_col): 
-  "Black hole. Used for ignoring a column of data."
+# Black hole. Used for ignoring a column of data.
+class Skip(_col): pass
 
 # ### Sym
+# Summarize symbolic data.
 class Sym(_col):
-  "summarize symbolic data"
-  def __init__(*lst):
-    super().__init__(*lst)
+  def __init__(i,*l,**kw):
     i.n, i.seen, i.most, i.mode = 0,{},0,None
+    super().__init__(*l,**kw)
 
   def add(i,x):
     if x!="?":
@@ -94,14 +97,15 @@ class Sym(_col):
   def dist(i,x,y): return 0 if x==y else 1
 
 # ### Num
+# Summarize numeric data.
 class Num(_col):
-  "summarize numeric data."
-  def __init__(*l,**k):
+  def __init__(i,*l,**k):
+    i._all, i.ready =  [],True
     super().__init__(*l,**k)
-    i._all, i.ready=[],True
     
   def add(i,x):
     if x !="?":
+      x = float(x)
       i._all += [x]
       i.ready = False
     return x
@@ -116,7 +120,7 @@ class Num(_col):
   def mid(i): return i.per(0.5)
   def var(i): return i.sd()
   def sd(i):  return (i.per(.9) - i.per(.1))/2.56
-  def per(i,p=0.5): return i.all()[len(i._all)*p //1]
+  def per(i,p=0.5): return i.all()[int(len(i._all)*p)]
 
   def dist(i,x,y):
     if   x=="?": y=i.norm(y); x = 1 if y<0.5 else 0
@@ -128,8 +132,8 @@ class Num(_col):
     return x if x=="?" else (x-i.lo())/(i.hi()-i.lo()+1E-32)
 
 # ### Row  
+# Place to store on example.
 class Row(o):
-  "Place to store on example."
   def __init__(i,tbl,cells): i._tbl, i.cells = tbl, cells
 
   def dist(i,j,the,cols=None):
@@ -138,17 +142,24 @@ class Row(o):
       n  += 1
       a,b = i.cells[it.at], j.cells[it.at]
       inc = 1 if a=="?" and b=="?" else it.dist(a,b)
-      d += inc^the.p
-    return (d/n)^(1/the.p)
+      d += inc**the.p
+    return (d/n)**(1/the.p)
+
+  def ys(i): return [i.cells[col.at] for col in i._tbl.y]
 
   def faraway(i,the, rows=None, cols=None):
+    tmp = i.neighbors(the,rows,cols)
+    return tmp[int(the.far/100*len(tmp))][1]
+
+  def neighbors(i,the, rows=None, cols=None):
     rows = rows  or i._tbl.rows
-    tmp=[(i.dist(j,the,cols or i._tbl.x),j) for j in rows]
-    return sort(tmp,key=first)[int(the.far/100*len(tmp))]
+    tmp  = [(i.dist(j,the,cols or i._tbl.x),j) for j in rows]
+    return sorted(tmp,key=first)
 
   def __lt__(i,j):
-    s1, s2, n = 0, 0, len(i._tbl.y)
-    for col in i.tbl.y:
+    cols = i._tbl.y
+    s1, s2, n = 0, 0, len(cols)
+    for col in cols:
       a   = col.norm(i.cells[col.at])
       b   = col.norm(j.cells[col.at])
       s1 -= math.e**(col.w * (a - b) / n)
@@ -157,10 +168,11 @@ class Row(o):
 
 # ### Table
 class Table(o):
-  def __init__(i): i.rows, i.header,i.cols, i.x, i.y = [],[],[],[],[]
-  def read(i,f)  : [self.add(line) for line in lines(f)]
-  def row(lst)   : return Row(i, [it.add(x) for it,x in zip(i.cols,x)])
+  def __init__(i): i.rows,i.header,i.cols,i.x,i.y = [],[],[],[],[]
+  def read(i,f)  : [i.add(line) for line in lines(f)]; return i
+  def row(i,lst) : return Row(i, [col.add(x) for col,x in zip(i.cols,lst)])
   def mid(i)     : return [col.mid() for col in i.cols]
+  def ys(i)      : return [col.mid() for col in i.y]
   def __lt__(i,j): return Row(i,i.mid()) < Row(i,j.mid())
 
   def add(i,lst):
@@ -168,15 +180,17 @@ class Table(o):
     if i.cols: i.rows += [i.row(lst)]
     else     : i.cols  = i.columns(lst)
 
-  def columns(lst):
+  def columns(i,lst):
     i.header= lst
     out = [Col(at,pos) for at,pos in enumerate(lst)]
     for col in out:
       if not col.skip:
-        (y if col.goal else x).append(col)
+        (i.y if col.goal else i.x).append(col)
     return out
 
-  def __repr__(i): return ','.join([(Y % col.mid()) for col in i.y])
+  def __repr__(i): 
+    global FMT
+    return ', '.join([(FMT % col.mid()) for col in i.y])
 
   def clone(i,rows=None):
     out=Table()
@@ -193,28 +207,27 @@ class Table(o):
     for row in rows:
       a = row.dist(one,the,cols)
       b = row.dist(two,the,cols)
-      row.div2x = (a**2 + b**2 - c**2)/(2*c)
+      row.div2x = (a**2 + c**2 - b**2)/(2*c +1E-31)
     rows.sort(key=lambda x:x.div2x)
-    mid = len(mid)//2
+    mid = len(rows)//2
     return rows[:mid], rows[mid:]
    
 # ---------------------------
 # ## High-level drivers
-def cluster(tbl,the,cols=None,rows=None,out=None):
-  "Build binary tree on all the data, clustering on x-values"
+# Build binary tree on all the data, clustering on x-values.
+def cluster(tbl,the,cols=None,rows=None,out=[]):
   rows = rows or tbl.rows 
   cols = cols or tbl.x
-  out  = out or []
-  if len(rows)< the.enough*2:
+  if len(rows)< 2*len(tbl.rows)**the.enough:
     out += [tbl.clone(rows)]
   else:
     left,right = tbl.div(the,cols,rows)
-    tbl.cluster(the,cols=cols,rows=left,out=out)
-    tbl.cluster(the,cols=cols,rows=right,out=out)
+    cluster(tbl, the, cols=cols, rows=left,  out=out)
+    cluster(tbl, the, cols=cols, rows=right, out=out)
   return out
 
+# Return most left and most right leaves of binary tree.
 def bestRest(tbl,the,cols=None,rows=None,out=None,path=0):
-  "Return most left and most right leaves of binary tree"
   rows = rows or tbl.rows
   cols = cols or tbl.x
   out  = out or []
@@ -258,6 +271,7 @@ def first(l): return l[0]
 # ## Demos
 class Eg:
   def all(the): 
+    # Main controller  for  the examples.
     funs={name:fun for name,fun in Eg.__dict__.items()
           if len(name)>2 and name[:2]=="eg"}
     if the.Do:
@@ -272,17 +286,62 @@ class Eg:
       [Eg.one(the,fun) for name,fun in funs.items()]
 
   def one(the,fun):
-    global Y
-    Y = the.y
+    # Running one  example.
+    global FMT
+    FMT = the.fmt
     random.seed(the.seed)
     fun(copy.deepcopy(the))
 
-  def egOne(the): 
-    "simple print"
-    print(1)
-  def egTwo(the): 
-    "another simple print"
-    print(2)
+  def egnum(the): 
+    # Simple print.
+    n=Num(inits=[9,2,5,4,12,7,8,11,9,3,7,4,12,5,4,10,9,6,9,4])
+    assert n.mid() == 7, "mu test"
+    assert 3.125 == n.sd(), "sd test"
+
+  def egsym(the): 
+    # Another simple print.
+    s=Sym(inits="aaaabbc")
+    assert s.mode == "a","mode test"
+    assert s.seen["b"] == 2, "count test"
+    assert 1.37 <= s.var() <= 1.38,"ent" 
+
+  def eglines(the):
+    # Read a csv file.
+    n=0
+    for line in lines(the.data):
+      n+=1
+      assert len(line) == 8
+    assert n==399
+
+  def egtbl(the):
+    # Read rows.
+    t= Table().read("data/auto93.csv")
+    assert str(t)      == " 2807.00,    15.50,    20.00"
+    assert t.y[0].lo() == 1613
+    assert t.y[0].hi() == 5140
+
+  def egdist(the):
+    # Checking distant calcs.
+    t= Table().read("data/auto93.csv")
+    for m,row1 in enumerate(t.rows):
+      lst = row1.neighbors(the)
+      assert lst[1][0] < lst[-1][0]
+      if m>100: return
+
+  def egsort(the):
+    # Checking domination
+    t= Table().read("data/auto93.csv")
+    t.rows.sort()
+    for row in t.rows[:5 ]: print(row.ys())
+    print("")
+    for row in t.rows[-5:]: print(row.ys())
+
+  def egdiv(the):
+    t= Table().read("data/auto93.csv")
+    print(len(t.cols))
+    leafs=[]
+    cluster(t, the, out=leafs)
+    for t1 in leafs: print(t1.mid())
 
 # ---------------------------
 # ## Main
