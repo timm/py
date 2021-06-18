@@ -42,16 +42,15 @@
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span><span class="o">,</span><span class="nn">sys</span><span class="o">,</span><span class="nn">copy</span><span class="o">,</span><span class="nn">math</span><span class="o">,</span><span class="nn">random</span>
 
 <span class="n">FMT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%8.2f</span><span class="s2">&quot;</span>
-<span class="n">DEFAULTS</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-           <span class="n">D</span>      <span class="o">=</span> <span class="mi">0</span>
-           <span class="p">,</span><span class="n">Do</span>     <span class="o">=</span> <span class="mi">0</span>
-           <span class="p">,</span><span class="n">data</span>   <span class="o">=</span> <span class="s2">&quot;data/auto93.csv&quot;</span>
-           <span class="p">,</span><span class="n">do</span>     <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
-           <span class="p">,</span><span class="n">enough</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
-           <span class="p">,</span><span class="n">far</span>    <span class="o">=</span> <span class="mi">90</span>
-           <span class="p">,</span><span class="n">fmt</span>    <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%8.2f</span><span class="s2">&quot;</span>
-           <span class="p">,</span><span class="n">p</span>      <span class="o">=</span> <span class="mi">2</span>
-           <span class="p">,</span><span class="n">seed</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+<span class="n">DEFAULTS</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">D</span>      <span class="o">=</span> <span class="mi">0</span>
+             <span class="p">,</span><span class="n">Do</span>     <span class="o">=</span> <span class="mi">0</span>
+             <span class="p">,</span><span class="n">data</span>   <span class="o">=</span> <span class="s2">&quot;data/auto93.csv&quot;</span>
+             <span class="p">,</span><span class="n">do</span>     <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+             <span class="p">,</span><span class="n">enough</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+             <span class="p">,</span><span class="n">far</span>    <span class="o">=</span> <span class="mi">90</span>
+             <span class="p">,</span><span class="n">fmt</span>    <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%8.2f</span><span class="s2">&quot;</span>
+             <span class="p">,</span><span class="n">p</span>      <span class="o">=</span> <span class="mi">2</span>
+             <span class="p">,</span><span class="n">seed</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -710,9 +709,7 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>  <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> 
-    <span class="k">global</span> <span class="n">FMT</span>
-    <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([(</span><span class="n">FMT</span> <span class="o">%</span> <span class="n">col</span><span class="o">.</span><span class="n">mid</span><span class="p">())</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">y</span><span class="p">])</span></pre></div>
+      <div class="highlight"><pre>  <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>  <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">mid</span><span class="p">())</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -720,6 +717,19 @@
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>global FMT
+return &lsquo;, &lsquo;.join([(FMT % z) for z in i.ys()])</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
       </div>
       
     </div>
@@ -732,10 +742,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-51'>
+  <div class='section' id='section-52'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-51'>#</a>
+        <a class='octothorpe' href='#section-52'>#</a>
       </div>
       
     </div>
@@ -756,10 +766,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-52'>
+  <div class='section' id='section-53'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-52'>#</a>
+        <a class='octothorpe' href='#section-53'>#</a>
       </div>
       <hr />
 <h2>High-level drivers</h2>
@@ -770,7 +780,7 @@
   <span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span> <span class="ow">or</span> <span class="n">tbl</span><span class="o">.</span><span class="n">rows</span> 
   <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="ow">or</span> <span class="n">tbl</span><span class="o">.</span><span class="n">x</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span><span class="o">**</span><span class="n">the</span><span class="o">.</span><span class="n">enough</span><span class="p">:</span>
-    <span class="n">out</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tbl</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tbl</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)]</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">left</span><span class="p">,</span><span class="n">right</span> <span class="o">=</span> <span class="n">tbl</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">the</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">rows</span><span class="p">)</span>
     <span class="n">cluster</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">the</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>  <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
@@ -779,10 +789,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-53'>
+  <div class='section' id='section-54'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-53'>#</a>
+        <a class='octothorpe' href='#section-54'>#</a>
       </div>
       <p>Return most left and most right leaves of binary tree.</p>
     </div>
@@ -792,7 +802,7 @@
   <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="ow">or</span> <span class="n">tbl</span><span class="o">.</span><span class="n">x</span>
   <span class="n">out</span>  <span class="o">=</span> <span class="n">out</span> <span class="ow">or</span> <span class="p">[]</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">&lt;</span> <span class="n">the</span><span class="o">.</span><span class="n">enough</span><span class="o">*</span><span class="mi">2</span><span class="p">:</span>
-    <span class="n">out</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tbl</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tbl</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)]</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">left</span><span class="p">,</span><span class="n">right</span> <span class="o">=</span> <span class="n">tbl</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">the</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">rows</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">path</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
@@ -803,17 +813,28 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-54'>
+  <div class='section' id='section-55'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-54'>#</a>
+        <a class='octothorpe' href='#section-55'>#</a>
       </div>
       <hr />
 <h2>Misc utils</h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">help</span><span class="p">):</span>
-  <span class="n">j</span><span class="o">=-</span><span class="mi">1</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">help</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Update <code>d</code> with cli flags (if they match  the keys in <code>d</code>).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">j</span><span class="o">=-</span><span class="mi">1</span>
   <span class="k">while</span> <span class="n">j</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
     <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
     <span class="n">key</span><span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
@@ -830,26 +851,37 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-55'>
+  <div class='section' id='section-57'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-55'>#</a>
+        <a class='octothorpe' href='#section-57'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>  
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="n">f</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>return non-blanks  likes, split on comma.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>  
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
       <span class="n">line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([\n\t\r ]|#.*)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
       <span class="k">if</span> <span class="n">line</span><span class="p">:</span> <span class="k">yield</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-56'>
+  <div class='section' id='section-59'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-56'>#</a>
+        <a class='octothorpe' href='#section-59'>#</a>
       </div>
       
     </div>
@@ -858,10 +890,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-57'>
+  <div class='section' id='section-60'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-57'>#</a>
+        <a class='octothorpe' href='#section-60'>#</a>
       </div>
       <hr />
 <h2>Demos</h2>
@@ -871,10 +903,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-58'>
+  <div class='section' id='section-61'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-58'>#</a>
+        <a class='octothorpe' href='#section-61'>#</a>
       </div>
       
     </div>
@@ -883,10 +915,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-59'>
+  <div class='section' id='section-62'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-59'>#</a>
+        <a class='octothorpe' href='#section-62'>#</a>
       </div>
       <p>Main controller  for  the examples.</p>
     </div>
@@ -906,10 +938,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-60'>
+  <div class='section' id='section-63'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-60'>#</a>
+        <a class='octothorpe' href='#section-63'>#</a>
       </div>
       
     </div>
@@ -918,10 +950,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-61'>
+  <div class='section' id='section-64'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-61'>#</a>
+        <a class='octothorpe' href='#section-64'>#</a>
       </div>
       <p>Running one  example.</p>
     </div>
@@ -933,10 +965,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-62'>
+  <div class='section' id='section-65'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-62'>#</a>
+        <a class='octothorpe' href='#section-65'>#</a>
       </div>
       
     </div>
@@ -945,10 +977,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-63'>
+  <div class='section' id='section-66'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-63'>#</a>
+        <a class='octothorpe' href='#section-66'>#</a>
       </div>
       <p>Simple print.</p>
     </div>
@@ -959,10 +991,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-64'>
+  <div class='section' id='section-67'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-64'>#</a>
+        <a class='octothorpe' href='#section-67'>#</a>
       </div>
       
     </div>
@@ -971,10 +1003,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-65'>
+  <div class='section' id='section-68'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-65'>#</a>
+        <a class='octothorpe' href='#section-68'>#</a>
       </div>
       <p>Another simple print.</p>
     </div>
@@ -986,10 +1018,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-66'>
+  <div class='section' id='section-69'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-66'>#</a>
+        <a class='octothorpe' href='#section-69'>#</a>
       </div>
       
     </div>
@@ -998,10 +1030,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-67'>
+  <div class='section' id='section-70'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-67'>#</a>
+        <a class='octothorpe' href='#section-70'>#</a>
       </div>
       <p>Read a csv file.</p>
     </div>
@@ -1014,10 +1046,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-68'>
+  <div class='section' id='section-71'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-68'>#</a>
+        <a class='octothorpe' href='#section-71'>#</a>
       </div>
       
     </div>
@@ -1026,10 +1058,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-69'>
+  <div class='section' id='section-72'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-69'>#</a>
+        <a class='octothorpe' href='#section-72'>#</a>
       </div>
       <p>Read rows.</p>
     </div>
@@ -1041,10 +1073,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-70'>
+  <div class='section' id='section-73'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-70'>#</a>
+        <a class='octothorpe' href='#section-73'>#</a>
       </div>
       
     </div>
@@ -1053,10 +1085,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-71'>
+  <div class='section' id='section-74'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-71'>#</a>
+        <a class='octothorpe' href='#section-74'>#</a>
       </div>
       <p>Checking distant calcs.</p>
     </div>
@@ -1069,10 +1101,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-72'>
+  <div class='section' id='section-75'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-72'>#</a>
+        <a class='octothorpe' href='#section-75'>#</a>
       </div>
       
     </div>
@@ -1081,10 +1113,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-73'>
+  <div class='section' id='section-76'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-73'>#</a>
+        <a class='octothorpe' href='#section-76'>#</a>
       </div>
       <p>Checking domination</p>
     </div>
@@ -1097,27 +1129,53 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-74'>
+  <div class='section' id='section-77'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-74'>#</a>
+        <a class='octothorpe' href='#section-77'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="k">def</span> <span class="nf">egclone</span><span class="p">(</span><span class="n">the</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;data/auto93.csv&quot;</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">rows</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-78'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-78'>#</a>
       </div>
       
     </div>
     <div class='code'>
       <div class="highlight"><pre>  <span class="k">def</span> <span class="nf">egdiv</span><span class="p">(</span><span class="n">the</span><span class="p">):</span>
-    <span class="n">t</span><span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;data/auto93.csv&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">cols</span><span class="p">))</span>
-    <span class="n">leafs</span><span class="o">=</span><span class="p">[]</span>
-    <span class="n">cluster</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">the</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">leafs</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">leafs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">mid</span><span class="p">())</span></pre></div>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;data/auto93.csv&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">mid</span><span class="p">())</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-75'>
+  <div class='section' id='section-79'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-75'>#</a>
+        <a class='octothorpe' href='#section-79'>#</a>
+      </div>
+      <p>leafs=[]
+cluster(t, the, out=leafs)
+for t1 in leafs: print(t1.mid())</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-80'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-80'>#</a>
       </div>
       <hr />
 <h2>Main</h2>

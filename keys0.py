@@ -27,16 +27,15 @@ INSTALL:
 import re,sys,copy,math,random
 
 FMT="%8.2f"
-DEFAULTS=dict(
-            D      = 0
-           ,Do     = 0
-           ,data   = "data/auto93.csv"
-           ,do     = "all"
-           ,enough = .5
-           ,far    = 90
-           ,fmt    = "%8.2f"
-           ,p      = 2
-           ,seed   = 1)
+DEFAULTS=dict(D      = 0
+             ,Do     = 0
+             ,data   = "data/auto93.csv"
+             ,do     = "all"
+             ,enough = .5
+             ,far    = 90
+             ,fmt    = "%8.2f"
+             ,p      = 2
+             ,seed   = 1)
 
 # ---------------------------------
 # ## Classes
@@ -188,9 +187,9 @@ class Table(o):
         (i.y if col.goal else i.x).append(col)
     return out
 
-  def __repr__(i): 
-    global FMT
-    return ', '.join([(FMT % col.mid()) for col in i.y])
+  def __repr__(i):  return str(i.mid())
+    #global FMT
+    #return ', '.join([(FMT % z) for z in i.ys()])
 
   def clone(i,rows=None):
     out=Table()
@@ -219,7 +218,7 @@ def cluster(tbl,the,cols=None,rows=None,out=[]):
   rows = rows or tbl.rows 
   cols = cols or tbl.x
   if len(rows)< 2*len(tbl.rows)**the.enough:
-    out += [tbl.clone(rows)]
+    out += [tbl.clone(rows=rows)]
   else:
     left,right = tbl.div(the,cols,rows)
     cluster(tbl, the, cols=cols, rows=left,  out=out)
@@ -232,7 +231,7 @@ def bestRest(tbl,the,cols=None,rows=None,out=None,path=0):
   cols = cols or tbl.x
   out  = out or []
   if len(rows)< the.enough*2:
-    out += [tbl.clone(rows)]
+    out += [tbl.clone(rows=rows)]
   else:
     left,right = tbl.div(the,cols,rows)
     if path==0 or path==1:
@@ -244,6 +243,7 @@ def bestRest(tbl,the,cols=None,rows=None,out=None,path=0):
 # ---------------------------
 # ## Misc utils
 def cli(d,help):
+  # Update `d` with cli flags (if they match  the keys in `d`).
   j=-1
   while j<len(sys.argv)-1:
     j+=1
@@ -260,6 +260,7 @@ def cli(d,help):
   return o(**d) 
       
 def lines(f):
+  # return non-blanks  likes, split on comma.
   with open(f) as fp:  
     for line in fp:
       line = re.sub(r'([\n\t\r ]|#.*)', '', line)
@@ -336,14 +337,22 @@ class Eg:
     print("")
     for row in t.rows[-5:]: print(row.ys())
 
+  def egclone(the):
+    t = Table().read("data/auto93.csv")
+    t1 = t.clone(rows = t.rows)
+    print([col.goal for col in t.cols])
+    #print(t1.x)
+    #print(len(t1.rows))
+
   def egdiv(the):
-    t= Table().read("data/auto93.csv")
-    print(len(t.cols))
-    leafs=[]
-    cluster(t, the, out=leafs)
-    for t1 in leafs: print(t1.mid())
+    t = Table().read("data/auto93.csv")
+    print(len(t.y))
+    print(t.ys())
+    #leafs=[]
+    #cluster(t, the, out=leafs)
+    #for t1 in leafs: print(t1.mid())
 
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
-  Eg.all(cli(DEFAULTS,__doc__))
+  Eg.all(cli(DEFAULTS, __doc__))
