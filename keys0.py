@@ -31,8 +31,16 @@ import math
 import random
 
 FMT = "%8.2f"
-DEFAULTS = dict(cohen=.3, D=0, Do=0, data="data/auto93.csv",
-                do="all", enough=.5, far=90, fmt="%8.2f", p=2, seed=1)
+DEFAULTS = dict(cohen=.3,  #
+                D=0,  #
+                Do=0,  #
+                data="data/auto93.csv",  #
+                do="all",  #
+                enough=.5,  #
+                far=90,  #
+                fmt="%8.2f",  #
+                p=2,  #
+                seed=1)
 
 # ---------------------------------
 # ## Classes
