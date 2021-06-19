@@ -1,0 +1,6 @@
+doc() {
+  pycco keys0.py
+  (cd docs; mv keys0.html index.html)
+}
+
+alias gp="git commit -am saving; git push"
