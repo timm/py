@@ -40,14 +40,46 @@ DEFAULTS = dict(cohen=.3,  #
                 far=90,  #
                 fmt="%8.2f",  #
                 p=2,  #
-                seed=1)
+                seed=10013)
+
+"""
+Assumes:
+- Data divides into `x` _independent variables and `y` dependent (a.k.a. goals) variables.
+- All the `y` values are numeric but `x`  values can be numeric or symbolic. There may  even be missing x-values 
+- We  need  to minimize  the number of  probes into the  `y` variables.
+- There can  be multiple goals we need  to minimize and  maximize. Our `Rows.__lt__` method
+  conducts trade-off studies between competing goals using the IDEA continuous domination predicate.
+- The "keys" effect;  i.e. a small number of `x` features control  the rests. 
+  That is, there  there  exists  a  small  number  of  feature ranges that occur with different frequencies in desired
+  and  undesired  outcomes.  Hence,  a  little  random  sampling  is enough to quickly find those keys.
+
+Method: 
+- Randomly  divide  the  data using the Fastmap random projections
+  - Select  distant  points P1, P2 within  the  data.  
+  - Sortthat  pointP1is  better  thanP2(if  exploring182multiple goals, use some domination predicate to rank the183two items). Mark the databest, restdepending on whether184it is closest toP1, P2respectively.1852)Look  for  feature  ranges  with  very  different  frequencies186in   best  andrest.  Divide  numeric  features  into√nsized187ranges. Combine adjacent ranges that have similarbest,rest188frequencies.  Rank  feature  ranges,  favoring  those  that  are189more frequent inbestthanrest. Print the top-ranked range.1903)Recurse.Select   the   data   that   matches   that   top   range191(discarding  the  rest).  If  anything  is  discarded,  loop  back192to step1
+"""
+def keys(tbl, the, out, rows=None):
+  def select(todo, rows):
+    for row in rows:
+      x = row.cells[todo.at]
+      if x != "?" and todo.down <= x <= todo.up:
+        return row
+  rows = rows or tbl.rows
+  best, rest = bestRest(tbl, the, out, cols=tbl.x, rows=rows)
+  tmp = [x for great, dull in zip(best.x, rest.x)
+         for x in great.ranges(dull, the)]
+  todo = first(sorted(tmp, reverse=True, key=lambda z: z.s))
+  out += [todo]
+  rows1 = [row for row in select(todo, rows)]
+  if len(rows1) < len(rows):
+    print(tbl.clone(rows1).ys())
+    keys(tbl, the, out, rows1)
+
 
 # ---------------------------------
 # ## Classes
 # ### Base
 # Base class for everything.
-
-
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
 
@@ -326,23 +358,6 @@ def bestRest(tbl, the, out, cols=None, rows=None, path=0):
       bestRest(tbl, the, out, cols=cols, rows=right, path=2)
   return sorted(out)
 
-
-def keys(tbl, the, out, rows=None):
-  def select(todo, rows):
-    for row in rows:
-      x = row.cells[todo.at]
-      if x != "?" and todo.down <= x <= todo.up:
-        return row
-  rows = rows or tbl.rows
-  best, rest = bestRest(tbl, the, out, cols=tbl.x, rows=rows)
-  tmp = [x for great, dull in zip(best.x, rest.x)
-         for x in great.ranges(dull, the)]
-  todo = first(sorted(tmp, reverse=True, key=lambda z: z.s))
-  out += [todo]
-  rows1 = [row for row in select(todo, rows)]
-  if len(rows1) < len(rows):
-    print(tbl.clone(rows1).ys())
-    keys(tbl, the, out, rows1)
 
 # ------------------------------------------
 # ## Bin
