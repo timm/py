@@ -111,9 +111,10 @@ class Sym(_col):
     return k
 
   def discretize(i, j, _):
-    for k in (i.seen | j.seen):  
-      yield o(n=i.n, m=i.seen.get(k, 0), at=i.at,klass=True, lo=k, hi=k)
-      yield o(n=i.n, m=j.seen.get(k, 0), at=i.at,klass=False, lo=k, hi=k)
+    for k in i.seen:
+      b = i.seen.get(k,0) / i.n
+      r = j.seen.get(k,0) / j.n
+      yield o(s=b**2/(b+r), at=i.at, down=k, up=k)
 
 # ### Num
 # Summarize numeric data.
@@ -152,15 +153,13 @@ class Num(_col):
     return x if x=="?" else min(1,max(0,(x-i.lo())/(i.hi()-i.lo()+1E-32)))
 
   def discretize(i, j, the):
-    xy = [(better, True)  for better in i._all] + [
-          (bad,    False) for bad    in j._all]
-    sd    = (i.sd()*i.n + j.sd()*j.n) / (i.n + j.n)
-    tmp   = cut(xy, sd * the.cohen, len(xy)**the.enough)
-    tmp   = merge(tmp)
-    for bin in tmp:
-      for klass, m in bin.also.seen.items():
-        yield o(n=i.n if klass else  j.n, m=m, at=i.at,  klass=klass, 
-                lo=bin.down, hi=bin.up)
+    xy  = [(better, True)  for better in i._all] + [
+           (bad,    False) for bad    in j._all]
+    sd  = (i.sd()*i.n + j.sd()*j.n) / (i.n + j.n)
+    for bin in merge(cut(xy, sd * the.cohen, len(xy)**the.enough)):
+      b = bin.also.seen.get(True,0)  / i.n
+      r = bin.also.seen.get(False,0) / j.n
+      yield o(s=b**2/(b+r), at=i.at, down=bin.down, up=bin.up)
 
 class Some(_col):
   # `add` up to `max` items (and if full, sometimes replace old items)."
@@ -286,6 +285,25 @@ def bestRest(tbl,the,out, cols=None,rows=None,path=0):
       bestRest(tbl, the,out,cols=cols,rows=right,path=2)
   return sorted(out)
 
+def keys(tbl, the, out,rows=None):
+  def select(todo,rows):
+    for row in rows:
+      x = row.cells[todo.at]
+      if x  != "?" and todo.down <= x <= todo.up:
+        return row
+  rows = rows or tbl.rows
+  best,rest = bestRest(tbl, the, out, cols=tbl.x, rows=rows)
+  tmp = [x for great,dull in zip(best.x,rest.x) 
+             for x in great.discretize(dull,the)]
+  todo  = first(sorted(tmp,reverse=True, key=lambda z:z.s))
+  out  += [todo]
+  rows1 = [row for row in select(todo,rows)]
+  if len(rows1) < len(rows):
+    print(tbl.clone(rows1).ys())
+    keys(tbl, the, out, rows1)
+
+# ------------------------------------------
+# ## Bin
 class Bin(o):
   def __init__(i, down=-math.inf, up=math.inf): 
      i.down, i.up, i.also = down, up, Sym()
@@ -442,13 +460,9 @@ class Eg:
     t = Table().read("data/auto93.csv")
     leafs = []
     best,rest=bestRest(t, the, leafs)
-    print(t.ys(),"<== all")
-    print(best.ys(),"<== best")
-    print(rest.ys(),"<== rest")
-    for great,dull in zip(best.x,rest.x):
-      print("")
-      for x in great.discretize(dull,the):
-        print(x)
+    tmp = [x for great,dull in zip(best.x,rest.x) 
+             for x in great.discretize(dull,the)]
+    print(first(sorted(tmp, key=lambda z:z.s, reverse=True)))
 
 # ---------------------------
 # ## Main
