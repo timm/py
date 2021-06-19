@@ -3,6 +3,10 @@
 To understand this code, and to build something that might be
 better  than it, you need to know:
 
+Fairness: 
+- Why
+- with great power comes  great responsibilty
+
 Cognitive:
 - STM, LTM, ?MRI
 - heuristcs, FFTtrees
