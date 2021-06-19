@@ -8,11 +8,13 @@ Usage: ./keys0.py [OPTIONS]
 
 OPTIONS:
 
+  -b      I     bootstrapping, number of samples
+  -conf   F     bootstrapping, confidence threshold
   -D            dump defaults
   -Do           list all doable things
   -data   FILE  set input file
   -do     S     example to run (and 'all' means run all)
-  -dull    F    threshold of belief for  effect  size
+  -dull    F    cliff's delta threshold of belief
   -enough F     do not divide less than 2*|rows|^F
   -far    P     points are far away if they are over P% distant
   -h            print help
@@ -32,9 +34,13 @@ import math
 import random
 import bisect
 from colored import fore, back, style
+import traceback
 
 FMT = "%8.2f"
+FAILS = 0
 DEFAULTS = dict(cohen=.3,  #
+                b=500, #
+                conf=0.05,  #
                 D=0,  #
                 Do=0,  #
                 data="data/auto93.csv",  #
@@ -62,7 +68,7 @@ Method:
   - Select  distant  points P1, P2 within  the  data.
   - Sortthat  pointP1is  better  thanP2(if  exploring182multiple goals, use some domination predicate to rank the183two items). Mark the databest, restdepending on whether184it is closest toP1, P2respectively.1852)Look  for  feature  ranges  with  very  different  frequencies186in   best  andrest.  Divide  numeric  features  into√nsized187ranges. Combine adjacent ranges that have similarbest,rest188frequencies.  Rank  feature  ranges,  favoring  those  that  are189more frequent inbestthanrest. Print the top-ranked range.1903)Recurse.Select   the   data   that   matches   that   top   range191(discarding  the  rest).  If  anything  is  discarded,  loop  back192to step1
 """
-def keys(tbl, the, out, rows=None):
+def keys0(tbl, the, out=[], rows=None):
   def select(todo, rows):
     for row in rows:
       x = row.cells[todo.at]
@@ -70,14 +76,19 @@ def keys(tbl, the, out, rows=None):
         return row
   rows = rows or tbl.rows
   best, rest = bestRest(tbl, the, out, cols=tbl.x, rows=rows)
-  tmp = [x for great, dull in zip(best.x, rest.x)
+  tmp = [(x.best**2 / (x.best + x.rest))
+         for great, dull in zip(best.x, rest.x)
          for x in great.ranges(dull, the)]
-  todo = first(sorted(tmp, reverse=True, key=lambda z: z.s))
+  return print(sorted(tmp, reverse=True, key=first))
+  return True
+  _, todo = first(sorted(tmp, reverse=True, key=first))
+  print(todo)
   out += [todo]
   rows1 = [row for row in select(todo, rows)]
   if len(rows1) < len(rows):
     print(tbl.clone(rows1).ys())
-    keys(tbl, the, out, rows1)
+    keys0(tbl, the, out, rows1)
+  return out
 
 # ---------------------------------
 # ## Classes
@@ -160,7 +171,7 @@ class Sym(_col):
     for k in i.seen:
       b = i.seen.get(k, 0) / i.n
       r = j.seen.get(k, 0) / j.n
-      yield o(s=b**2 / (b + r), at=i.at, down=k, up=k)
+      yield o(best=b, rest=r, at=i.at, down=k, up=k)
 
 # ### Num
 # Summarize numeric data.
@@ -212,8 +223,12 @@ class Num(_col):
     for bin in discretize(xy, sd * the.cohen, len(xy)**the.enough):
       b = bin.also.seen.get(True, 0) / i.n
       r = bin.also.seen.get(False, 0) / j.n
-      yield o(s=b**2 / (b + r), at=i.at, down=bin.down, up=bin.up)
+      yield o(best=b, rest=r, at=i.at, down=bin.down, up=bin.up)
 
+  def same(i, j, the):
+    lst1, lst2 = i.all(), j.all()
+    return cliffsDelta1(lst1, lst2, the.dull) and \
+        bootstrap(lst1, lst2, the.conf, the.b)
 
 class Some(_col):
   # `add` up to `max` items (and if full, sometimes replace old items)."
@@ -271,8 +286,9 @@ class Row(o):
 
 # ### Table
 class Table(o):
-  def __init__(i): i.rows, i.header, i.cols, i.x, i.y = [
-  ], [], [], [], []
+  def __init__(i, inits=[]):
+    i.rows, i.header, i.cols, i.x, i.y = [], [], [], [], []
+    [i.add(row) for row in inits]
   def __lt__(i, j): return Row(i, i.mid()) < Row(i, j.mid())
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
@@ -297,15 +313,11 @@ class Table(o):
         (i.y if col.goal else i.x).append(col)
     return out
 
-  def __repr__(i): return str(i.mid())
-  # global FMT
-  # return ', '.join([(FMT % z) for z in i.ys()])
+  def __repr__(i):
+    global FMT
+    return ', '.join([(FMT % z) for z in i.ys()])
 
-  def clone(i, rows=None):
-    out = Table()
-    out.add(i.header)
-    [out.add(row) for row in rows or []]
-    return out
+  def clone(i, rows=[]): return Table([i.header] + rows)
 
   def div(i, the, cols=None, rows=None):
     rows = rows or i.rows
@@ -418,6 +430,9 @@ def lines(f):
 
 def first(l): return l[0]
 
+def red(x): return fore.RED + style.BOLD + x + style.RESET
+def green(x): return fore.GREEN + style.BOLD + x + style.RESET
+
 def cliffsDelta(a1, a2, dull=None):
   # Returns true if there are more than 'dull' difference.
   return cliffsDelta1(a1, sorted(a2), dull=dull)
@@ -429,12 +444,51 @@ def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
     gt += n2 - bisect.bisect_right(a2, x)
   return abs(lt - gt) / (n1 * n2) <= dull
 
+def bootstrap(y0, z0, conf=0.05, b=500):
+  def one(lst): return lst[int(any(len(lst)))]
+  def any(n): return random.uniform(0, n)
+
+  class Sum():
+    def __init__(i, some=[]):
+      i.sum, i.n, i.mu, i.all = 0, 0, 0, []
+      [i.put(one) for one in some]
+
+    def put(i, x):
+      i.all.append(x)
+      i.sum += x
+      i.n += 1
+      i.mu = float(i.sum) / i.n
+
+    def __add__(i1, i2): return Sum(i1.all + i2.all)
+
+  def testStatistic(y, z):
+    tmp1 = tmp2 = 0
+    for y1 in y.all:
+      tmp1 += (y1 - y.mu)**2
+    for z1 in z.all:
+      tmp2 += (z1 - z.mu)**2
+    s1 = float(tmp1) / (y.n - 1)
+    s2 = float(tmp2) / (z.n - 1)
+    delta = z.mu - y.mu
+    if s1 + s2:
+      delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
+    return delta
+
+  y, z = Sum(y0), Sum(z0)
+  x = y + z
+  baseline = testStatistic(y, z)
+  yhat = [y1 - y.mu + x.mu for y1 in y.all]
+  zhat = [z1 - z.mu + x.mu for z1 in z.all]
+  bigger = 0
+  for i in range(b):
+    if testStatistic(Sum([one(yhat) for _ in yhat]),
+                     Sum([one(zhat) for _ in zhat])) > baseline:
+      bigger += 1
+  return bigger / b >= conf
+
 # ---------------------------
 # ## Demos
 class Eg:
-  no = fore.RED + style.BOLD + "✖" + style.RESET
-  yes = fore.GREEN + style.BOLD + "✔" + style.RESET
-
   def all(the):
     # Main controller  for  the examples.
     funs = {name: fun for name, fun in Eg.__dict__.items()
@@ -459,14 +513,17 @@ class Eg:
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(fore.LIGHT_GRAY + style.BOLD +
-            fun.__name__ + style.RESET + " " + Eg.no)
+      print(green("✔"), fun.__name__)
     except:
-      print(fore.LIGHT_GRAY + style.BOLD +
-            fun.__name__ + style.RESET + " " + Eg.yes)
+      global FAILS
+      FAILS += 1
+      traceback.print_exc()
+      print(green("✖"), fun.__name__)
+
+  def egfails(the):
+    assert False, "checking failure behaviour"
 
   def egnum(the):
-
     # Simple print.
     n = Num(inits=[9, 2, 5, 4, 12, 7, 8, 11, 9,
                    3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4])
@@ -474,86 +531,96 @@ class Eg:
     assert 3.125 == n.sd(), "sd test"
 
   def egsym(the):
-      # Another simple print.
-      s = Sym(inits="aaaabbc")
-      assert s.mode == "a", "mode test"
-      assert s.seen["b"] == 2, "count test"
-      assert 1.37 <= s.var() <= 1.38, "ent"
+    # Another simple print.
+    s = Sym(inits="aaaabbc")
+    assert s.mode == "a", "mode test"
+    assert s.seen["b"] == 2, "count test"
+    assert 1.37 <= s.var() <= 1.38, "ent"
 
   def eglines(the):
-      # Read a csv file.
-      n = 0
-      for line in lines(the.data):
-        n += 1
-        assert len(line) == 8
-      assert n == 399
+    # Read a csv file.
+    n = 0
+    for line in lines(the.data):
+      n += 1
+      assert len(line) == 8
+    assert n == 399
 
-    def egtbl(the):
-      # Read rows.
-      t = Table().read("data/auto93.csv")
-      assert str(t) == " 2807.00,    15.50,    20.00"
-      assert t.y[0].lo() == 1613
-      assert t.y[0].hi() == 5140
+  def egtbl(the):
+    # Read rows.
+    t = Table().read("data/auto93.csv")
+    want = " 2807.00,    15.50,    20.00"
+    assert str(t) == want
+    assert t.y[0].lo() == 1613
+    assert t.y[0].hi() == 5140
 
-    def egdist(the):
-      # Checking distant calcs.
-      t = Table().read("data/auto93.csv")
-      for m, row1 in enumerate(t.rows):
-        lst = row1.neighbors(the)
-        assert lst[1][0] < lst[-1][0]
-        if m > 100:
-          return
+  def egdist(the):
+    # Checking distant calcs.
+    t = Table().read("data/auto93.csv")
+    for m, row1 in enumerate(t.rows):
+      lst = row1.neighbors(the)
+      assert lst[1][0] < lst[-1][0]
+      if m > 100:
+        return
 
-    def egsort(the):
-      # Checking domination
-      t = Table().read("data/auto93.csv")
-      t.rows.sort()
-      for row in t.rows[:5]:
-        print(row.ys())
-      print("")
-      for row in t.rows[-5:]:
-        print(row.ys())
+  def egsort(the):
+    # Checking domination
+    t = Table().read("data/auto93.csv")
+    t.rows.sort()
+    for row in t.rows[:5]:
+      print("\t", row.ys())
+    print("")
+    for row in t.rows[-5:]:
+      print("\t".row.ys())
 
-    def egclone(the):
-      t = Table().read("data/auto93.csv")
-      t1 = t.clone(rows=t.rows)
-      assert [x for x in t.ys()] == [x for x in t1.ys()]
+  def egclone(the):
+    t = Table().read("data/auto93.csv")
+    t1 = t.clone(rows=t.rows)
+    assert [x for x in t.ys()] == [x for x in t1.ys()]
 
-    def egdiv(the):
-      t = Table().read("data/auto93.csv")
-      leafs = []
-      cluster(t, the, leafs)
-      for t1 in sorted(leafs):
-        print(len(t1.rows), t1.ys())
+  def egdiv(the):
+    t = Table().read("data/auto93.csv")
+    leafs = []
+    cluster(t, the, leafs)
+    for t1 in sorted(leafs):
+      print("\t", len(t1.rows), t1.ys())
 
-    def egbestRest(the):
-      t = Table().read("data/auto93.csv")
-      leafs = []
-      bestRest(t, the, leafs)
-      for t1 in leafs:
-        print(len(t1.rows), t1.ys())
+  def egbestRest(the):
+    t = Table().read("data/auto93.csv")
+    leafs = []
+    bestRest(t, the, leafs)
+    for t1 in leafs:
+      print("\t", len(t1.rows), t1.ys())
 
-    def egdiscrete1(the):
-      t = Table().read("data/auto93.csv")
-      leafs = []
-      best, rest = bestRest(t, the, leafs)
-      tmp = [x for great, dull in zip(best.x, rest.x)
-             for x in great.ranges(dull, the)]
-      tmp.sort(key=lambda z: z.s)
-      print('\n'.join([str(x) for x in tmp]))
-      print(first(sorted(tmp, key=lambda z: z.s, reverse=True)))
+  def egdiscrete1(the):
+    t = Table().read("data/auto93.csv")
+    leafs = []
+    best, rest = bestRest(t, the, leafs)
+    tmp = [(x.best**2 / (x.best + x.rest), x)
+           for great, dull in zip(best.x, rest.x)
+           for x in great.ranges(dull, the)]
+    tmp.sort(key=first)
+    print("\t" + '\n\t'.join([str(x) for x in tmp]))
 
-    def egcliffs(the):
-      a = [random.random()**2 for _ in range(10**4)]
-      k = 1
-      while k < 1.5:
-        b = [x * k for x in a]
-        print(Eg.yes if cliffsDelta(a, b, the.dull) else Eg.no,
-              f"{k:5.3f}")
-        k *= 1.03
+  def egcliffs(the):
+    k, n = 1, 30
+    a = [random.random() for _ in range(n)]
+    while k < 1.5:
+      k *= 1.03
+      b = [x * k for x in a]
+      cf = cliffsDelta(a, b, the.dull)
+      bs = bootstrap(a, b, the.conf, the.b)
+      print("\t", green("✔") if cf else red("✖"),
+            green("✔") if bs else red("✖"),
+            n,
+            f"{k:5.3f}")
+
+  def egkeys0(the):
+    t = Table().read("data/auto93.csv")
+    keys0(t, the)
 
 
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
   Eg.all(cli(DEFAULTS, __doc__))
+  sys.exit(1 if FAILS > 1 else 0)
