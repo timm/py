@@ -594,7 +594,7 @@ class yardstick:
   def eglines(the):
     # Read a csv file.
     n = 0
-    for line in lines(the.data):
+    for line in Lib.lines(the.data):
       n += 1
       assert len(line) == 8
     assert n == 399
@@ -624,7 +624,8 @@ class yardstick:
       print("\t", row.ys())
     print("")
     for row in t.rows[-5:]:
-      print("\t".row.ys())
+      print("\t", row.ys())
+    print("enough", the.enough)
 
   def egclone(the):
     t = Table().read(the.data)
