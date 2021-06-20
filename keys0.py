@@ -1,11 +1,11 @@
 #!/usr/bin/env python3.9
 # vim: filetype=python ts=2 sw=2 sts=2 et :
 """
-Keys: baseline keys-based stochastic explainer/controller
-"If you can really explain 'it', then you can control 'it'."
-(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org
-
-Usage: ./keys [OPTIONS]
+Keys0: baseline keys-based stochastic explainer/controller    
+"If you can really explain 'it', then you can control 'it'."    
+(c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org    
+    
+Usage: ./keys0.py [OPTIONS]
 
 OPTIONS:
 
@@ -16,7 +16,7 @@ OPTIONS:
   -Do           list all doable things
   -data   FILE  set input file
   -do     S     what to run (and `all` means run all)
-  -dull   F     cliff's delta threshold of belief
+  -dull   F     cliff delta threshold of belief
   -enough F     do not divide less than 2*|rows|^F
   -far    P     far  things are more than P% distant
   -goal   I     0=optimize, 1=monitor, 2=safer
@@ -38,21 +38,21 @@ import bisect
 from colored import fore, back, style
 import traceback
 
-FMT = "%8.2f"
-FAILS = 0
-DEFAULTS = dict(cohen=.35,  #
-                b=500, #
-                conf=0.05,  #
-                D=0,  #
-                Do=0,  #
-                data="data/auto93.csv",  #
-                do="all",  #
-                dull=.147, #
-                enough=.5,  #
-                far=90,  #
-                fmt="%8.2f",  #
-                p=2,  #
-                seed=10013)
+_FMT = "%8.2f"
+_FAILS = 0
+_DEFAULTS = dict(cohen=.35,  #
+                 b=500, #
+                 conf=0.05,  #
+                 D=0,  #
+                 Do=0,  #
+                 data="data/auto93.csv",  #
+                 do="all",  #
+                 dull=.147, #
+                 enough=.5,  #
+                 far=90,  #
+                 fmt="%8.2f",  #
+                 p=2,  #
+                 seed=10013)
 
 """
 Assumes:
@@ -84,7 +84,7 @@ Method:
 
 """
 
-def keys(tbl, the, cols=None, goal=0):
+def keys0(tbl, the, cols=None, goal=0):
   def optimize(b, r): return b**2 / (b + r)
   def monitor(b, r): return r**2 / (b + r)
   def safer(b, r): return 1 / (b + r)
@@ -144,7 +144,7 @@ def Col(at, txt):
   return what(at, txt)
 
 # Abstract super class for column summaries.
-class _col(o):
+class Column(o):
   def __init__(i, at=0, txt="", inits=[]):
     i.at, i.txt, i.n = at, txt, 0
     i.w = -1 if "-" in txt else 1
@@ -161,12 +161,12 @@ class _col(o):
 # ### Skip
 # Black hole. Used for ignoring a column of data.
 
-class Skip(_col):
+class Skip(Column):
   pass
 
 # ### Sym
 # Summarize symbolic data.
-class Sym(_col):
+class Sym(Column):
   def __init__(i, *l, **kw):
     i.seen, i.most, i.mode = {}, 0, None
     super().__init__(*l, **kw)
@@ -210,7 +210,7 @@ class Sym(_col):
 
 # ### Num
 # Summarize numeric data.
-class Num(_col):
+class Num(Column):
   def __init__(i, *l, **k):
     i._all, i.ready = [], True
     super().__init__(*l, **k)
@@ -266,14 +266,14 @@ class Num(_col):
         bootstrap(lst1, lst2, the.conf, the.b)
 
   def unlike(i, j, the):
-    d = the.cohen / 3
+    d = the.cohen / 3 # normal stops at 3 sd
     x = i.per(.5 + d) - i.per(.5)
     y = i.per(.5) - i.per(.5 - d)
-    z = (x + y) / 2
+    z = (x + y) / 2 # man different here to cohen*sd
     delta = abs(i.per(.5) - j.per(.5))
     return delta > z
 
-class Some(_col):
+class Some(Column):
   # `add` up to `max` items (and if full, sometimes replace old items)."
   # Not  currently used but if reasoning over large data, can be useful.
   def __init__(i, *l, keep=1024, **kw):
@@ -363,8 +363,8 @@ class Table(o):
     return out
 
   def __repr__(i):
-    global FMT
-    return ', '.join([(FMT % z) for z in i.ys()])
+    global _FMT
+    return ', '.join([(_FMT % z) for z in i.ys()])
 
   def clone(i, rows=[]): return Table([i.header] + rows)
 
@@ -542,15 +542,15 @@ def bootstrap(y0, z0, conf=0.05, b=500):
 
 # ---------------------------
 # ## Demos
-class Yardstick:
+class yardstick:
   def all(the):
     # Main controller  for  the examples.
-    funs = {name: fun for name, fun in Yardstick.__dict__.items()
+    funs = {name: fun for name, fun in yardstick.__dict__.items()
             if len(name) > 2 and name[:2] == "eg"}
     if the.Do:
       for name, fun in funs.items():
         doc = ("\t: " + fun.__doc__) if fun.__doc__ else ""
-        print(f"./keys -do {name[2:]}{doc}")
+        print(f"./keys0.py -do {name[2:]}{doc}")
       sys.exit()
     elif the.D:
       for k, v in the.__dict__.items():
@@ -559,19 +559,19 @@ class Yardstick:
     else:
       funs = funs if the.do == "all" else {
           the.do: funs["eg" + the.do]}
-      [Yardstick.one(the, fun) for name, fun in funs.items()]
+      [yardstick.one(the, fun) for name, fun in funs.items()]
 
   def one(the, fun):
     # Running one  example.
-    global FMT
-    FMT = the.fmt
+    global _FMT
+    _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
       print(green("✔"), fun.__name__)
     except:
-      global FAILS
-      FAILS += 1
+      global _FAILS
+      _FAILS += 1
       traceback.print_exc()
       print(red("✖"), fun.__name__)
 
@@ -654,11 +654,11 @@ class Yardstick:
 
   def egstats(the):
     "compare bootstrap to effect size"
-    n = 100
+    n = 30
     a = [random.random() for _ in range(n)]
-    print("\tcf bs ets cd  n   k")
-    for k in range(100,150,5):
-      k = k/100
+    print("\tcf bs ets cd  n    k")
+    k = 1
+    while k < 1.5:
       b = [x * k for x in a]
       cf = cliffsDelta(a, b, the.dull)
       bs = bootstrap(a, b, the.conf, the.b)
@@ -671,16 +671,17 @@ class Yardstick:
             green(" ✔ ") if ets else red(" ✖ "),
             green("✔ ") if cd else red("✖ "),
             n,
-            f"{k:5.3f}")
+            f"{k:5.2f}")
+      k += 0.025
 
-  def egkeys(the):
+  def egkeys0(the):
     t = Table().read(the.data)
-    for x in keys(t, the):
+    for x in keys0(t, the):
       print(x)
 
 
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
-  Yardstick.all(cli(DEFAULTS, __doc__))
-  sys.exit(1 if FAILS > 1 else 0)
+  yardstick.all(cli(_DEFAULTS, __doc__))
+  sys.exit(1 if _FAILS > 1 else 0)

@@ -1,8 +1,13 @@
+#!/usr/bin/env bash
+# vim: ts=2 sw=2 sts=2 et :
+
+Ell="$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )"
+
 doc() {
-  cp keys  keys.py
-  pdoc3 -f --html  -o docs  keys.py
-  rm keys.py
-  (cd docs; mv keys.html index.html)
+  (cd $Ell
+  pdoc3 -o $Ell/docs -f --html $Ell/keys0.py
+  mv $Ell/docs/keys0.html $Ell/docs/index.html)
 }
 
 alias gp="git commit -am saving; git push"
+alias keys="python3.9 $Ell/keys0.py "

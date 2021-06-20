@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>keys API documentation</title>
-<meta name="description" content="Keys: baseline keys-based stochastic explainer/controller
+<title>keys0 API documentation</title>
+<meta name="description" content="Keys0: baseline keys-based stochastic explainer/controller
 &#34;If you can really explain &#39;it&#39;, then you can control &#39;it&#39;.&#34;
 (c) 2021 Tim Menzies …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -21,13 +21,16 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>keys</code></h1>
+<h1 class="title">Module <code>keys0</code></h1>
 </header>
 <section id="section-intro">
-<p>Keys: baseline keys-based stochastic explainer/controller
+<p>Keys0: baseline keys-based stochastic explainer/controller
+<br>
 "If you can really explain 'it', then you can control 'it'."
-(c) 2021 Tim Menzies <timm.ieee.org>, <a href="https://unlicense.org">https://unlicense.org</a></p>
-<p>Usage: ./keys [OPTIONS]</p>
+<br>
+(c) 2021 Tim Menzies <timm.ieee.org>, <a href="https://unlicense.org">https://unlicense.org</a>
+</p>
+<p>Usage: ./keys0.py [OPTIONS]</p>
 <p>OPTIONS:</p>
 <pre><code>  -b      I     bootstrapping, number of samples
   -conf   F     bootstrapping, confidence threshold
@@ -35,7 +38,7 @@
   -Do           list all doable things
   -data   FILE  set input file
   -do     S     what to run (and `all` means run all)
-  -dull   F     cliff's delta threshold of belief
+  -dull   F     cliff delta threshold of belief
   -enough F     do not divide less than 2*|rows|^F
   -far    P     far  things are more than P% distant
   -goal   I     0=optimize, 1=monitor, 2=safer
@@ -54,11 +57,11 @@ more information, see
 <pre><code class="python">#!/usr/bin/env python3.9
 # vim: filetype=python ts=2 sw=2 sts=2 et :
 &#34;&#34;&#34;
-Keys: baseline keys-based stochastic explainer/controller
-&#34;If you can really explain &#39;it&#39;, then you can control &#39;it&#39;.&#34;
-(c) 2021 Tim Menzies &lt;timm.ieee.org&gt;, https://unlicense.org
-
-Usage: ./keys [OPTIONS]
+Keys0: baseline keys-based stochastic explainer/controller    
+&#34;If you can really explain &#39;it&#39;, then you can control &#39;it&#39;.&#34;    
+(c) 2021 Tim Menzies &lt;timm.ieee.org&gt;, https://unlicense.org    
+    
+Usage: ./keys0.py [OPTIONS]
 
 OPTIONS:
 
@@ -69,7 +72,7 @@ OPTIONS:
   -Do           list all doable things
   -data   FILE  set input file
   -do     S     what to run (and `all` means run all)
-  -dull   F     cliff&#39;s delta threshold of belief
+  -dull   F     cliff delta threshold of belief
   -enough F     do not divide less than 2*|rows|^F
   -far    P     far  things are more than P% distant
   -goal   I     0=optimize, 1=monitor, 2=safer
@@ -91,21 +94,21 @@ import bisect
 from colored import fore, back, style
 import traceback
 
-FMT = &#34;%8.2f&#34;
-FAILS = 0
-DEFAULTS = dict(cohen=.35,  #
-                b=500, #
-                conf=0.05,  #
-                D=0,  #
-                Do=0,  #
-                data=&#34;data/auto93.csv&#34;,  #
-                do=&#34;all&#34;,  #
-                dull=.147, #
-                enough=.5,  #
-                far=90,  #
-                fmt=&#34;%8.2f&#34;,  #
-                p=2,  #
-                seed=10013)
+_FMT = &#34;%8.2f&#34;
+_FAILS = 0
+_DEFAULTS = dict(cohen=.35,  #
+                 b=500, #
+                 conf=0.05,  #
+                 D=0,  #
+                 Do=0,  #
+                 data=&#34;data/auto93.csv&#34;,  #
+                 do=&#34;all&#34;,  #
+                 dull=.147, #
+                 enough=.5,  #
+                 far=90,  #
+                 fmt=&#34;%8.2f&#34;,  #
+                 p=2,  #
+                 seed=10013)
 
 &#34;&#34;&#34;
 Assumes:
@@ -137,7 +140,7 @@ Method:
 
 &#34;&#34;&#34;
 
-def keys(tbl, the, cols=None, goal=0):
+def keys0(tbl, the, cols=None, goal=0):
   def optimize(b, r): return b**2 / (b + r)
   def monitor(b, r): return r**2 / (b + r)
   def safer(b, r): return 1 / (b + r)
@@ -197,7 +200,7 @@ def Col(at, txt):
   return what(at, txt)
 
 # Abstract super class for column summaries.
-class _col(o):
+class Column(o):
   def __init__(i, at=0, txt=&#34;&#34;, inits=[]):
     i.at, i.txt, i.n = at, txt, 0
     i.w = -1 if &#34;-&#34; in txt else 1
@@ -214,12 +217,12 @@ class _col(o):
 # ### Skip
 # Black hole. Used for ignoring a column of data.
 
-class Skip(_col):
+class Skip(Column):
   pass
 
 # ### Sym
 # Summarize symbolic data.
-class Sym(_col):
+class Sym(Column):
   def __init__(i, *l, **kw):
     i.seen, i.most, i.mode = {}, 0, None
     super().__init__(*l, **kw)
@@ -263,7 +266,7 @@ class Sym(_col):
 
 # ### Num
 # Summarize numeric data.
-class Num(_col):
+class Num(Column):
   def __init__(i, *l, **k):
     i._all, i.ready = [], True
     super().__init__(*l, **k)
@@ -326,7 +329,7 @@ class Num(_col):
     delta = abs(i.per(.5) - j.per(.5))
     return delta &gt; z
 
-class Some(_col):
+class Some(Column):
   # `add` up to `max` items (and if full, sometimes replace old items).&#34;
   # Not  currently used but if reasoning over large data, can be useful.
   def __init__(i, *l, keep=1024, **kw):
@@ -416,8 +419,8 @@ class Table(o):
     return out
 
   def __repr__(i):
-    global FMT
-    return &#39;, &#39;.join([(FMT % z) for z in i.ys()])
+    global _FMT
+    return &#39;, &#39;.join([(_FMT % z) for z in i.ys()])
 
   def clone(i, rows=[]): return Table([i.header] + rows)
 
@@ -595,15 +598,15 @@ def bootstrap(y0, z0, conf=0.05, b=500):
 
 # ---------------------------
 # ## Demos
-class Yardstick:
+class yardstick:
   def all(the):
     # Main controller  for  the examples.
-    funs = {name: fun for name, fun in Yardstick.__dict__.items()
+    funs = {name: fun for name, fun in yardstick.__dict__.items()
             if len(name) &gt; 2 and name[:2] == &#34;eg&#34;}
     if the.Do:
       for name, fun in funs.items():
         doc = (&#34;\t: &#34; + fun.__doc__) if fun.__doc__ else &#34;&#34;
-        print(f&#34;./keys -do {name[2:]}{doc}&#34;)
+        print(f&#34;./keys0.py -do {name[2:]}{doc}&#34;)
       sys.exit()
     elif the.D:
       for k, v in the.__dict__.items():
@@ -612,19 +615,19 @@ class Yardstick:
     else:
       funs = funs if the.do == &#34;all&#34; else {
           the.do: funs[&#34;eg&#34; + the.do]}
-      [Yardstick.one(the, fun) for name, fun in funs.items()]
+      [yardstick.one(the, fun) for name, fun in funs.items()]
 
   def one(the, fun):
     # Running one  example.
-    global FMT
-    FMT = the.fmt
+    global _FMT
+    _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
       print(green(&#34;✔&#34;), fun.__name__)
     except:
-      global FAILS
-      FAILS += 1
+      global _FAILS
+      _FAILS += 1
       traceback.print_exc()
       print(red(&#34;✖&#34;), fun.__name__)
 
@@ -710,8 +713,8 @@ class Yardstick:
     n = 100
     a = [random.random() for _ in range(n)]
     print(&#34;\tcf bs ets cd  n   k&#34;)
-    for k in range(100,150,5):
-      k = k/100
+    for k in range(100, 150, 5):
+      k = k / 100
       b = [x * k for x in a]
       cf = cliffsDelta(a, b, the.dull)
       bs = bootstrap(a, b, the.conf, the.b)
@@ -726,129 +729,27 @@ class Yardstick:
             n,
             f&#34;{k:5.3f}&#34;)
 
-  def egkeys(the):
+  def egkeys0(the):
     t = Table().read(the.data)
-    for x in keys(t, the):
+    for x in keys0(t, the):
       print(x)
 
 
 # ---------------------------
 # ## Main
 if __name__ == &#34;__main__&#34;:
-  Yardstick.all(cli(DEFAULTS, __doc__))
-  sys.exit(1 if FAILS &gt; 1 else 0)</code></pre>
+  yardstick.all(cli(_DEFAULTS, __doc__))
+  sys.exit(1 if _FAILS &gt; 1 else 0)</code></pre>
 </details>
 </section>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-variables">Global variables</h2>
-<dl>
-<dt id="keys.DEFAULTS"><code class="name">var <span class="ident">DEFAULTS</span></code></dt>
-<dd>
-<div class="desc"><p>Assumes:</p>
-<ul>
-<li>Data divides into <code>x</code> _independent variables
-and <code>y</code> dependent (a.k.a. goals) variables.</li>
-<li>All the <code>y</code> values are numeric but <code>x</code>
-values can be numeric or symbolic.
-There may
-even be missing x-values</li>
-<li>We
-need
-to minimize
-the number of
-probes into the
-<code>y</code> variables.</li>
-<li>There can
-be multiple goals we need
-to
-minimize and
-maximize. Our <code>Rows.__lt__</code> method
-conducts trade-off studies between competing
-goals using the IDEA continuous domination predicate.</li>
-<li>The "keys" effect;
-i.e. a small number of <code>x</code>
-features control
-the rests.
-That is, there
-there
-exists
-a
-small
-number
-of
-feature ranges that occur with unlike
-frequencies in desired
-and
-undesired
-outcomes.
-Hence,
-a
-little
-random
-sampling
-is enough to quickly find those keys.</li>
-</ul>
-<p>Method:</p>
-<ul>
-<li>Randomly
-divide
-the
-data using the Fastmap random projections</li>
-<li>Select
-distant
-points P1, P2 within
-the
-data.</li>
-<li>Sortthat
-pointP1is
-better
-thanP2(if
-exploring182multiple goals, use some domination predicate to rank the183two items). Mark the databest, restdepending on whether184it is closest toP1, P2respectively.1852)Look
-for
-feature
-ranges
-with
-very
-unlike
-frequencies186in
-best
-andrest.
-Divide
-numeric
-features
-into√nsized187ranges. Combine adjacent ranges that have similarbest,rest188frequencies.
-Rank
-feature
-ranges,
-favoring
-those
-that
-are189more frequent inbestthanrest. Print the top-ranked range.1903)Recurse.Select
-the
-data
-that
-matches
-that
-top
-range191(discarding
-the
-rest).
-If
-anything
-is
-discarded,
-loop
-back192to step1</li>
-</ul></div>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="keys.Col"><code class="name flex">
+<dt id="keys0.Col"><code class="name flex">
 <span>def <span class="ident">Col</span></span>(<span>at, txt)</span>
 </code></dt>
 <dd>
@@ -863,7 +764,7 @@ back192to step1</li>
   return what(at, txt)</code></pre>
 </details>
 </dd>
-<dt id="keys.bestRest"><code class="name flex">
+<dt id="keys0.bestRest"><code class="name flex">
 <span>def <span class="ident">bestRest</span></span>(<span>tbl, the, cols=None)</span>
 </code></dt>
 <dd>
@@ -888,7 +789,7 @@ back192to step1</li>
   return sorted(out)</code></pre>
 </details>
 </dd>
-<dt id="keys.bootstrap"><code class="name flex">
+<dt id="keys0.bootstrap"><code class="name flex">
 <span>def <span class="ident">bootstrap</span></span>(<span>y0, z0, conf=0.05, b=500)</span>
 </code></dt>
 <dd>
@@ -940,7 +841,7 @@ back192to step1</li>
   return bigger / b &gt;= conf</code></pre>
 </details>
 </dd>
-<dt id="keys.cli"><code class="name flex">
+<dt id="keys0.cli"><code class="name flex">
 <span>def <span class="ident">cli</span></span>(<span>d, help)</span>
 </code></dt>
 <dd>
@@ -971,7 +872,7 @@ back192to step1</li>
   return o(**d)</code></pre>
 </details>
 </dd>
-<dt id="keys.cliffsDelta"><code class="name flex">
+<dt id="keys0.cliffsDelta"><code class="name flex">
 <span>def <span class="ident">cliffsDelta</span></span>(<span>a1, a2, dull=None)</span>
 </code></dt>
 <dd>
@@ -985,7 +886,7 @@ back192to step1</li>
   return cliffsDelta1(a1, sorted(a2), dull=dull)</code></pre>
 </details>
 </dd>
-<dt id="keys.cliffsDelta1"><code class="name flex">
+<dt id="keys0.cliffsDelta1"><code class="name flex">
 <span>def <span class="ident">cliffsDelta1</span></span>(<span>a1, a2, dull=0.147)</span>
 </code></dt>
 <dd>
@@ -1002,7 +903,7 @@ back192to step1</li>
   return abs(lt - gt) / (n1 * n2) &lt;= dull</code></pre>
 </details>
 </dd>
-<dt id="keys.cluster"><code class="name flex">
+<dt id="keys0.cluster"><code class="name flex">
 <span>def <span class="ident">cluster</span></span>(<span>tbl, the, cols=None)</span>
 </code></dt>
 <dd>
@@ -1025,7 +926,7 @@ back192to step1</li>
   return out</code></pre>
 </details>
 </dd>
-<dt id="keys.discretize"><code class="name flex">
+<dt id="keys0.discretize"><code class="name flex">
 <span>def <span class="ident">discretize</span></span>(<span>xy, epsilon, width)</span>
 </code></dt>
 <dd>
@@ -1072,7 +973,7 @@ back192to step1</li>
   return merge(out)</code></pre>
 </details>
 </dd>
-<dt id="keys.first"><code class="name flex">
+<dt id="keys0.first"><code class="name flex">
 <span>def <span class="ident">first</span></span>(<span>l)</span>
 </code></dt>
 <dd>
@@ -1084,7 +985,7 @@ back192to step1</li>
 <pre><code class="python">def first(l): return l[0]</code></pre>
 </details>
 </dd>
-<dt id="keys.green"><code class="name flex">
+<dt id="keys0.green"><code class="name flex">
 <span>def <span class="ident">green</span></span>(<span>x)</span>
 </code></dt>
 <dd>
@@ -1096,8 +997,8 @@ back192to step1</li>
 <pre><code class="python">def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
 </details>
 </dd>
-<dt id="keys.keys"><code class="name flex">
-<span>def <span class="ident">keys</span></span>(<span>tbl, the, cols=None, goal=0)</span>
+<dt id="keys0.keys0"><code class="name flex">
+<span>def <span class="ident">keys0</span></span>(<span>tbl, the, cols=None, goal=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1105,7 +1006,7 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def keys(tbl, the, cols=None, goal=0):
+<pre><code class="python">def keys0(tbl, the, cols=None, goal=0):
   def optimize(b, r): return b**2 / (b + r)
   def monitor(b, r): return r**2 / (b + r)
   def safer(b, r): return 1 / (b + r)
@@ -1147,7 +1048,7 @@ back192to step1</li>
   return rules</code></pre>
 </details>
 </dd>
-<dt id="keys.lines"><code class="name flex">
+<dt id="keys0.lines"><code class="name flex">
 <span>def <span class="ident">lines</span></span>(<span>f)</span>
 </code></dt>
 <dd>
@@ -1165,7 +1066,7 @@ back192to step1</li>
         yield line.split(&#34;,&#34;)</code></pre>
 </details>
 </dd>
-<dt id="keys.red"><code class="name flex">
+<dt id="keys0.red"><code class="name flex">
 <span>def <span class="ident">red</span></span>(<span>x)</span>
 </code></dt>
 <dd>
@@ -1182,7 +1083,106 @@ back192to step1</li>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="keys.Num"><code class="flex name class">
+<dt id="keys0.Column"><code class="flex name class">
+<span>class <span class="ident">Column</span></span>
+<span>(</span><span>at=0, txt='', inits=[])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Column(o):
+  def __init__(i, at=0, txt=&#34;&#34;, inits=[]):
+    i.at, i.txt, i.n = at, txt, 0
+    i.w = -1 if &#34;-&#34; in txt else 1
+    i.goal = &#34;-&#34; in txt or &#34;+&#34; in txt or &#34;!&#34; in txt
+    i.skip = &#34;?&#34; in txt
+    [i.add(x) for x in inits]
+
+  def add(i, x): return x
+  def mid(i): return &#34;?&#34;
+  def var(i): return 0
+  def norm(i, x): return 0
+  def dist(i, j): return 0</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="keys0.Num" href="#keys0.Num">Num</a></li>
+<li><a title="keys0.Skip" href="#keys0.Skip">Skip</a></li>
+<li><a title="keys0.Some" href="#keys0.Some">Some</a></li>
+<li><a title="keys0.Sym" href="#keys0.Sym">Sym</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="keys0.Column.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>i, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(i, x): return x</code></pre>
+</details>
+</dd>
+<dt id="keys0.Column.dist"><code class="name flex">
+<span>def <span class="ident">dist</span></span>(<span>i, j)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist(i, j): return 0</code></pre>
+</details>
+</dd>
+<dt id="keys0.Column.mid"><code class="name flex">
+<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mid(i): return &#34;?&#34;</code></pre>
+</details>
+</dd>
+<dt id="keys0.Column.norm"><code class="name flex">
+<span>def <span class="ident">norm</span></span>(<span>i, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def norm(i, x): return 0</code></pre>
+</details>
+</dd>
+<dt id="keys0.Column.var"><code class="name flex">
+<span>def <span class="ident">var</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def var(i): return 0</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="keys0.Num"><code class="flex name class">
 <span>class <span class="ident">Num</span></span>
 <span>(</span><span>*l, **k)</span>
 </code></dt>
@@ -1192,7 +1192,7 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Num(_col):
+<pre><code class="python">class Num(Column):
   def __init__(i, *l, **k):
     i._all, i.ready = [], True
     super().__init__(*l, **k)
@@ -1257,12 +1257,12 @@ back192to step1</li>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>keys._col</li>
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.Column" href="#keys0.Column">Column</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Num.add"><code class="name flex">
+<dt id="keys0.Num.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, x)</span>
 </code></dt>
 <dd>
@@ -1280,7 +1280,7 @@ back192to step1</li>
   return x</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.all"><code class="name flex">
+<dt id="keys0.Num.all"><code class="name flex">
 <span>def <span class="ident">all</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1296,7 +1296,7 @@ back192to step1</li>
   return i._all</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.dist"><code class="name flex">
+<dt id="keys0.Num.dist"><code class="name flex">
 <span>def <span class="ident">dist</span></span>(<span>i, x, y)</span>
 </code></dt>
 <dd>
@@ -1317,7 +1317,7 @@ back192to step1</li>
   return abs(x - y)</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.hi"><code class="name flex">
+<dt id="keys0.Num.hi"><code class="name flex">
 <span>def <span class="ident">hi</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1329,7 +1329,7 @@ back192to step1</li>
 <pre><code class="python">def hi(i): return i.all()[-1]</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.lo"><code class="name flex">
+<dt id="keys0.Num.lo"><code class="name flex">
 <span>def <span class="ident">lo</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1341,7 +1341,7 @@ back192to step1</li>
 <pre><code class="python">def lo(i): return i.all()[0]</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.mid"><code class="name flex">
+<dt id="keys0.Num.mid"><code class="name flex">
 <span>def <span class="ident">mid</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1353,7 +1353,7 @@ back192to step1</li>
 <pre><code class="python">def mid(i): return i.per(0.5)</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.norm"><code class="name flex">
+<dt id="keys0.Num.norm"><code class="name flex">
 <span>def <span class="ident">norm</span></span>(<span>i, x)</span>
 </code></dt>
 <dd>
@@ -1366,7 +1366,7 @@ back192to step1</li>
   return x if x == &#34;?&#34; else min(1, max(0, (x - i.lo()) / (i.hi() - i.lo() + 1E-32)))</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.per"><code class="name flex">
+<dt id="keys0.Num.per"><code class="name flex">
 <span>def <span class="ident">per</span></span>(<span>i, p=0.5)</span>
 </code></dt>
 <dd>
@@ -1378,7 +1378,7 @@ back192to step1</li>
 <pre><code class="python">def per(i, p=0.5): return i.all()[int(len(i._all) * p)]</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.ranges"><code class="name flex">
+<dt id="keys0.Num.ranges"><code class="name flex">
 <span>def <span class="ident">ranges</span></span>(<span>i, j, the)</span>
 </code></dt>
 <dd>
@@ -1398,7 +1398,7 @@ back192to step1</li>
     yield o(best=b, rest=r, at=i.at, down=bin.down, up=bin.up)</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.same"><code class="name flex">
+<dt id="keys0.Num.same"><code class="name flex">
 <span>def <span class="ident">same</span></span>(<span>i, j, the)</span>
 </code></dt>
 <dd>
@@ -1413,7 +1413,7 @@ back192to step1</li>
       bootstrap(lst1, lst2, the.conf, the.b)</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.sd"><code class="name flex">
+<dt id="keys0.Num.sd"><code class="name flex">
 <span>def <span class="ident">sd</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1425,7 +1425,7 @@ back192to step1</li>
 <pre><code class="python">def sd(i): return (i.per(.9) - i.per(.1)) / 2.56</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.unlike"><code class="name flex">
+<dt id="keys0.Num.unlike"><code class="name flex">
 <span>def <span class="ident">unlike</span></span>(<span>i, j, the)</span>
 </code></dt>
 <dd>
@@ -1443,7 +1443,7 @@ back192to step1</li>
   return delta &gt; z</code></pre>
 </details>
 </dd>
-<dt id="keys.Num.var"><code class="name flex">
+<dt id="keys0.Num.var"><code class="name flex">
 <span>def <span class="ident">var</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1457,7 +1457,7 @@ back192to step1</li>
 </dd>
 </dl>
 </dd>
-<dt id="keys.Row"><code class="flex name class">
+<dt id="keys0.Row"><code class="flex name class">
 <span>class <span class="ident">Row</span></span>
 <span>(</span><span>tbl, cells)</span>
 </code></dt>
@@ -1502,11 +1502,11 @@ back192to step1</li>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Row.dist"><code class="name flex">
+<dt id="keys0.Row.dist"><code class="name flex">
 <span>def <span class="ident">dist</span></span>(<span>i, j, the, cols=None)</span>
 </code></dt>
 <dd>
@@ -1525,7 +1525,7 @@ back192to step1</li>
   return (d / n)**(1 / the.p)</code></pre>
 </details>
 </dd>
-<dt id="keys.Row.distant"><code class="name flex">
+<dt id="keys0.Row.distant"><code class="name flex">
 <span>def <span class="ident">distant</span></span>(<span>i, the, rows=None, cols=None)</span>
 </code></dt>
 <dd>
@@ -1539,7 +1539,7 @@ back192to step1</li>
   return tmp[int(the.far / 100 * len(tmp))][1]</code></pre>
 </details>
 </dd>
-<dt id="keys.Row.neighbors"><code class="name flex">
+<dt id="keys0.Row.neighbors"><code class="name flex">
 <span>def <span class="ident">neighbors</span></span>(<span>i, the, rows=None, cols=None)</span>
 </code></dt>
 <dd>
@@ -1554,7 +1554,7 @@ back192to step1</li>
   return sorted(tmp, key=first)</code></pre>
 </details>
 </dd>
-<dt id="keys.Row.ys"><code class="name flex">
+<dt id="keys0.Row.ys"><code class="name flex">
 <span>def <span class="ident">ys</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1568,7 +1568,7 @@ back192to step1</li>
 </dd>
 </dl>
 </dd>
-<dt id="keys.Skip"><code class="flex name class">
+<dt id="keys0.Skip"><code class="flex name class">
 <span>class <span class="ident">Skip</span></span>
 <span>(</span><span>at=0, txt='', inits=[])</span>
 </code></dt>
@@ -1578,16 +1578,16 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Skip(_col):
+<pre><code class="python">class Skip(Column):
   pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>keys._col</li>
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.Column" href="#keys0.Column">Column</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 </dd>
-<dt id="keys.Some"><code class="flex name class">
+<dt id="keys0.Some"><code class="flex name class">
 <span>class <span class="ident">Some</span></span>
 <span>(</span><span>*l, keep=1024, **kw)</span>
 </code></dt>
@@ -1597,7 +1597,7 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Some(_col):
+<pre><code class="python">class Some(Column):
   # `add` up to `max` items (and if full, sometimes replace old items).&#34;
   # Not  currently used but if reasoning over large data, can be useful.
   def __init__(i, *l, keep=1024, **kw):
@@ -1618,12 +1618,12 @@ back192to step1</li>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>keys._col</li>
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.Column" href="#keys0.Column">Column</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Some.add"><code class="name flex">
+<dt id="keys0.Some.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, x)</span>
 </code></dt>
 <dd>
@@ -1646,7 +1646,7 @@ back192to step1</li>
 </dd>
 </dl>
 </dd>
-<dt id="keys.Sym"><code class="flex name class">
+<dt id="keys0.Sym"><code class="flex name class">
 <span>class <span class="ident">Sym</span></span>
 <span>(</span><span>*l, **kw)</span>
 </code></dt>
@@ -1656,7 +1656,7 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Sym(_col):
+<pre><code class="python">class Sym(Column):
   def __init__(i, *l, **kw):
     i.seen, i.most, i.mode = {}, 0, None
     super().__init__(*l, **kw)
@@ -1700,12 +1700,12 @@ back192to step1</li>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>keys._col</li>
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.Column" href="#keys0.Column">Column</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Sym.add"><code class="name flex">
+<dt id="keys0.Sym.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, x, n=1)</span>
 </code></dt>
 <dd>
@@ -1723,7 +1723,7 @@ back192to step1</li>
   return x</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.dist"><code class="name flex">
+<dt id="keys0.Sym.dist"><code class="name flex">
 <span>def <span class="ident">dist</span></span>(<span>i, x, y)</span>
 </code></dt>
 <dd>
@@ -1735,7 +1735,7 @@ back192to step1</li>
 <pre><code class="python">def dist(i, x, y): return 0 if x == y else 1</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.entropy"><code class="name flex">
+<dt id="keys0.Sym.entropy"><code class="name flex">
 <span>def <span class="ident">entropy</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1748,7 +1748,7 @@ back192to step1</li>
   return sum(-v / i.n * math.log(v / i.n, 2) for v in i.seen.values())</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.merge"><code class="name flex">
+<dt id="keys0.Sym.merge"><code class="name flex">
 <span>def <span class="ident">merge</span></span>(<span>i, j)</span>
 </code></dt>
 <dd>
@@ -1765,7 +1765,7 @@ back192to step1</li>
   return k</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.mid"><code class="name flex">
+<dt id="keys0.Sym.mid"><code class="name flex">
 <span>def <span class="ident">mid</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1777,7 +1777,7 @@ back192to step1</li>
 <pre><code class="python">def mid(i): return i.mode</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.ranges"><code class="name flex">
+<dt id="keys0.Sym.ranges"><code class="name flex">
 <span>def <span class="ident">ranges</span></span>(<span>i, j, _)</span>
 </code></dt>
 <dd>
@@ -1793,7 +1793,7 @@ back192to step1</li>
     yield o(best=b, rest=r, at=i.at, down=k, up=k)</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.simplified"><code class="name flex">
+<dt id="keys0.Sym.simplified"><code class="name flex">
 <span>def <span class="ident">simplified</span></span>(<span>i, j)</span>
 </code></dt>
 <dd>
@@ -1811,7 +1811,7 @@ back192to step1</li>
     return k</code></pre>
 </details>
 </dd>
-<dt id="keys.Sym.var"><code class="name flex">
+<dt id="keys0.Sym.var"><code class="name flex">
 <span>def <span class="ident">var</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1825,7 +1825,7 @@ back192to step1</li>
 </dd>
 </dl>
 </dd>
-<dt id="keys.Table"><code class="flex name class">
+<dt id="keys0.Table"><code class="flex name class">
 <span>class <span class="ident">Table</span></span>
 <span>(</span><span>inits=[])</span>
 </code></dt>
@@ -1870,8 +1870,8 @@ back192to step1</li>
     return out
 
   def __repr__(i):
-    global FMT
-    return &#39;, &#39;.join([(FMT % z) for z in i.ys()])
+    global _FMT
+    return &#39;, &#39;.join([(_FMT % z) for z in i.ys()])
 
   def clone(i, rows=[]): return Table([i.header] + rows)
 
@@ -1891,11 +1891,11 @@ back192to step1</li>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="keys.o" href="#keys.o">o</a></li>
+<li><a title="keys0.o" href="#keys0.o">o</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Table.add"><code class="name flex">
+<dt id="keys0.Table.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, lst)</span>
 </code></dt>
 <dd>
@@ -1913,7 +1913,7 @@ back192to step1</li>
     i.cols = i.columns(lst)</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.clone"><code class="name flex">
+<dt id="keys0.Table.clone"><code class="name flex">
 <span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
 </code></dt>
 <dd>
@@ -1925,7 +1925,7 @@ back192to step1</li>
 <pre><code class="python">def clone(i, rows=[]): return Table([i.header] + rows)</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.columns"><code class="name flex">
+<dt id="keys0.Table.columns"><code class="name flex">
 <span>def <span class="ident">columns</span></span>(<span>i, lst)</span>
 </code></dt>
 <dd>
@@ -1943,7 +1943,7 @@ back192to step1</li>
   return out</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.div"><code class="name flex">
+<dt id="keys0.Table.div"><code class="name flex">
 <span>def <span class="ident">div</span></span>(<span>i, the, cols=None, rows=None)</span>
 </code></dt>
 <dd>
@@ -1967,7 +1967,7 @@ back192to step1</li>
   return rows[:mid], rows[mid:]</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.mid"><code class="name flex">
+<dt id="keys0.Table.mid"><code class="name flex">
 <span>def <span class="ident">mid</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -1979,7 +1979,7 @@ back192to step1</li>
 <pre><code class="python">def mid(i): return [col.mid() for col in i.cols]</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.read"><code class="name flex">
+<dt id="keys0.Table.read"><code class="name flex">
 <span>def <span class="ident">read</span></span>(<span>i, f)</span>
 </code></dt>
 <dd>
@@ -1991,7 +1991,7 @@ back192to step1</li>
 <pre><code class="python">def read(i, f): [i.add(line) for line in lines(f)]; return i</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.row"><code class="name flex">
+<dt id="keys0.Table.row"><code class="name flex">
 <span>def <span class="ident">row</span></span>(<span>i, lst)</span>
 </code></dt>
 <dd>
@@ -2004,7 +2004,7 @@ back192to step1</li>
                                 for col, x in zip(i.cols, lst)])</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.unlike"><code class="name flex">
+<dt id="keys0.Table.unlike"><code class="name flex">
 <span>def <span class="ident">unlike</span></span>(<span>i, j, the)</span>
 </code></dt>
 <dd>
@@ -2021,7 +2021,7 @@ back192to step1</li>
   return False</code></pre>
 </details>
 </dd>
-<dt id="keys.Table.ys"><code class="name flex">
+<dt id="keys0.Table.ys"><code class="name flex">
 <span>def <span class="ident">ys</span></span>(<span>i)</span>
 </code></dt>
 <dd>
@@ -2035,8 +2035,9 @@ back192to step1</li>
 </dd>
 </dl>
 </dd>
-<dt id="keys.Yardstick"><code class="flex name class">
-<span>class <span class="ident">Yardstick</span></span>
+<dt id="keys0.o"><code class="flex name class">
+<span>class <span class="ident">o</span></span>
+<span>(</span><span>**k)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2044,15 +2045,38 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Yardstick:
+<pre><code class="python">class o(object):
+  def __init__(i, **k): i.__dict__.update(**k)
+
+  def __repr__(i):
+    return i.__class__.__name__ + str(
+        {k: v for k, v in i.__dict__.items() if k[0] != &#34;_&#34;})</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="keys0.Column" href="#keys0.Column">Column</a></li>
+<li><a title="keys0.Row" href="#keys0.Row">Row</a></li>
+<li><a title="keys0.Table" href="#keys0.Table">Table</a></li>
+</ul>
+</dd>
+<dt id="keys0.yardstick"><code class="flex name class">
+<span>class <span class="ident">yardstick</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class yardstick:
   def all(the):
     # Main controller  for  the examples.
-    funs = {name: fun for name, fun in Yardstick.__dict__.items()
+    funs = {name: fun for name, fun in yardstick.__dict__.items()
             if len(name) &gt; 2 and name[:2] == &#34;eg&#34;}
     if the.Do:
       for name, fun in funs.items():
         doc = (&#34;\t: &#34; + fun.__doc__) if fun.__doc__ else &#34;&#34;
-        print(f&#34;./keys -do {name[2:]}{doc}&#34;)
+        print(f&#34;./keys0.py -do {name[2:]}{doc}&#34;)
       sys.exit()
     elif the.D:
       for k, v in the.__dict__.items():
@@ -2061,19 +2085,19 @@ back192to step1</li>
     else:
       funs = funs if the.do == &#34;all&#34; else {
           the.do: funs[&#34;eg&#34; + the.do]}
-      [Yardstick.one(the, fun) for name, fun in funs.items()]
+      [yardstick.one(the, fun) for name, fun in funs.items()]
 
   def one(the, fun):
     # Running one  example.
-    global FMT
-    FMT = the.fmt
+    global _FMT
+    _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
       print(green(&#34;✔&#34;), fun.__name__)
     except:
-      global FAILS
-      FAILS += 1
+      global _FAILS
+      _FAILS += 1
       traceback.print_exc()
       print(red(&#34;✖&#34;), fun.__name__)
 
@@ -2159,8 +2183,8 @@ back192to step1</li>
     n = 100
     a = [random.random() for _ in range(n)]
     print(&#34;\tcf bs ets cd  n   k&#34;)
-    for k in range(100,150,5):
-      k = k/100
+    for k in range(100, 150, 5):
+      k = k / 100
       b = [x * k for x in a]
       cf = cliffsDelta(a, b, the.dull)
       bs = bootstrap(a, b, the.conf, the.b)
@@ -2175,14 +2199,14 @@ back192to step1</li>
             n,
             f&#34;{k:5.3f}&#34;)
 
-  def egkeys(the):
+  def egkeys0(the):
     t = Table().read(the.data)
-    for x in keys(t, the):
+    for x in keys0(t, the):
       print(x)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="keys.Yardstick.all"><code class="name flex">
+<dt id="keys0.yardstick.all"><code class="name flex">
 <span>def <span class="ident">all</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2193,12 +2217,12 @@ back192to step1</li>
 </summary>
 <pre><code class="python">def all(the):
   # Main controller  for  the examples.
-  funs = {name: fun for name, fun in Yardstick.__dict__.items()
+  funs = {name: fun for name, fun in yardstick.__dict__.items()
           if len(name) &gt; 2 and name[:2] == &#34;eg&#34;}
   if the.Do:
     for name, fun in funs.items():
       doc = (&#34;\t: &#34; + fun.__doc__) if fun.__doc__ else &#34;&#34;
-      print(f&#34;./keys -do {name[2:]}{doc}&#34;)
+      print(f&#34;./keys0.py -do {name[2:]}{doc}&#34;)
     sys.exit()
   elif the.D:
     for k, v in the.__dict__.items():
@@ -2207,10 +2231,10 @@ back192to step1</li>
   else:
     funs = funs if the.do == &#34;all&#34; else {
         the.do: funs[&#34;eg&#34; + the.do]}
-    [Yardstick.one(the, fun) for name, fun in funs.items()]</code></pre>
+    [yardstick.one(the, fun) for name, fun in funs.items()]</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egbestRest"><code class="name flex">
+<dt id="keys0.yardstick.egbestRest"><code class="name flex">
 <span>def <span class="ident">egbestRest</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2225,7 +2249,7 @@ back192to step1</li>
     print(&#34;\t&#34;, len(t1.rows), t1.ys())</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egclone"><code class="name flex">
+<dt id="keys0.yardstick.egclone"><code class="name flex">
 <span>def <span class="ident">egclone</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2240,7 +2264,7 @@ back192to step1</li>
   assert [x for x in t.ys()] == [x for x in t1.ys()]</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egcluster"><code class="name flex">
+<dt id="keys0.yardstick.egcluster"><code class="name flex">
 <span>def <span class="ident">egcluster</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2255,7 +2279,7 @@ back192to step1</li>
     print(&#34;\t&#34;, len(t1.rows), t1.ys())</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egdiscrete"><code class="name flex">
+<dt id="keys0.yardstick.egdiscrete"><code class="name flex">
 <span>def <span class="ident">egdiscrete</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2276,7 +2300,7 @@ back192to step1</li>
     print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egdist"><code class="name flex">
+<dt id="keys0.yardstick.egdist"><code class="name flex">
 <span>def <span class="ident">egdist</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2295,7 +2319,7 @@ back192to step1</li>
       return</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egfails"><code class="name flex">
+<dt id="keys0.yardstick.egfails"><code class="name flex">
 <span>def <span class="ident">egfails</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2307,8 +2331,8 @@ back192to step1</li>
 <pre><code class="python">def egfails(the): assert False, &#34;checking failure behaviour&#34;</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egkeys"><code class="name flex">
-<span>def <span class="ident">egkeys</span></span>(<span>the)</span>
+<dt id="keys0.yardstick.egkeys0"><code class="name flex">
+<span>def <span class="ident">egkeys0</span></span>(<span>the)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2316,13 +2340,13 @@ back192to step1</li>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def egkeys(the):
+<pre><code class="python">def egkeys0(the):
   t = Table().read(the.data)
-  for x in keys(t, the):
+  for x in keys0(t, the):
     print(x)</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.eglines"><code class="name flex">
+<dt id="keys0.yardstick.eglines"><code class="name flex">
 <span>def <span class="ident">eglines</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2340,7 +2364,7 @@ back192to step1</li>
   assert n == 399</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egnum"><code class="name flex">
+<dt id="keys0.yardstick.egnum"><code class="name flex">
 <span>def <span class="ident">egnum</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2357,7 +2381,7 @@ back192to step1</li>
   assert 3.125 == n.sd(), &#34;sd test&#34;</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egsort"><code class="name flex">
+<dt id="keys0.yardstick.egsort"><code class="name flex">
 <span>def <span class="ident">egsort</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2377,7 +2401,7 @@ back192to step1</li>
     print(&#34;\t&#34;.row.ys())</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egstats"><code class="name flex">
+<dt id="keys0.yardstick.egstats"><code class="name flex">
 <span>def <span class="ident">egstats</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2391,8 +2415,8 @@ back192to step1</li>
   n = 100
   a = [random.random() for _ in range(n)]
   print(&#34;\tcf bs ets cd  n   k&#34;)
-  for k in range(100,150,5):
-    k = k/100
+  for k in range(100, 150, 5):
+    k = k / 100
     b = [x * k for x in a]
     cf = cliffsDelta(a, b, the.dull)
     bs = bootstrap(a, b, the.conf, the.b)
@@ -2408,7 +2432,7 @@ back192to step1</li>
           f&#34;{k:5.3f}&#34;)</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egsym"><code class="name flex">
+<dt id="keys0.yardstick.egsym"><code class="name flex">
 <span>def <span class="ident">egsym</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2425,7 +2449,7 @@ back192to step1</li>
   assert 1.37 &lt;= s.var() &lt;= 1.38, &#34;ent&#34;</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.egtbl"><code class="name flex">
+<dt id="keys0.yardstick.egtbl"><code class="name flex">
 <span>def <span class="ident">egtbl</span></span>(<span>the)</span>
 </code></dt>
 <dd>
@@ -2443,7 +2467,7 @@ back192to step1</li>
   assert t.y[0].hi() == 5140</code></pre>
 </details>
 </dd>
-<dt id="keys.Yardstick.one"><code class="name flex">
+<dt id="keys0.yardstick.one"><code class="name flex">
 <span>def <span class="ident">one</span></span>(<span>the, fun)</span>
 </code></dt>
 <dd>
@@ -2454,44 +2478,20 @@ back192to step1</li>
 </summary>
 <pre><code class="python">def one(the, fun):
   # Running one  example.
-  global FMT
-  FMT = the.fmt
+  global _FMT
+  _FMT = the.fmt
   random.seed(the.seed)
   try:
     fun(copy.deepcopy(the))
     print(green(&#34;✔&#34;), fun.__name__)
   except:
-    global FAILS
-    FAILS += 1
+    global _FAILS
+    _FAILS += 1
     traceback.print_exc()
     print(red(&#34;✖&#34;), fun.__name__)</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-<dt id="keys.o"><code class="flex name class">
-<span>class <span class="ident">o</span></span>
-<span>(</span><span>**k)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class o(object):
-  def __init__(i, **k): i.__dict__.update(**k)
-
-  def __repr__(i):
-    return i.__class__.__name__ + str(
-        {k: v for k, v in i.__dict__.items() if k[0] != &#34;_&#34;})</code></pre>
-</details>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="keys.Row" href="#keys.Row">Row</a></li>
-<li><a title="keys.Table" href="#keys.Table">Table</a></li>
-<li>keys._col</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -2502,115 +2502,120 @@ back192to step1</li>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-variables">Global variables</a></h3>
-<ul class="">
-<li><code><a title="keys.DEFAULTS" href="#keys.DEFAULTS">DEFAULTS</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="keys.Col" href="#keys.Col">Col</a></code></li>
-<li><code><a title="keys.bestRest" href="#keys.bestRest">bestRest</a></code></li>
-<li><code><a title="keys.bootstrap" href="#keys.bootstrap">bootstrap</a></code></li>
-<li><code><a title="keys.cli" href="#keys.cli">cli</a></code></li>
-<li><code><a title="keys.cliffsDelta" href="#keys.cliffsDelta">cliffsDelta</a></code></li>
-<li><code><a title="keys.cliffsDelta1" href="#keys.cliffsDelta1">cliffsDelta1</a></code></li>
-<li><code><a title="keys.cluster" href="#keys.cluster">cluster</a></code></li>
-<li><code><a title="keys.discretize" href="#keys.discretize">discretize</a></code></li>
-<li><code><a title="keys.first" href="#keys.first">first</a></code></li>
-<li><code><a title="keys.green" href="#keys.green">green</a></code></li>
-<li><code><a title="keys.keys" href="#keys.keys">keys</a></code></li>
-<li><code><a title="keys.lines" href="#keys.lines">lines</a></code></li>
-<li><code><a title="keys.red" href="#keys.red">red</a></code></li>
+<li><code><a title="keys0.Col" href="#keys0.Col">Col</a></code></li>
+<li><code><a title="keys0.bestRest" href="#keys0.bestRest">bestRest</a></code></li>
+<li><code><a title="keys0.bootstrap" href="#keys0.bootstrap">bootstrap</a></code></li>
+<li><code><a title="keys0.cli" href="#keys0.cli">cli</a></code></li>
+<li><code><a title="keys0.cliffsDelta" href="#keys0.cliffsDelta">cliffsDelta</a></code></li>
+<li><code><a title="keys0.cliffsDelta1" href="#keys0.cliffsDelta1">cliffsDelta1</a></code></li>
+<li><code><a title="keys0.cluster" href="#keys0.cluster">cluster</a></code></li>
+<li><code><a title="keys0.discretize" href="#keys0.discretize">discretize</a></code></li>
+<li><code><a title="keys0.first" href="#keys0.first">first</a></code></li>
+<li><code><a title="keys0.green" href="#keys0.green">green</a></code></li>
+<li><code><a title="keys0.keys0" href="#keys0.keys0">keys0</a></code></li>
+<li><code><a title="keys0.lines" href="#keys0.lines">lines</a></code></li>
+<li><code><a title="keys0.red" href="#keys0.red">red</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="keys.Num" href="#keys.Num">Num</a></code></h4>
-<ul class="two-column">
-<li><code><a title="keys.Num.add" href="#keys.Num.add">add</a></code></li>
-<li><code><a title="keys.Num.all" href="#keys.Num.all">all</a></code></li>
-<li><code><a title="keys.Num.dist" href="#keys.Num.dist">dist</a></code></li>
-<li><code><a title="keys.Num.hi" href="#keys.Num.hi">hi</a></code></li>
-<li><code><a title="keys.Num.lo" href="#keys.Num.lo">lo</a></code></li>
-<li><code><a title="keys.Num.mid" href="#keys.Num.mid">mid</a></code></li>
-<li><code><a title="keys.Num.norm" href="#keys.Num.norm">norm</a></code></li>
-<li><code><a title="keys.Num.per" href="#keys.Num.per">per</a></code></li>
-<li><code><a title="keys.Num.ranges" href="#keys.Num.ranges">ranges</a></code></li>
-<li><code><a title="keys.Num.same" href="#keys.Num.same">same</a></code></li>
-<li><code><a title="keys.Num.sd" href="#keys.Num.sd">sd</a></code></li>
-<li><code><a title="keys.Num.unlike" href="#keys.Num.unlike">unlike</a></code></li>
-<li><code><a title="keys.Num.var" href="#keys.Num.var">var</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="keys.Row" href="#keys.Row">Row</a></code></h4>
+<h4><code><a title="keys0.Column" href="#keys0.Column">Column</a></code></h4>
 <ul class="">
-<li><code><a title="keys.Row.dist" href="#keys.Row.dist">dist</a></code></li>
-<li><code><a title="keys.Row.distant" href="#keys.Row.distant">distant</a></code></li>
-<li><code><a title="keys.Row.neighbors" href="#keys.Row.neighbors">neighbors</a></code></li>
-<li><code><a title="keys.Row.ys" href="#keys.Row.ys">ys</a></code></li>
+<li><code><a title="keys0.Column.add" href="#keys0.Column.add">add</a></code></li>
+<li><code><a title="keys0.Column.dist" href="#keys0.Column.dist">dist</a></code></li>
+<li><code><a title="keys0.Column.mid" href="#keys0.Column.mid">mid</a></code></li>
+<li><code><a title="keys0.Column.norm" href="#keys0.Column.norm">norm</a></code></li>
+<li><code><a title="keys0.Column.var" href="#keys0.Column.var">var</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="keys.Skip" href="#keys.Skip">Skip</a></code></h4>
+<h4><code><a title="keys0.Num" href="#keys0.Num">Num</a></code></h4>
+<ul class="two-column">
+<li><code><a title="keys0.Num.add" href="#keys0.Num.add">add</a></code></li>
+<li><code><a title="keys0.Num.all" href="#keys0.Num.all">all</a></code></li>
+<li><code><a title="keys0.Num.dist" href="#keys0.Num.dist">dist</a></code></li>
+<li><code><a title="keys0.Num.hi" href="#keys0.Num.hi">hi</a></code></li>
+<li><code><a title="keys0.Num.lo" href="#keys0.Num.lo">lo</a></code></li>
+<li><code><a title="keys0.Num.mid" href="#keys0.Num.mid">mid</a></code></li>
+<li><code><a title="keys0.Num.norm" href="#keys0.Num.norm">norm</a></code></li>
+<li><code><a title="keys0.Num.per" href="#keys0.Num.per">per</a></code></li>
+<li><code><a title="keys0.Num.ranges" href="#keys0.Num.ranges">ranges</a></code></li>
+<li><code><a title="keys0.Num.same" href="#keys0.Num.same">same</a></code></li>
+<li><code><a title="keys0.Num.sd" href="#keys0.Num.sd">sd</a></code></li>
+<li><code><a title="keys0.Num.unlike" href="#keys0.Num.unlike">unlike</a></code></li>
+<li><code><a title="keys0.Num.var" href="#keys0.Num.var">var</a></code></li>
+</ul>
 </li>
 <li>
-<h4><code><a title="keys.Some" href="#keys.Some">Some</a></code></h4>
+<h4><code><a title="keys0.Row" href="#keys0.Row">Row</a></code></h4>
 <ul class="">
-<li><code><a title="keys.Some.add" href="#keys.Some.add">add</a></code></li>
+<li><code><a title="keys0.Row.dist" href="#keys0.Row.dist">dist</a></code></li>
+<li><code><a title="keys0.Row.distant" href="#keys0.Row.distant">distant</a></code></li>
+<li><code><a title="keys0.Row.neighbors" href="#keys0.Row.neighbors">neighbors</a></code></li>
+<li><code><a title="keys0.Row.ys" href="#keys0.Row.ys">ys</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="keys.Sym" href="#keys.Sym">Sym</a></code></h4>
+<h4><code><a title="keys0.Skip" href="#keys0.Skip">Skip</a></code></h4>
+</li>
+<li>
+<h4><code><a title="keys0.Some" href="#keys0.Some">Some</a></code></h4>
+<ul class="">
+<li><code><a title="keys0.Some.add" href="#keys0.Some.add">add</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="keys0.Sym" href="#keys0.Sym">Sym</a></code></h4>
 <ul class="two-column">
-<li><code><a title="keys.Sym.add" href="#keys.Sym.add">add</a></code></li>
-<li><code><a title="keys.Sym.dist" href="#keys.Sym.dist">dist</a></code></li>
-<li><code><a title="keys.Sym.entropy" href="#keys.Sym.entropy">entropy</a></code></li>
-<li><code><a title="keys.Sym.merge" href="#keys.Sym.merge">merge</a></code></li>
-<li><code><a title="keys.Sym.mid" href="#keys.Sym.mid">mid</a></code></li>
-<li><code><a title="keys.Sym.ranges" href="#keys.Sym.ranges">ranges</a></code></li>
-<li><code><a title="keys.Sym.simplified" href="#keys.Sym.simplified">simplified</a></code></li>
-<li><code><a title="keys.Sym.var" href="#keys.Sym.var">var</a></code></li>
+<li><code><a title="keys0.Sym.add" href="#keys0.Sym.add">add</a></code></li>
+<li><code><a title="keys0.Sym.dist" href="#keys0.Sym.dist">dist</a></code></li>
+<li><code><a title="keys0.Sym.entropy" href="#keys0.Sym.entropy">entropy</a></code></li>
+<li><code><a title="keys0.Sym.merge" href="#keys0.Sym.merge">merge</a></code></li>
+<li><code><a title="keys0.Sym.mid" href="#keys0.Sym.mid">mid</a></code></li>
+<li><code><a title="keys0.Sym.ranges" href="#keys0.Sym.ranges">ranges</a></code></li>
+<li><code><a title="keys0.Sym.simplified" href="#keys0.Sym.simplified">simplified</a></code></li>
+<li><code><a title="keys0.Sym.var" href="#keys0.Sym.var">var</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="keys.Table" href="#keys.Table">Table</a></code></h4>
+<h4><code><a title="keys0.Table" href="#keys0.Table">Table</a></code></h4>
 <ul class="two-column">
-<li><code><a title="keys.Table.add" href="#keys.Table.add">add</a></code></li>
-<li><code><a title="keys.Table.clone" href="#keys.Table.clone">clone</a></code></li>
-<li><code><a title="keys.Table.columns" href="#keys.Table.columns">columns</a></code></li>
-<li><code><a title="keys.Table.div" href="#keys.Table.div">div</a></code></li>
-<li><code><a title="keys.Table.mid" href="#keys.Table.mid">mid</a></code></li>
-<li><code><a title="keys.Table.read" href="#keys.Table.read">read</a></code></li>
-<li><code><a title="keys.Table.row" href="#keys.Table.row">row</a></code></li>
-<li><code><a title="keys.Table.unlike" href="#keys.Table.unlike">unlike</a></code></li>
-<li><code><a title="keys.Table.ys" href="#keys.Table.ys">ys</a></code></li>
+<li><code><a title="keys0.Table.add" href="#keys0.Table.add">add</a></code></li>
+<li><code><a title="keys0.Table.clone" href="#keys0.Table.clone">clone</a></code></li>
+<li><code><a title="keys0.Table.columns" href="#keys0.Table.columns">columns</a></code></li>
+<li><code><a title="keys0.Table.div" href="#keys0.Table.div">div</a></code></li>
+<li><code><a title="keys0.Table.mid" href="#keys0.Table.mid">mid</a></code></li>
+<li><code><a title="keys0.Table.read" href="#keys0.Table.read">read</a></code></li>
+<li><code><a title="keys0.Table.row" href="#keys0.Table.row">row</a></code></li>
+<li><code><a title="keys0.Table.unlike" href="#keys0.Table.unlike">unlike</a></code></li>
+<li><code><a title="keys0.Table.ys" href="#keys0.Table.ys">ys</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="keys.Yardstick" href="#keys.Yardstick">Yardstick</a></code></h4>
+<h4><code><a title="keys0.o" href="#keys0.o">o</a></code></h4>
+</li>
+<li>
+<h4><code><a title="keys0.yardstick" href="#keys0.yardstick">yardstick</a></code></h4>
 <ul class="two-column">
-<li><code><a title="keys.Yardstick.all" href="#keys.Yardstick.all">all</a></code></li>
-<li><code><a title="keys.Yardstick.egbestRest" href="#keys.Yardstick.egbestRest">egbestRest</a></code></li>
-<li><code><a title="keys.Yardstick.egclone" href="#keys.Yardstick.egclone">egclone</a></code></li>
-<li><code><a title="keys.Yardstick.egcluster" href="#keys.Yardstick.egcluster">egcluster</a></code></li>
-<li><code><a title="keys.Yardstick.egdiscrete" href="#keys.Yardstick.egdiscrete">egdiscrete</a></code></li>
-<li><code><a title="keys.Yardstick.egdist" href="#keys.Yardstick.egdist">egdist</a></code></li>
-<li><code><a title="keys.Yardstick.egfails" href="#keys.Yardstick.egfails">egfails</a></code></li>
-<li><code><a title="keys.Yardstick.egkeys" href="#keys.Yardstick.egkeys">egkeys</a></code></li>
-<li><code><a title="keys.Yardstick.eglines" href="#keys.Yardstick.eglines">eglines</a></code></li>
-<li><code><a title="keys.Yardstick.egnum" href="#keys.Yardstick.egnum">egnum</a></code></li>
-<li><code><a title="keys.Yardstick.egsort" href="#keys.Yardstick.egsort">egsort</a></code></li>
-<li><code><a title="keys.Yardstick.egstats" href="#keys.Yardstick.egstats">egstats</a></code></li>
-<li><code><a title="keys.Yardstick.egsym" href="#keys.Yardstick.egsym">egsym</a></code></li>
-<li><code><a title="keys.Yardstick.egtbl" href="#keys.Yardstick.egtbl">egtbl</a></code></li>
-<li><code><a title="keys.Yardstick.one" href="#keys.Yardstick.one">one</a></code></li>
+<li><code><a title="keys0.yardstick.all" href="#keys0.yardstick.all">all</a></code></li>
+<li><code><a title="keys0.yardstick.egbestRest" href="#keys0.yardstick.egbestRest">egbestRest</a></code></li>
+<li><code><a title="keys0.yardstick.egclone" href="#keys0.yardstick.egclone">egclone</a></code></li>
+<li><code><a title="keys0.yardstick.egcluster" href="#keys0.yardstick.egcluster">egcluster</a></code></li>
+<li><code><a title="keys0.yardstick.egdiscrete" href="#keys0.yardstick.egdiscrete">egdiscrete</a></code></li>
+<li><code><a title="keys0.yardstick.egdist" href="#keys0.yardstick.egdist">egdist</a></code></li>
+<li><code><a title="keys0.yardstick.egfails" href="#keys0.yardstick.egfails">egfails</a></code></li>
+<li><code><a title="keys0.yardstick.egkeys0" href="#keys0.yardstick.egkeys0">egkeys0</a></code></li>
+<li><code><a title="keys0.yardstick.eglines" href="#keys0.yardstick.eglines">eglines</a></code></li>
+<li><code><a title="keys0.yardstick.egnum" href="#keys0.yardstick.egnum">egnum</a></code></li>
+<li><code><a title="keys0.yardstick.egsort" href="#keys0.yardstick.egsort">egsort</a></code></li>
+<li><code><a title="keys0.yardstick.egstats" href="#keys0.yardstick.egstats">egstats</a></code></li>
+<li><code><a title="keys0.yardstick.egsym" href="#keys0.yardstick.egsym">egsym</a></code></li>
+<li><code><a title="keys0.yardstick.egtbl" href="#keys0.yardstick.egtbl">egtbl</a></code></li>
+<li><code><a title="keys0.yardstick.one" href="#keys0.yardstick.one">one</a></code></li>
 </ul>
-</li>
-<li>
-<h4><code><a title="keys.o" href="#keys.o">o</a></code></h4>
 </li>
 </ul>
 </li>
