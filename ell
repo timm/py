@@ -1,6 +1,8 @@
 doc() {
-  pycco keys0.py
-  (cd docs; mv keys0.html index.html)
+  cp keys  keys.py
+  pdoc3 -f --html  -o docs  keys.py
+  rm keys.py
+  (cd docs; mv keys.html index.html)
 }
 
 alias gp="git commit -am saving; git push"
