@@ -22,6 +22,7 @@ Learning:
 - instance selection: cluster+select
 - feature  selection: entropy
 - discretization: MDL, chi  merge
+  https://onlinelibrary.wiley.com/doi/pdf/10.1002/widm.1173?casa_token=057-OyFVxmIAAAAA:ZrAMysNoVwcgYn8qr3HkcqECBQq24vfH4xOGI8ngDS2uQKKJEeNjgKk74KLSWZFaYcgm-P5GoZyNBCZP
 - clustering: PDDP, random projections  (FASTMAP, gaussian trick),
   kd-trees, supervised  clustering
 - Bayes fast

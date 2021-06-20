@@ -61,7 +61,7 @@ Assumes:
 - All the `y` values are numeric but `x`
   values can be numeric or symbolic.
   There may  even be missing x-values
-- We  need  to minimize  the number of
+  need  to minimize  the number of
   probes into the  `y` variables.
 - There can  be multiple goals we need  to
   minimize and  maximize. Our `Rows.__lt__` method
@@ -113,13 +113,15 @@ def keys0(tbl, the, cols=None, goal=0):
       rows1 = [row for row in rows if select(do, row)]
       if enough <= len(rows1) < len(rows):
         now = tbl.clone(rows1)
-        if now < b4 and now.unlike(b4, the):
-          rules.append((now.ys(), trio(do)))
-          go(rows1, now)
+        print(now.ys(), trio(do))
+        # if now < b4 and now.unlike(b4, the):
+        rules.append((now.ys(), trio(do)))
+        go(rows1, now)
 
   enough = len(tbl.rows)**the.enough
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
+  print(tbl.ys())
   go(tbl.rows, tbl)
   return rules
 
