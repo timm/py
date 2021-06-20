@@ -7,9 +7,8 @@ Keys0: baseline keys-based stochastic explainer/controller
     
 Usage: ./keys0.py [OPTIONS]
 
-OPTIONS:
-
 ```
+OPTIONS:
   -b      I     bootstrapping, number of samples
   -conf   F     bootstrapping, confidence threshold
   -D            dump defaults
@@ -121,7 +120,6 @@ def keys0(tbl, the, cols=None, goal=0):
   enough = len(tbl.rows)**the.enough
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
-  print([(col.per(.6) - col.per(.5)) for col in tbl.y])
   go(tbl.rows, tbl)
   return rules
 
