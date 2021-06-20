@@ -655,6 +655,7 @@ class Eg:
     "compare bootstrap to effect size"
     k, n = 1, 30
     a = [random.random() for _ in range(n)]
+    print("\tcf bs ets cd  n   k")
     while k < 1.5:
       k *= 1.03
       b = [x * k for x in a]
@@ -662,10 +663,12 @@ class Eg:
       bs = bootstrap(a, b, the.conf, the.b)
       i = Num(inits=a)
       j = Num(inits=b)
+      cd = abs(i.mid() - j.mid()) < i.sd() * .35
       ets = not i.unlike(j, the)
-      print("\t", green("✔") if cf else red("✖"),
-            green("✔") if bs else red("✖"),
-            green("✔") if ets else red("✖"),
+      print("\t", green("✔ ") if cf else red("✖ "),
+            green("✔ ") if bs else red("✖ "),
+            green(" ✔ ") if ets else red(" ✖ "),
+            green("✔ ") if cd else red("✖ "),
             n,
             f"{k:5.3f}")
 
