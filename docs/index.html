@@ -31,8 +31,8 @@
 (c) 2021 Tim Menzies <timm.ieee.org>, <a href="https://unlicense.org">https://unlicense.org</a>
 </p>
 <p>Usage: ./keys0.py [OPTIONS]</p>
-<p>OPTIONS:</p>
-<pre><code>  -b      I     bootstrapping, number of samples
+<pre><code>OPTIONS:
+  -b      I     bootstrapping, number of samples
   -conf   F     bootstrapping, confidence threshold
   -D            dump defaults
   -Do           list all doable things
@@ -63,9 +63,8 @@ Keys0: baseline keys-based stochastic explainer/controller
     
 Usage: ./keys0.py [OPTIONS]
 
-OPTIONS:
-
 ```
+OPTIONS:
   -b      I     bootstrapping, number of samples
   -conf   F     bootstrapping, confidence threshold
   -D            dump defaults
@@ -164,9 +163,9 @@ def keys0(tbl, the, cols=None, goal=0):
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)
            if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=first)
+    lst = sorted(lst, reverse=True, key=Lib.first)
     if lst:
-      do = first(lst)[1]
+      do = Lib.first(lst)[1]
       rows1 = [row for row in rows if select(do, row)]
       if enough &lt;= len(rows1) &lt; len(rows):
         now = tbl.clone(rows1)
@@ -177,7 +176,6 @@ def keys0(tbl, the, cols=None, goal=0):
   enough = len(tbl.rows)**the.enough
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
-  print([(col.per(.6) - col.per(.5)) for col in tbl.y])
   go(tbl.rows, tbl)
   return rules
 
@@ -318,14 +316,14 @@ class Num(Column):
 
   def same(i, j, the):
     lst1, lst2 = i.all(), j.all()
-    return cliffsDelta1(lst1, lst2, the.dull) and \
-        bootstrap(lst1, lst2, the.conf, the.b)
+    return Stats.cliffsDelta1(lst1, lst2, the.dull) and \
+        Stats.bootstrap(lst1, lst2, the.conf, the.b)
 
   def unlike(i, j, the):
-    d = the.cohen / 3
+    d = the.cohen / 3 # normal stops at 3 sd
     x = i.per(.5 + d) - i.per(.5)
     y = i.per(.5) - i.per(.5 - d)
-    z = (x + y) / 2
+    z = (x + y) / 2 # man different here to cohen*sd
     delta = abs(i.per(.5) - j.per(.5))
     return delta &gt; z
 
@@ -371,7 +369,7 @@ class Row(o):
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=first)
+    return sorted(tmp, key=Lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -392,7 +390,7 @@ class Table(o):
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in lines(f)]; return i
+  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -509,92 +507,94 @@ def discretize(xy, epsilon, width):
     now.also.add(y)
   return merge(out)
 
-def cli(d, help):
-  # Update `d` with cli flags (if they match  the keys in `d`).
-  j = -1
-  while j &lt; len(sys.argv) - 1:
-    j += 1
-    key = sys.argv[j][1:]
-    if key == &#34;h&#34;:
-      print(help)
-      sys.exit()
-    elif key[0].isupper() and key in d:
-      d[key] = True
-    elif key in d:
+class Lib:
+  def cli(d, help):
+    # Update `d` with cli flags (if they match  the keys in `d`).
+    j = -1
+    while j &lt; len(sys.argv) - 1:
       j += 1
-      x = sys.argv[j]
-      y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
-          float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
-          x)
-      if type(y) == type(d[key]):
-        d[key] = y
-  return o(**d)
+      key = sys.argv[j][1:]
+      if key == &#34;h&#34;:
+        print(help)
+        sys.exit()
+      elif key[0].isupper() and key in d:
+        d[key] = True
+      elif key in d:
+        j += 1
+        x = sys.argv[j]
+        y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
+            float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
+            x)
+        if type(y) == type(d[key]):
+          d[key] = y
+    return o(**d)
 
-def lines(f):
-  # return non-blanks  likes, split on comma.
-  with open(f) as fp:
-    for line in fp:
-      line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
-      if line:
-        yield line.split(&#34;,&#34;)
+  def lines(f):
+    # return non-blanks  likes, split on comma.
+    with open(f) as fp:
+      for line in fp:
+        line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
+        if line:
+          yield line.split(&#34;,&#34;)
 
-def first(l): return l[0]
+  def first(l): return l[0]
 
-def red(x): return fore.RED + style.BOLD + x + style.RESET
-def green(x): return fore.GREEN + style.BOLD + x + style.RESET
+  def red(x): return fore.RED + style.BOLD + x + style.RESET
+  def green(x): return fore.GREEN + style.BOLD + x + style.RESET
 
-def cliffsDelta(a1, a2, dull=None):
-  # Returns true if there are more than &#39;dull&#39; difference.
-  return cliffsDelta1(a1, sorted(a2), dull=dull)
+class Stats:
+  def cliffsDelta(a1, a2, dull=None):
+    # Returns true if there are more than &#39;dull&#39; difference.
+    return Stats.cliffsDelta1(a1, sorted(a2), dull=dull)
 
-def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
-  n1, n2, gt, lt, = len(a1), len(a2), 0, 0
-  for x in a1:
-    lt += bisect.bisect_left(a2, x)
-    gt += n2 - bisect.bisect_right(a2, x)
-  return abs(lt - gt) / (n1 * n2) &lt;= dull
+  def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
+    n1, n2, gt, lt, = len(a1), len(a2), 0, 0
+    for x in a1:
+      lt += bisect.bisect_left(a2, x)
+      gt += n2 - bisect.bisect_right(a2, x)
+    return abs(lt - gt) / (n1 * n2) &lt;= dull
 
-def bootstrap(y0, z0, conf=0.05, b=500):
-  def one(lst): return lst[int(any(len(lst)))]
-  def any(n): return random.uniform(0, n)
+  def bootstrap(y0, z0, conf=0.05, b=500):
+    def one(lst): return lst[int(any(len(lst)))]
+    def any(n): return random.uniform(0, n)
 
-  class Sum():
-    def __init__(i, some=[]):
-      i.sum, i.n, i.mu, i.all = 0, 0, 0, []
-      [i.put(one) for one in some]
+    class Sum():
+      def __init__(i, some=[]):
+        i.sum, i.n, i.mu, i.all = 0, 0, 0, []
+        [i.put(one) for one in some]
 
-    def put(i, x):
-      i.all.append(x)
-      i.sum += x
-      i.n += 1
-      i.mu = float(i.sum) / i.n
+      def put(i, x):
+        i.all.append(x)
+        i.sum += x
+        i.n += 1
+        i.mu = float(i.sum) / i.n
 
-    def __add__(i1, i2): return Sum(i1.all + i2.all)
+      def __add__(i1, i2): return Sum(i1.all + i2.all)
 
-  def testStatistic(y, z):
-    tmp1 = tmp2 = 0
-    for y1 in y.all:
-      tmp1 += (y1 - y.mu)**2
-    for z1 in z.all:
-      tmp2 += (z1 - z.mu)**2
-    s1 = float(tmp1) / (y.n - 1)
-    s2 = float(tmp2) / (z.n - 1)
-    delta = z.mu - y.mu
-    if s1 + s2:
-      delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
-    return delta
+    def testStatistic(y, z):
+      tmp1 = tmp2 = 0
+      for y1 in y.all:
+        tmp1 += (y1 - y.mu)**2
+      for z1 in z.all:
+        tmp2 += (z1 - z.mu)**2
+      s1 = float(tmp1) / (y.n - 1)
+      s2 = float(tmp2) / (z.n - 1)
+      delta = z.mu - y.mu
+      if s1 + s2:
+        delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
+      return delta
 
-  y, z = Sum(y0), Sum(z0)
-  x = y + z
-  baseline = testStatistic(y, z)
-  yhat = [y1 - y.mu + x.mu for y1 in y.all]
-  zhat = [z1 - z.mu + x.mu for z1 in z.all]
-  bigger = 0
-  for i in range(b):
-    if testStatistic(Sum([one(yhat) for _ in yhat]),
-                     Sum([one(zhat) for _ in zhat])) &gt; baseline:
-      bigger += 1
-  return bigger / b &gt;= conf
+    y, z = Sum(y0), Sum(z0)
+    x = y + z
+    baseline = testStatistic(y, z)
+    yhat = [y1 - y.mu + x.mu for y1 in y.all]
+    zhat = [z1 - z.mu + x.mu for z1 in z.all]
+    bigger = 0
+    for i in range(b):
+      if testStatistic(Sum([one(yhat) for _ in yhat]),
+                       Sum([one(zhat) for _ in zhat])) &gt; baseline:
+        bigger += 1
+    return bigger / b &gt;= conf
 
 # ---------------------------
 # ## Demos
@@ -624,12 +624,12 @@ class yardstick:
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(green(&#34;✔&#34;), fun.__name__)
+      print(Lib.green(&#34;✔&#34;), fun.__name__)
     except:
       global _FAILS
       _FAILS += 1
       traceback.print_exc()
-      print(red(&#34;✖&#34;), fun.__name__)
+      print(Lib.red(&#34;✖&#34;), fun.__name__)
 
   def egfails(the): assert False, &#34;checking failure behaviour&#34;
 
@@ -705,29 +705,31 @@ class yardstick:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=first):
+    for s, x in sorted(tmp, key=Lib.first):
       print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)
 
   def egstats(the):
     &#34;compare bootstrap to effect size&#34;
-    n = 100
+    n = 30
     a = [random.random() for _ in range(n)]
-    print(&#34;\tcf bs ets cd  n   k&#34;)
-    for k in range(100, 150, 5):
-      k = k / 100
+    print(&#34;\tcf bs un cd  k   &#34;, n)
+    k = 1
+    while k &lt; 1.5:
       b = [x * k for x in a]
-      cf = cliffsDelta(a, b, the.dull)
-      bs = bootstrap(a, b, the.conf, the.b)
+      cf = Stats.cliffsDelta(a, b, the.dull)
+      bs = Stats.bootstrap(a, b, the.conf, the.b)
       i = Num(inits=a)
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
-      ets = not i.unlike(j, the)
-      print(&#34;\t&#34;, green(&#34;✔ &#34;) if cf else red(&#34;✖ &#34;),
-            green(&#34;✔ &#34;) if bs else red(&#34;✖ &#34;),
-            green(&#34; ✔ &#34;) if ets else red(&#34; ✖ &#34;),
-            green(&#34;✔ &#34;) if cd else red(&#34;✖ &#34;),
+      un = not i.unlike(j, the)
+      yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+      print(&#34;\t&#34;, yes if cf else no,
+            yes if bs else no,
+            yes if un else no,
+            yes if cd else no,
             n,
-            f&#34;{k:5.3f}&#34;)
+            f&#34;{k:5.2f}&#34;)
+      k += 0.025
 
   def egkeys0(the):
     t = Table().read(the.data)
@@ -738,7 +740,7 @@ class yardstick:
 # ---------------------------
 # ## Main
 if __name__ == &#34;__main__&#34;:
-  yardstick.all(cli(_DEFAULTS, __doc__))
+  yardstick.all(Lib.cli(_DEFAULTS, __doc__))
   sys.exit(1 if _FAILS &gt; 1 else 0)</code></pre>
 </details>
 </section>
@@ -787,120 +789,6 @@ if __name__ == &#34;__main__&#34;:
   enough = 2 * len(tbl.rows)**the.enough
   go(tbl.rows, 0)
   return sorted(out)</code></pre>
-</details>
-</dd>
-<dt id="keys0.bootstrap"><code class="name flex">
-<span>def <span class="ident">bootstrap</span></span>(<span>y0, z0, conf=0.05, b=500)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def bootstrap(y0, z0, conf=0.05, b=500):
-  def one(lst): return lst[int(any(len(lst)))]
-  def any(n): return random.uniform(0, n)
-
-  class Sum():
-    def __init__(i, some=[]):
-      i.sum, i.n, i.mu, i.all = 0, 0, 0, []
-      [i.put(one) for one in some]
-
-    def put(i, x):
-      i.all.append(x)
-      i.sum += x
-      i.n += 1
-      i.mu = float(i.sum) / i.n
-
-    def __add__(i1, i2): return Sum(i1.all + i2.all)
-
-  def testStatistic(y, z):
-    tmp1 = tmp2 = 0
-    for y1 in y.all:
-      tmp1 += (y1 - y.mu)**2
-    for z1 in z.all:
-      tmp2 += (z1 - z.mu)**2
-    s1 = float(tmp1) / (y.n - 1)
-    s2 = float(tmp2) / (z.n - 1)
-    delta = z.mu - y.mu
-    if s1 + s2:
-      delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
-    return delta
-
-  y, z = Sum(y0), Sum(z0)
-  x = y + z
-  baseline = testStatistic(y, z)
-  yhat = [y1 - y.mu + x.mu for y1 in y.all]
-  zhat = [z1 - z.mu + x.mu for z1 in z.all]
-  bigger = 0
-  for i in range(b):
-    if testStatistic(Sum([one(yhat) for _ in yhat]),
-                     Sum([one(zhat) for _ in zhat])) &gt; baseline:
-      bigger += 1
-  return bigger / b &gt;= conf</code></pre>
-</details>
-</dd>
-<dt id="keys0.cli"><code class="name flex">
-<span>def <span class="ident">cli</span></span>(<span>d, help)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cli(d, help):
-  # Update `d` with cli flags (if they match  the keys in `d`).
-  j = -1
-  while j &lt; len(sys.argv) - 1:
-    j += 1
-    key = sys.argv[j][1:]
-    if key == &#34;h&#34;:
-      print(help)
-      sys.exit()
-    elif key[0].isupper() and key in d:
-      d[key] = True
-    elif key in d:
-      j += 1
-      x = sys.argv[j]
-      y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
-          float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
-          x)
-      if type(y) == type(d[key]):
-        d[key] = y
-  return o(**d)</code></pre>
-</details>
-</dd>
-<dt id="keys0.cliffsDelta"><code class="name flex">
-<span>def <span class="ident">cliffsDelta</span></span>(<span>a1, a2, dull=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cliffsDelta(a1, a2, dull=None):
-  # Returns true if there are more than &#39;dull&#39; difference.
-  return cliffsDelta1(a1, sorted(a2), dull=dull)</code></pre>
-</details>
-</dd>
-<dt id="keys0.cliffsDelta1"><code class="name flex">
-<span>def <span class="ident">cliffsDelta1</span></span>(<span>a1, a2, dull=0.147)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
-  n1, n2, gt, lt, = len(a1), len(a2), 0, 0
-  for x in a1:
-    lt += bisect.bisect_left(a2, x)
-    gt += n2 - bisect.bisect_right(a2, x)
-  return abs(lt - gt) / (n1 * n2) &lt;= dull</code></pre>
 </details>
 </dd>
 <dt id="keys0.cluster"><code class="name flex">
@@ -973,30 +861,6 @@ if __name__ == &#34;__main__&#34;:
   return merge(out)</code></pre>
 </details>
 </dd>
-<dt id="keys0.first"><code class="name flex">
-<span>def <span class="ident">first</span></span>(<span>l)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def first(l): return l[0]</code></pre>
-</details>
-</dd>
-<dt id="keys0.green"><code class="name flex">
-<span>def <span class="ident">green</span></span>(<span>x)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
-</details>
-</dd>
 <dt id="keys0.keys0"><code class="name flex">
 <span>def <span class="ident">keys0</span></span>(<span>tbl, the, cols=None, goal=0)</span>
 </code></dt>
@@ -1030,9 +894,9 @@ if __name__ == &#34;__main__&#34;:
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)
            if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=first)
+    lst = sorted(lst, reverse=True, key=Lib.first)
     if lst:
-      do = first(lst)[1]
+      do = Lib.first(lst)[1]
       rows1 = [row for row in rows if select(do, row)]
       if enough &lt;= len(rows1) &lt; len(rows):
         now = tbl.clone(rows1)
@@ -1043,39 +907,8 @@ if __name__ == &#34;__main__&#34;:
   enough = len(tbl.rows)**the.enough
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
-  print([(col.per(.6) - col.per(.5)) for col in tbl.y])
   go(tbl.rows, tbl)
   return rules</code></pre>
-</details>
-</dd>
-<dt id="keys0.lines"><code class="name flex">
-<span>def <span class="ident">lines</span></span>(<span>f)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def lines(f):
-  # return non-blanks  likes, split on comma.
-  with open(f) as fp:
-    for line in fp:
-      line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
-      if line:
-        yield line.split(&#34;,&#34;)</code></pre>
-</details>
-</dd>
-<dt id="keys0.red"><code class="name flex">
-<span>def <span class="ident">red</span></span>(<span>x)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def red(x): return fore.RED + style.BOLD + x + style.RESET</code></pre>
 </details>
 </dd>
 </dl>
@@ -1182,6 +1015,139 @@ if __name__ == &#34;__main__&#34;:
 </dd>
 </dl>
 </dd>
+<dt id="keys0.Lib"><code class="flex name class">
+<span>class <span class="ident">Lib</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Lib:
+  def cli(d, help):
+    # Update `d` with cli flags (if they match  the keys in `d`).
+    j = -1
+    while j &lt; len(sys.argv) - 1:
+      j += 1
+      key = sys.argv[j][1:]
+      if key == &#34;h&#34;:
+        print(help)
+        sys.exit()
+      elif key[0].isupper() and key in d:
+        d[key] = True
+      elif key in d:
+        j += 1
+        x = sys.argv[j]
+        y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
+            float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
+            x)
+        if type(y) == type(d[key]):
+          d[key] = y
+    return o(**d)
+
+  def lines(f):
+    # return non-blanks  likes, split on comma.
+    with open(f) as fp:
+      for line in fp:
+        line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
+        if line:
+          yield line.split(&#34;,&#34;)
+
+  def first(l): return l[0]
+
+  def red(x): return fore.RED + style.BOLD + x + style.RESET
+  def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="keys0.Lib.cli"><code class="name flex">
+<span>def <span class="ident">cli</span></span>(<span>d, help)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cli(d, help):
+  # Update `d` with cli flags (if they match  the keys in `d`).
+  j = -1
+  while j &lt; len(sys.argv) - 1:
+    j += 1
+    key = sys.argv[j][1:]
+    if key == &#34;h&#34;:
+      print(help)
+      sys.exit()
+    elif key[0].isupper() and key in d:
+      d[key] = True
+    elif key in d:
+      j += 1
+      x = sys.argv[j]
+      y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
+          float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
+          x)
+      if type(y) == type(d[key]):
+        d[key] = y
+  return o(**d)</code></pre>
+</details>
+</dd>
+<dt id="keys0.Lib.first"><code class="name flex">
+<span>def <span class="ident">first</span></span>(<span>l)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def first(l): return l[0]</code></pre>
+</details>
+</dd>
+<dt id="keys0.Lib.green"><code class="name flex">
+<span>def <span class="ident">green</span></span>(<span>x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
+</details>
+</dd>
+<dt id="keys0.Lib.lines"><code class="name flex">
+<span>def <span class="ident">lines</span></span>(<span>f)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lines(f):
+  # return non-blanks  likes, split on comma.
+  with open(f) as fp:
+    for line in fp:
+      line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
+      if line:
+        yield line.split(&#34;,&#34;)</code></pre>
+</details>
+</dd>
+<dt id="keys0.Lib.red"><code class="name flex">
+<span>def <span class="ident">red</span></span>(<span>x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def red(x): return fore.RED + style.BOLD + x + style.RESET</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="keys0.Num"><code class="flex name class">
 <span>class <span class="ident">Num</span></span>
 <span>(</span><span>*l, **k)</span>
@@ -1244,14 +1210,14 @@ if __name__ == &#34;__main__&#34;:
 
   def same(i, j, the):
     lst1, lst2 = i.all(), j.all()
-    return cliffsDelta1(lst1, lst2, the.dull) and \
-        bootstrap(lst1, lst2, the.conf, the.b)
+    return Stats.cliffsDelta1(lst1, lst2, the.dull) and \
+        Stats.bootstrap(lst1, lst2, the.conf, the.b)
 
   def unlike(i, j, the):
-    d = the.cohen / 3
+    d = the.cohen / 3 # normal stops at 3 sd
     x = i.per(.5 + d) - i.per(.5)
     y = i.per(.5) - i.per(.5 - d)
-    z = (x + y) / 2
+    z = (x + y) / 2 # man different here to cohen*sd
     delta = abs(i.per(.5) - j.per(.5))
     return delta &gt; z</code></pre>
 </details>
@@ -1409,8 +1375,8 @@ if __name__ == &#34;__main__&#34;:
 </summary>
 <pre><code class="python">def same(i, j, the):
   lst1, lst2 = i.all(), j.all()
-  return cliffsDelta1(lst1, lst2, the.dull) and \
-      bootstrap(lst1, lst2, the.conf, the.b)</code></pre>
+  return Stats.cliffsDelta1(lst1, lst2, the.dull) and \
+      Stats.bootstrap(lst1, lst2, the.conf, the.b)</code></pre>
 </details>
 </dd>
 <dt id="keys0.Num.sd"><code class="name flex">
@@ -1435,10 +1401,10 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def unlike(i, j, the):
-  d = the.cohen / 3
+  d = the.cohen / 3 # normal stops at 3 sd
   x = i.per(.5 + d) - i.per(.5)
   y = i.per(.5) - i.per(.5 - d)
-  z = (x + y) / 2
+  z = (x + y) / 2 # man different here to cohen*sd
   delta = abs(i.per(.5) - j.per(.5))
   return delta &gt; z</code></pre>
 </details>
@@ -1488,7 +1454,7 @@ if __name__ == &#34;__main__&#34;:
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=first)
+    return sorted(tmp, key=Lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -1551,7 +1517,7 @@ if __name__ == &#34;__main__&#34;:
 <pre><code class="python">def neighbors(i, the, rows=None, cols=None):
   rows = rows or i._tbl.rows
   tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-  return sorted(tmp, key=first)</code></pre>
+  return sorted(tmp, key=Lib.first)</code></pre>
 </details>
 </dd>
 <dt id="keys0.Row.ys"><code class="name flex">
@@ -1642,6 +1608,156 @@ if __name__ == &#34;__main__&#34;:
     elif r() &lt; i.keep / i.n:
       a[int(r() * len(a))] = x
   return x</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="keys0.Stats"><code class="flex name class">
+<span>class <span class="ident">Stats</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Stats:
+  def cliffsDelta(a1, a2, dull=None):
+    # Returns true if there are more than &#39;dull&#39; difference.
+    return Stats.cliffsDelta1(a1, sorted(a2), dull=dull)
+
+  def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
+    n1, n2, gt, lt, = len(a1), len(a2), 0, 0
+    for x in a1:
+      lt += bisect.bisect_left(a2, x)
+      gt += n2 - bisect.bisect_right(a2, x)
+    return abs(lt - gt) / (n1 * n2) &lt;= dull
+
+  def bootstrap(y0, z0, conf=0.05, b=500):
+    def one(lst): return lst[int(any(len(lst)))]
+    def any(n): return random.uniform(0, n)
+
+    class Sum():
+      def __init__(i, some=[]):
+        i.sum, i.n, i.mu, i.all = 0, 0, 0, []
+        [i.put(one) for one in some]
+
+      def put(i, x):
+        i.all.append(x)
+        i.sum += x
+        i.n += 1
+        i.mu = float(i.sum) / i.n
+
+      def __add__(i1, i2): return Sum(i1.all + i2.all)
+
+    def testStatistic(y, z):
+      tmp1 = tmp2 = 0
+      for y1 in y.all:
+        tmp1 += (y1 - y.mu)**2
+      for z1 in z.all:
+        tmp2 += (z1 - z.mu)**2
+      s1 = float(tmp1) / (y.n - 1)
+      s2 = float(tmp2) / (z.n - 1)
+      delta = z.mu - y.mu
+      if s1 + s2:
+        delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
+      return delta
+
+    y, z = Sum(y0), Sum(z0)
+    x = y + z
+    baseline = testStatistic(y, z)
+    yhat = [y1 - y.mu + x.mu for y1 in y.all]
+    zhat = [z1 - z.mu + x.mu for z1 in z.all]
+    bigger = 0
+    for i in range(b):
+      if testStatistic(Sum([one(yhat) for _ in yhat]),
+                       Sum([one(zhat) for _ in zhat])) &gt; baseline:
+        bigger += 1
+    return bigger / b &gt;= conf</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="keys0.Stats.bootstrap"><code class="name flex">
+<span>def <span class="ident">bootstrap</span></span>(<span>y0, z0, conf=0.05, b=500)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bootstrap(y0, z0, conf=0.05, b=500):
+  def one(lst): return lst[int(any(len(lst)))]
+  def any(n): return random.uniform(0, n)
+
+  class Sum():
+    def __init__(i, some=[]):
+      i.sum, i.n, i.mu, i.all = 0, 0, 0, []
+      [i.put(one) for one in some]
+
+    def put(i, x):
+      i.all.append(x)
+      i.sum += x
+      i.n += 1
+      i.mu = float(i.sum) / i.n
+
+    def __add__(i1, i2): return Sum(i1.all + i2.all)
+
+  def testStatistic(y, z):
+    tmp1 = tmp2 = 0
+    for y1 in y.all:
+      tmp1 += (y1 - y.mu)**2
+    for z1 in z.all:
+      tmp2 += (z1 - z.mu)**2
+    s1 = float(tmp1) / (y.n - 1)
+    s2 = float(tmp2) / (z.n - 1)
+    delta = z.mu - y.mu
+    if s1 + s2:
+      delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
+    return delta
+
+  y, z = Sum(y0), Sum(z0)
+  x = y + z
+  baseline = testStatistic(y, z)
+  yhat = [y1 - y.mu + x.mu for y1 in y.all]
+  zhat = [z1 - z.mu + x.mu for z1 in z.all]
+  bigger = 0
+  for i in range(b):
+    if testStatistic(Sum([one(yhat) for _ in yhat]),
+                     Sum([one(zhat) for _ in zhat])) &gt; baseline:
+      bigger += 1
+  return bigger / b &gt;= conf</code></pre>
+</details>
+</dd>
+<dt id="keys0.Stats.cliffsDelta"><code class="name flex">
+<span>def <span class="ident">cliffsDelta</span></span>(<span>a1, a2, dull=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cliffsDelta(a1, a2, dull=None):
+  # Returns true if there are more than &#39;dull&#39; difference.
+  return Stats.cliffsDelta1(a1, sorted(a2), dull=dull)</code></pre>
+</details>
+</dd>
+<dt id="keys0.Stats.cliffsDelta1"><code class="name flex">
+<span>def <span class="ident">cliffsDelta1</span></span>(<span>a1, a2, dull=0.147)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
+  n1, n2, gt, lt, = len(a1), len(a2), 0, 0
+  for x in a1:
+    lt += bisect.bisect_left(a2, x)
+    gt += n2 - bisect.bisect_right(a2, x)
+  return abs(lt - gt) / (n1 * n2) &lt;= dull</code></pre>
 </details>
 </dd>
 </dl>
@@ -1843,7 +1959,7 @@ if __name__ == &#34;__main__&#34;:
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in lines(f)]; return i
+  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -1988,7 +2104,7 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read(i, f): [i.add(line) for line in lines(f)]; return i</code></pre>
+<pre><code class="python">def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i</code></pre>
 </details>
 </dd>
 <dt id="keys0.Table.row"><code class="name flex">
@@ -2094,12 +2210,12 @@ if __name__ == &#34;__main__&#34;:
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(green(&#34;✔&#34;), fun.__name__)
+      print(Lib.green(&#34;✔&#34;), fun.__name__)
     except:
       global _FAILS
       _FAILS += 1
       traceback.print_exc()
-      print(red(&#34;✖&#34;), fun.__name__)
+      print(Lib.red(&#34;✖&#34;), fun.__name__)
 
   def egfails(the): assert False, &#34;checking failure behaviour&#34;
 
@@ -2175,29 +2291,31 @@ if __name__ == &#34;__main__&#34;:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=first):
+    for s, x in sorted(tmp, key=Lib.first):
       print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)
 
   def egstats(the):
     &#34;compare bootstrap to effect size&#34;
-    n = 100
+    n = 30
     a = [random.random() for _ in range(n)]
-    print(&#34;\tcf bs ets cd  n   k&#34;)
-    for k in range(100, 150, 5):
-      k = k / 100
+    print(&#34;\tcf bs un cd  k   &#34;, n)
+    k = 1
+    while k &lt; 1.5:
       b = [x * k for x in a]
-      cf = cliffsDelta(a, b, the.dull)
-      bs = bootstrap(a, b, the.conf, the.b)
+      cf = Stats.cliffsDelta(a, b, the.dull)
+      bs = Stats.bootstrap(a, b, the.conf, the.b)
       i = Num(inits=a)
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
-      ets = not i.unlike(j, the)
-      print(&#34;\t&#34;, green(&#34;✔ &#34;) if cf else red(&#34;✖ &#34;),
-            green(&#34;✔ &#34;) if bs else red(&#34;✖ &#34;),
-            green(&#34; ✔ &#34;) if ets else red(&#34; ✖ &#34;),
-            green(&#34;✔ &#34;) if cd else red(&#34;✖ &#34;),
+      un = not i.unlike(j, the)
+      yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+      print(&#34;\t&#34;, yes if cf else no,
+            yes if bs else no,
+            yes if un else no,
+            yes if cd else no,
             n,
-            f&#34;{k:5.3f}&#34;)
+            f&#34;{k:5.2f}&#34;)
+      k += 0.025
 
   def egkeys0(the):
     t = Table().read(the.data)
@@ -2296,7 +2414,7 @@ if __name__ == &#34;__main__&#34;:
   tmp = [(x.best**2 / (x.best + x.rest), x)
          for great, dull in zip(best.x, rest.x)
          for x in great.ranges(dull, the)]
-  for s, x in sorted(tmp, key=first):
+  for s, x in sorted(tmp, key=Lib.first):
     print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)</code></pre>
 </details>
 </dd>
@@ -2412,24 +2530,26 @@ if __name__ == &#34;__main__&#34;:
 </summary>
 <pre><code class="python">def egstats(the):
   &#34;compare bootstrap to effect size&#34;
-  n = 100
+  n = 30
   a = [random.random() for _ in range(n)]
-  print(&#34;\tcf bs ets cd  n   k&#34;)
-  for k in range(100, 150, 5):
-    k = k / 100
+  print(&#34;\tcf bs un cd  k   &#34;, n)
+  k = 1
+  while k &lt; 1.5:
     b = [x * k for x in a]
-    cf = cliffsDelta(a, b, the.dull)
-    bs = bootstrap(a, b, the.conf, the.b)
+    cf = Stats.cliffsDelta(a, b, the.dull)
+    bs = Stats.bootstrap(a, b, the.conf, the.b)
     i = Num(inits=a)
     j = Num(inits=b)
     cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
-    ets = not i.unlike(j, the)
-    print(&#34;\t&#34;, green(&#34;✔ &#34;) if cf else red(&#34;✖ &#34;),
-          green(&#34;✔ &#34;) if bs else red(&#34;✖ &#34;),
-          green(&#34; ✔ &#34;) if ets else red(&#34; ✖ &#34;),
-          green(&#34;✔ &#34;) if cd else red(&#34;✖ &#34;),
+    un = not i.unlike(j, the)
+    yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+    print(&#34;\t&#34;, yes if cf else no,
+          yes if bs else no,
+          yes if un else no,
+          yes if cd else no,
           n,
-          f&#34;{k:5.3f}&#34;)</code></pre>
+          f&#34;{k:5.2f}&#34;)
+    k += 0.025</code></pre>
 </details>
 </dd>
 <dt id="keys0.yardstick.egsym"><code class="name flex">
@@ -2483,12 +2603,12 @@ if __name__ == &#34;__main__&#34;:
   random.seed(the.seed)
   try:
     fun(copy.deepcopy(the))
-    print(green(&#34;✔&#34;), fun.__name__)
+    print(Lib.green(&#34;✔&#34;), fun.__name__)
   except:
     global _FAILS
     _FAILS += 1
     traceback.print_exc()
-    print(red(&#34;✖&#34;), fun.__name__)</code></pre>
+    print(Lib.red(&#34;✖&#34;), fun.__name__)</code></pre>
 </details>
 </dd>
 </dl>
@@ -2503,20 +2623,12 @@ if __name__ == &#34;__main__&#34;:
 </div>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="keys0.Col" href="#keys0.Col">Col</a></code></li>
 <li><code><a title="keys0.bestRest" href="#keys0.bestRest">bestRest</a></code></li>
-<li><code><a title="keys0.bootstrap" href="#keys0.bootstrap">bootstrap</a></code></li>
-<li><code><a title="keys0.cli" href="#keys0.cli">cli</a></code></li>
-<li><code><a title="keys0.cliffsDelta" href="#keys0.cliffsDelta">cliffsDelta</a></code></li>
-<li><code><a title="keys0.cliffsDelta1" href="#keys0.cliffsDelta1">cliffsDelta1</a></code></li>
 <li><code><a title="keys0.cluster" href="#keys0.cluster">cluster</a></code></li>
 <li><code><a title="keys0.discretize" href="#keys0.discretize">discretize</a></code></li>
-<li><code><a title="keys0.first" href="#keys0.first">first</a></code></li>
-<li><code><a title="keys0.green" href="#keys0.green">green</a></code></li>
 <li><code><a title="keys0.keys0" href="#keys0.keys0">keys0</a></code></li>
-<li><code><a title="keys0.lines" href="#keys0.lines">lines</a></code></li>
-<li><code><a title="keys0.red" href="#keys0.red">red</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -2529,6 +2641,16 @@ if __name__ == &#34;__main__&#34;:
 <li><code><a title="keys0.Column.mid" href="#keys0.Column.mid">mid</a></code></li>
 <li><code><a title="keys0.Column.norm" href="#keys0.Column.norm">norm</a></code></li>
 <li><code><a title="keys0.Column.var" href="#keys0.Column.var">var</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="keys0.Lib" href="#keys0.Lib">Lib</a></code></h4>
+<ul class="">
+<li><code><a title="keys0.Lib.cli" href="#keys0.Lib.cli">cli</a></code></li>
+<li><code><a title="keys0.Lib.first" href="#keys0.Lib.first">first</a></code></li>
+<li><code><a title="keys0.Lib.green" href="#keys0.Lib.green">green</a></code></li>
+<li><code><a title="keys0.Lib.lines" href="#keys0.Lib.lines">lines</a></code></li>
+<li><code><a title="keys0.Lib.red" href="#keys0.Lib.red">red</a></code></li>
 </ul>
 </li>
 <li>
@@ -2565,6 +2687,14 @@ if __name__ == &#34;__main__&#34;:
 <h4><code><a title="keys0.Some" href="#keys0.Some">Some</a></code></h4>
 <ul class="">
 <li><code><a title="keys0.Some.add" href="#keys0.Some.add">add</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="keys0.Stats" href="#keys0.Stats">Stats</a></code></h4>
+<ul class="">
+<li><code><a title="keys0.Stats.bootstrap" href="#keys0.Stats.bootstrap">bootstrap</a></code></li>
+<li><code><a title="keys0.Stats.cliffsDelta" href="#keys0.Stats.cliffsDelta">cliffsDelta</a></code></li>
+<li><code><a title="keys0.Stats.cliffsDelta1" href="#keys0.Stats.cliffsDelta1">cliffsDelta1</a></code></li>
 </ul>
 </li>
 <li>

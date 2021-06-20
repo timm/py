@@ -107,9 +107,9 @@ def keys0(tbl, the, cols=None, goal=0):
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)
            if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=first)
+    lst = sorted(lst, reverse=True, key=Lib.first)
     if lst:
-      do = first(lst)[1]
+      do = Lib.first(lst)[1]
       rows1 = [row for row in rows if select(do, row)]
       if enough <= len(rows1) < len(rows):
         now = tbl.clone(rows1)
@@ -260,8 +260,8 @@ class Num(Column):
 
   def same(i, j, the):
     lst1, lst2 = i.all(), j.all()
-    return cliffsDelta1(lst1, lst2, the.dull) and \
-        bootstrap(lst1, lst2, the.conf, the.b)
+    return Stats.cliffsDelta1(lst1, lst2, the.dull) and \
+        Stats.bootstrap(lst1, lst2, the.conf, the.b)
 
   def unlike(i, j, the):
     d = the.cohen / 3 # normal stops at 3 sd
@@ -313,7 +313,7 @@ class Row(o):
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=first)
+    return sorted(tmp, key=Lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -334,7 +334,7 @@ class Table(o):
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in lines(f)]; return i
+  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -451,92 +451,94 @@ def discretize(xy, epsilon, width):
     now.also.add(y)
   return merge(out)
 
-def cli(d, help):
-  # Update `d` with cli flags (if they match  the keys in `d`).
-  j = -1
-  while j < len(sys.argv) - 1:
-    j += 1
-    key = sys.argv[j][1:]
-    if key == "h":
-      print(help)
-      sys.exit()
-    elif key[0].isupper() and key in d:
-      d[key] = True
-    elif key in d:
+class Lib:
+  def cli(d, help):
+    # Update `d` with cli flags (if they match  the keys in `d`).
+    j = -1
+    while j < len(sys.argv) - 1:
       j += 1
-      x = sys.argv[j]
-      y = int(x) if re.match(r"^[-+]?[0-9]+$", x) else (
-          float(x) if re.match(r"^[+-]?((\d+(\.\d+)?)|(\.\d+))$", x) else
-          x)
-      if type(y) == type(d[key]):
-        d[key] = y
-  return o(**d)
+      key = sys.argv[j][1:]
+      if key == "h":
+        print(help)
+        sys.exit()
+      elif key[0].isupper() and key in d:
+        d[key] = True
+      elif key in d:
+        j += 1
+        x = sys.argv[j]
+        y = int(x) if re.match(r"^[-+]?[0-9]+$", x) else (
+            float(x) if re.match(r"^[+-]?((\d+(\.\d+)?)|(\.\d+))$", x) else
+            x)
+        if type(y) == type(d[key]):
+          d[key] = y
+    return o(**d)
 
-def lines(f):
-  # return non-blanks  likes, split on comma.
-  with open(f) as fp:
-    for line in fp:
-      line = re.sub(r'([\n\t\r ]|#.*)', '', line)
-      if line:
-        yield line.split(",")
+  def lines(f):
+    # return non-blanks  likes, split on comma.
+    with open(f) as fp:
+      for line in fp:
+        line = re.sub(r'([\n\t\r ]|#.*)', '', line)
+        if line:
+          yield line.split(",")
 
-def first(l): return l[0]
+  def first(l): return l[0]
 
-def red(x): return fore.RED + style.BOLD + x + style.RESET
-def green(x): return fore.GREEN + style.BOLD + x + style.RESET
+  def red(x): return fore.RED + style.BOLD + x + style.RESET
+  def green(x): return fore.GREEN + style.BOLD + x + style.RESET
 
-def cliffsDelta(a1, a2, dull=None):
-  # Returns true if there are more than 'dull' difference.
-  return cliffsDelta1(a1, sorted(a2), dull=dull)
+class Stats:
+  def cliffsDelta(a1, a2, dull=None):
+    # Returns true if there are more than 'dull' difference.
+    return Stats.cliffsDelta1(a1, sorted(a2), dull=dull)
 
-def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
-  n1, n2, gt, lt, = len(a1), len(a2), 0, 0
-  for x in a1:
-    lt += bisect.bisect_left(a2, x)
-    gt += n2 - bisect.bisect_right(a2, x)
-  return abs(lt - gt) / (n1 * n2) <= dull
+  def cliffsDelta1(a1, a2, dull=[0.147, 0.33, 0.474][0]):
+    n1, n2, gt, lt, = len(a1), len(a2), 0, 0
+    for x in a1:
+      lt += bisect.bisect_left(a2, x)
+      gt += n2 - bisect.bisect_right(a2, x)
+    return abs(lt - gt) / (n1 * n2) <= dull
 
-def bootstrap(y0, z0, conf=0.05, b=500):
-  def one(lst): return lst[int(any(len(lst)))]
-  def any(n): return random.uniform(0, n)
+  def bootstrap(y0, z0, conf=0.05, b=500):
+    def one(lst): return lst[int(any(len(lst)))]
+    def any(n): return random.uniform(0, n)
 
-  class Sum():
-    def __init__(i, some=[]):
-      i.sum, i.n, i.mu, i.all = 0, 0, 0, []
-      [i.put(one) for one in some]
+    class Sum():
+      def __init__(i, some=[]):
+        i.sum, i.n, i.mu, i.all = 0, 0, 0, []
+        [i.put(one) for one in some]
 
-    def put(i, x):
-      i.all.append(x)
-      i.sum += x
-      i.n += 1
-      i.mu = float(i.sum) / i.n
+      def put(i, x):
+        i.all.append(x)
+        i.sum += x
+        i.n += 1
+        i.mu = float(i.sum) / i.n
 
-    def __add__(i1, i2): return Sum(i1.all + i2.all)
+      def __add__(i1, i2): return Sum(i1.all + i2.all)
 
-  def testStatistic(y, z):
-    tmp1 = tmp2 = 0
-    for y1 in y.all:
-      tmp1 += (y1 - y.mu)**2
-    for z1 in z.all:
-      tmp2 += (z1 - z.mu)**2
-    s1 = float(tmp1) / (y.n - 1)
-    s2 = float(tmp2) / (z.n - 1)
-    delta = z.mu - y.mu
-    if s1 + s2:
-      delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
-    return delta
+    def testStatistic(y, z):
+      tmp1 = tmp2 = 0
+      for y1 in y.all:
+        tmp1 += (y1 - y.mu)**2
+      for z1 in z.all:
+        tmp2 += (z1 - z.mu)**2
+      s1 = float(tmp1) / (y.n - 1)
+      s2 = float(tmp2) / (z.n - 1)
+      delta = z.mu - y.mu
+      if s1 + s2:
+        delta = delta / ((s1 / y.n + s2 / z.n)**0.5)
+      return delta
 
-  y, z = Sum(y0), Sum(z0)
-  x = y + z
-  baseline = testStatistic(y, z)
-  yhat = [y1 - y.mu + x.mu for y1 in y.all]
-  zhat = [z1 - z.mu + x.mu for z1 in z.all]
-  bigger = 0
-  for i in range(b):
-    if testStatistic(Sum([one(yhat) for _ in yhat]),
-                     Sum([one(zhat) for _ in zhat])) > baseline:
-      bigger += 1
-  return bigger / b >= conf
+    y, z = Sum(y0), Sum(z0)
+    x = y + z
+    baseline = testStatistic(y, z)
+    yhat = [y1 - y.mu + x.mu for y1 in y.all]
+    zhat = [z1 - z.mu + x.mu for z1 in z.all]
+    bigger = 0
+    for i in range(b):
+      if testStatistic(Sum([one(yhat) for _ in yhat]),
+                       Sum([one(zhat) for _ in zhat])) > baseline:
+        bigger += 1
+    return bigger / b >= conf
 
 # ---------------------------
 # ## Demos
@@ -566,12 +568,12 @@ class yardstick:
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(green("✔"), fun.__name__)
+      print(Lib.green("✔"), fun.__name__)
     except:
       global _FAILS
       _FAILS += 1
       traceback.print_exc()
-      print(red("✖"), fun.__name__)
+      print(Lib.red("✖"), fun.__name__)
 
   def egfails(the): assert False, "checking failure behaviour"
 
@@ -647,27 +649,28 @@ class yardstick:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=first):
+    for s, x in sorted(tmp, key=Lib.first):
       print(f"\t{s:5.2f}) {x.at}\t {x.down:>5} .. {x.up:>5}")
 
   def egstats(the):
     "compare bootstrap to effect size"
     n = 30
     a = [random.random() for _ in range(n)]
-    print("\tcf bs ets cd  n    k")
+    print("\tcf bs un cd  k   ", n)
     k = 1
     while k < 1.5:
       b = [x * k for x in a]
-      cf = cliffsDelta(a, b, the.dull)
-      bs = bootstrap(a, b, the.conf, the.b)
+      cf = Stats.cliffsDelta(a, b, the.dull)
+      bs = Stats.bootstrap(a, b, the.conf, the.b)
       i = Num(inits=a)
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) < i.sd() * .35
-      ets = not i.unlike(j, the)
-      print("\t", green("✔ ") if cf else red("✖ "),
-            green("✔ ") if bs else red("✖ "),
-            green(" ✔ ") if ets else red(" ✖ "),
-            green("✔ ") if cd else red("✖ "),
+      un = not i.unlike(j, the)
+      yes, no = Lib.green("✔ "), Lib.red("✖ ")
+      print("\t", yes if cf else no,
+            yes if bs else no,
+            yes if un else no,
+            yes if cd else no,
             n,
             f"{k:5.2f}")
       k += 0.025
@@ -681,5 +684,5 @@ class yardstick:
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
-  yardstick.all(cli(_DEFAULTS, __doc__))
+  yardstick.all(Lib.cli(_DEFAULTS, __doc__))
   sys.exit(1 if _FAILS > 1 else 0)
