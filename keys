@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.9
+# vim: filetype=python ts=2 sw=2 sts=2 et :
 """
-Keys0: baseline keys-based stochastic explainer/controller
+Keys: baseline keys-based stochastic explainer/controller
 "If you can really explain 'it', then you can control 'it'."
 (c) 2021 Tim Menzies <timm.ieee.org>, https://unlicense.org
 
-Usage: ./keys0.py [OPTIONS]
+Usage: ./keys [OPTIONS]
 
 OPTIONS:
 
@@ -83,7 +84,7 @@ Method:
 
 """
 
-def keys0(tbl, the, cols=None, goal=0):
+def keys(tbl, the, cols=None, goal=0):
   def optimize(b, r): return b**2 / (b + r)
   def monitor(b, r): return r**2 / (b + r)
   def safer(b, r): return 1 / (b + r)
@@ -541,15 +542,15 @@ def bootstrap(y0, z0, conf=0.05, b=500):
 
 # ---------------------------
 # ## Demos
-class Eg:
+class Yardstick:
   def all(the):
     # Main controller  for  the examples.
-    funs = {name: fun for name, fun in Eg.__dict__.items()
+    funs = {name: fun for name, fun in Yardstick.__dict__.items()
             if len(name) > 2 and name[:2] == "eg"}
     if the.Do:
       for name, fun in funs.items():
         doc = ("\t: " + fun.__doc__) if fun.__doc__ else ""
-        print(f"./keys0.py -do {name[2:]}{doc}")
+        print(f"./keys -do {name[2:]}{doc}")
       sys.exit()
     elif the.D:
       for k, v in the.__dict__.items():
@@ -558,7 +559,7 @@ class Eg:
     else:
       funs = funs if the.do == "all" else {
           the.do: funs["eg" + the.do]}
-      [Eg.one(the, fun) for name, fun in funs.items()]
+      [Yardstick.one(the, fun) for name, fun in funs.items()]
 
   def one(the, fun):
     # Running one  example.
@@ -653,11 +654,11 @@ class Eg:
 
   def egstats(the):
     "compare bootstrap to effect size"
-    k, n = 1, 30
+    n = 100
     a = [random.random() for _ in range(n)]
     print("\tcf bs ets cd  n   k")
-    while k < 1.5:
-      k *= 1.03
+    for k in range(100,150,5):
+      k = k/100
       b = [x * k for x in a]
       cf = cliffsDelta(a, b, the.dull)
       bs = bootstrap(a, b, the.conf, the.b)
@@ -672,14 +673,14 @@ class Eg:
             n,
             f"{k:5.3f}")
 
-  def egkeys0(the):
+  def egkeys(the):
     t = Table().read(the.data)
-    for x in keys0(t, the):
+    for x in keys(t, the):
       print(x)
 
 
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
-  Eg.all(cli(DEFAULTS, __doc__))
+  Yardstick.all(cli(DEFAULTS, __doc__))
   sys.exit(1 if FAILS > 1 else 0)
