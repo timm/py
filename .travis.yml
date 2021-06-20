@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.9"      # current default Python on Travis CI
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - python3 keys.py -do all
