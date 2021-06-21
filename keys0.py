@@ -93,35 +93,25 @@ def keys0(tbl, the, cols=None, goal=0):
     x = row.cells[do.at]
     return x != "?" and do.down <= x <= do.up
 
-  def trio(all): return (all.at, all.down, all.up)
+  def go(rows, b4, pre=""):
+    best, rest = bestRest(b4, the, cols=cols)
+    do, hi = True, -1
+    for great, dull in zip(best.x, rest.x):
+      for x in great.ranges(dull, the):
+        tmp = goal(x.best, x.rest)
+        if tmp > hi:
+          do, hi = x, tmp
+    rows1 = [row for row in rows if select(do, row)]
+    if enough <= len(rows1) < len(rows):
+      now = tbl.clone(rows1)
+      if now < b4:
+        rules.append((now.ys(), (do.at, do.down, do.up)))
+        go(rows1, now, pre + "   |")
 
-  def old(new):
-    for _, b4 in rules:
-      if new == b4:
-        return True
-    return False
-
-  def go(rows, b4):
-    best, rest = bestRest(tbl, the, cols=cols)
-    lst = [(goal(x.best, x.rest), x)
-           for great, dull in zip(best.x, rest.x)
-           for x in great.ranges(dull, the)
-           if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=Lib.first)
-    if lst:
-      do = Lib.first(lst)[1]
-      rows1 = [row for row in rows if select(do, row)]
-      if enough <= len(rows1) < len(rows):
-        now = tbl.clone(rows1)
-        print(now.ys(), trio(do))
-        # if now < b4 and now.unlike(b4, the):
-        rules.append((now.ys(), trio(do)))
-        go(rows1, now)
-
-  enough = len(tbl.rows)**the.enough
+  enough = 30  # len(tbl.rows)**the.enough
+  print("e", enough)
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
-  print(tbl.ys())
   go(tbl.rows, tbl)
   return rules
 
@@ -309,7 +299,8 @@ class Row(o):
   def ys(i): return [i.cells[col.at] for col in i._tbl.y]
 
   def distant(i, the, rows=None, cols=None):
-    tmp = i.neighbors(the, rows, cols)
+    some = [random.choice(rows) for _ in range(50)]
+    tmp = i.neighbors(the, some, cols)
     return tmp[int(the.far / 100 * len(tmp))][1]
 
   def neighbors(i, the, rows=None, cols=None):
@@ -637,6 +628,15 @@ class yardstick:
   def egcluster(the):
     t = Table().read(the.data)
     for t1 in sorted(cluster(t, the)):
+      print("\t", len(t1.rows), t1.ys())
+
+  def egclusterlohi(the):
+    t = Table().read(the.data)
+    rows = sorted(cluster(t, the))
+    for t1 in rows[:10]:
+      print("\t", len(t1.rows), t1.ys())
+    print("")
+    for t1 in rows[-10:]:
       print("\t", len(t1.rows), t1.ys())
 
   def egbestRest(the):
