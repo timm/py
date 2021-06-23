@@ -30,21 +30,23 @@ def dist(x,y,c,t):
   else:
     return 0 if x==y else 1
 
-class Col(o)
+class Col(o):
   def __init__(i,lst):
-    i.header    = [],[]
+    i.header    = lst
     i.hi,i.lo,i.y, i.x = {},{},{},{}
     for c,z in enumerate(lst):
       if "?" not in  z:
-        (y if "-" in z or "+" in z or "!" in z else x)[c] =  True
+        (i.y if "-" in z or "+" in z or "!" in z else x)[c] =  True
         if x[0].isupper(): 
           i.lo[c]  = float("inf")
           i.hi[c]  = -i.lo[c]
     return lst
   def update(i,lst):
     for c in i.hi:
-       x = lst[c]
-       if x !="?": i.lo[c], i.hi[c] =  min(i.lo[c],x),max(i.hi[c],x)
+      x=lst[c]
+      if x != "?":
+        x = lst[c] = float(lst[c])
+        i.lo[c], i.hi[c] =  min(i.lo[c],x),max(i.hi[c],x)
     return lst
   def norm(i,c,z):
     return (z-i.lo[c])/(i.hi[c] - i.lo[c]  +  1E-31)
