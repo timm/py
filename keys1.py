@@ -30,26 +30,10 @@ def dist(x,y,c,t):
   else:
     return 0 if x==y else 1
 
-class Table(o):
-  def  __init__(i,rows=[]):
-    i.rows,i.header    = [],[]
+class Col(o)
+  def __init__(i,lst):
+    i.header    = [],[]
     i.hi,i.lo,i.y, i.x = {},{},{},{}
-    [i.add(rows) for row in rows]
-  def add(i,lst):
-    if    i.header: i.rows.append(i.createRow(row))
-    else: i.header= i.createHeader(lst)
-  def read(i,f): 
-     [i.add(rows) for row in lines(f)]; return  i
-  def clone(i,rows=[]):
-     return Table(rows=[i.header] + rows)
-  def norm(i,c,z):
-    return (z-i.lo[c])/(i.hi[c] - i.lo[c]  +  1E-31)
-  def createRow(i,lst):
-    for c in i.hi:
-       x = lst[c]
-       if x !="?": i.lo[c], i.hi[c] =  min(i.lo[c],x),max(i.hi[c],x)
-    return lst
-  def createHeader(i,lst):
     for c,z in enumerate(lst):
       if "?" not in  z:
         (y if "-" in z or "+" in z or "!" in z else x)[c] =  True
@@ -57,6 +41,25 @@ class Table(o):
           i.lo[c]  = float("inf")
           i.hi[c]  = -i.lo[c]
     return lst
-     
+  def update(i,lst):
+    for c in i.hi:
+       x = lst[c]
+       if x !="?": i.lo[c], i.hi[c] =  min(i.lo[c],x),max(i.hi[c],x)
+    return lst
+  def norm(i,c,z):
+    return (z-i.lo[c])/(i.hi[c] - i.lo[c]  +  1E-31)
+
+class Table(o):
+  def  __init__(i,rows=[]):
+    i.rows,i.cols = [], None
+    [i.add(rows) for row in rows]
+  def add(i,lst):
+    if    i.cols: i.rows.append(i.cols.update(row))
+    else: i.cols= Cols(lst)
+  def read(i,f): 
+     [i.add(rows) for row in lines(f)]; return  i
+  def clone(i,rows=[]):
+     return Table(rows=[i.header] + rows)
+    
    
 
