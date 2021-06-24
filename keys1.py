@@ -1,9 +1,15 @@
 #!/usr/bin/env python3.9
 """
-Hello
+Keys1,py : optimization via discretization.
+(c) 2021, Tim Menzies, http://unlicense.org
+
+Options:
+
+ -data    FILE   data for data
+ -do      S      start-up action; default=None
+ -p       INT    distance co-efficient; default=2
+ -seed    INT    default random number seed; default=10013
 """
-import re,sys,copy,random,traceback
-from colored import fore,back,style
 
 _DEFAULTS = dict(
   Verbose = 0,
@@ -12,22 +18,15 @@ _DEFAULTS = dict(
   p       = 2,
   seed    = 10013)
 
+import re,sys,copy,random,traceback
+from colored import fore,back,style
+
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
 
   def __repr__(i): 
     return i.__class__.__name__ + str(
       {k: v for k, v in i.__dict__.items() if k[0] != "_"})
-
-def dist(x,y,c,t):
-  if x=="?" and y=="?": return 1
-  if c in t.hi:
-    if   x=="?": y=t.norm(c,y); x=1 if y<0.5 else 0
-    elif y=="?": x=t.norm(c,x); y=1 if y<0.5 else 0
-    else       : x,y = t.norm(c,x), t.norm(c,y)
-    return abs(x-y)
-  else:
-    return 0 if x==y else 1
 
 class Cols(o):
   def __init__(i,lst):
@@ -55,12 +54,23 @@ class Row(o):
   def __init__(i,t,cells):
     i._tab, i.cells = t,cells
 
+  def dist1(x,y,c):
+    if x=="?" and y=="?": return 1
+    t = i._tab
+    if c in t.hi:
+      if   x=="?": y = t.norm(c,y); x=1 if y<0.5 else 0
+      elif y=="?": x = t.norm(c,x); y=1 if y<0.5 else 0
+      else       : x,y = t.norm(c,x), t.norm(c,y)
+      return abs(x-y)
+    else:
+      return 0 if x==y else 1
+   
   def dist(i, j, the, cols=None):
     d, n = 0, 1E-32
     for c in cols or i._tbl.x:
       n += 1
       a, b = i.cells[c], j.cells[c]
-      inc = 1 if a == "?" and b == "?" else lib.dist(a,b,c,i._tab)
+      inc = 1 if a == "?" and b == "?" else i.dist1(a,b,c,i._tab)
       d += inc**the.p
     return (d / n)**(1 / the.p)
 
@@ -148,10 +158,10 @@ class yardstick:
   def egshow(the): print(the)
 
   def eglines(the):
-    for row in lib.lines(the.data): print(row)
+    [print(row) for row in lib.lines(the.data)]
 
   def egtab(the):
-    t=Table().read(the.data)
+    t = Table().read(the.data)
     print(t.cols)
 
 if __name__ == "__main__":
