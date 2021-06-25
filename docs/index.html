@@ -117,7 +117,7 @@ Assumes:
 - All the `y` values are numeric but `x`
   values can be numeric or symbolic.
   There may  even be missing x-values
-- We  need  to minimize  the number of
+  need  to minimize  the number of
   probes into the  `y` variables.
 - There can  be multiple goals we need  to
   minimize and  maximize. Our `Rows.__lt__` method
@@ -149,31 +149,23 @@ def keys0(tbl, the, cols=None, goal=0):
     x = row.cells[do.at]
     return x != &#34;?&#34; and do.down &lt;= x &lt;= do.up
 
-  def trio(all): return (all.at, all.down, all.up)
+  def go(rows, b4, pre=&#34;&#34;):
+    best, rest = bestRest(b4, the, cols=cols)
+    do, hi = True, -1
+    for great, dull in zip(best.x, rest.x):
+      for x in great.ranges(dull, the):
+        tmp = goal(x.best, x.rest)
+        if tmp &gt; hi:
+          do, hi = x, tmp
+    rows1 = [row for row in rows if select(do, row)]
+    if enough &lt;= len(rows1) &lt; len(rows):
+      now = tbl.clone(rows1)
+      if now &lt; b4:
+        rules.append((now.ys(), (do.at, do.down, do.up)))
+        go(rows1, now, pre + &#34;   |&#34;)
 
-  def old(new):
-    for _, b4 in rules:
-      if new == b4:
-        return True
-    return False
-
-  def go(rows, b4):
-    best, rest = bestRest(tbl, the, cols=cols)
-    lst = [(goal(x.best, x.rest), x)
-           for great, dull in zip(best.x, rest.x)
-           for x in great.ranges(dull, the)
-           if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=Lib.first)
-    if lst:
-      do = Lib.first(lst)[1]
-      rows1 = [row for row in rows if select(do, row)]
-      if enough &lt;= len(rows1) &lt; len(rows):
-        now = tbl.clone(rows1)
-        if now &lt; b4 and now.unlike(b4, the):
-          rules.append((now.ys(), trio(do)))
-          go(rows1, now)
-
-  enough = len(tbl.rows)**the.enough
+  enough = 30  # len(tbl.rows)**the.enough
+  print(&#34;e&#34;, enough)
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
   go(tbl.rows, tbl)
@@ -363,13 +355,14 @@ class Row(o):
   def ys(i): return [i.cells[col.at] for col in i._tbl.y]
 
   def distant(i, the, rows=None, cols=None):
-    tmp = i.neighbors(the, rows, cols)
+    some = [random.choice(rows) for _ in range(50)]
+    tmp = i.neighbors(the, some, cols)
     return tmp[int(the.far / 100 * len(tmp))][1]
 
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=Lib.first)
+    return sorted(tmp, key=lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -390,7 +383,7 @@ class Table(o):
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
+  def read(i, f): [i.add(line) for line in lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -507,7 +500,7 @@ def discretize(xy, epsilon, width):
     now.also.add(y)
   return merge(out)
 
-class Lib:
+class lib:
   def cli(d, help):
     # Update `d` with cli flags (if they match  the keys in `d`).
     j = -1
@@ -615,21 +608,21 @@ class yardstick:
     else:
       funs = funs if the.do == &#34;all&#34; else {
           the.do: funs[&#34;eg&#34; + the.do]}
-      [yardstick.one(the, fun) for name, fun in funs.items()]
+      [yardstick.each(the, fun) for name, fun in funs.items()]
 
-  def one(the, fun):
+  def each(the, fun):
     # Running one  example.
     global _FMT
     _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(Lib.green(&#34;✔&#34;), fun.__name__)
+      print(lib.green(&#34;✔&#34;), fun.__name__)
     except:
       global _FAILS
       _FAILS += 1
       traceback.print_exc()
-      print(Lib.red(&#34;✖&#34;), fun.__name__)
+      print(lib.red(&#34;✖&#34;), fun.__name__)
 
   def egfails(the): assert False, &#34;checking failure behaviour&#34;
 
@@ -650,7 +643,7 @@ class yardstick:
   def eglines(the):
     # Read a csv file.
     n = 0
-    for line in lines(the.data):
+    for line in lib.lines(the.data):
       n += 1
       assert len(line) == 8
     assert n == 399
@@ -680,7 +673,8 @@ class yardstick:
       print(&#34;\t&#34;, row.ys())
     print(&#34;&#34;)
     for row in t.rows[-5:]:
-      print(&#34;\t&#34;.row.ys())
+      print(&#34;\t&#34;, row.ys())
+    print(&#34;enough&#34;, the.enough)
 
   def egclone(the):
     t = Table().read(the.data)
@@ -690,6 +684,15 @@ class yardstick:
   def egcluster(the):
     t = Table().read(the.data)
     for t1 in sorted(cluster(t, the)):
+      print(&#34;\t&#34;, len(t1.rows), t1.ys())
+
+  def egclusterlohi(the):
+    t = Table().read(the.data)
+    rows = sorted(cluster(t, the))
+    for t1 in rows[:10]:
+      print(&#34;\t&#34;, len(t1.rows), t1.ys())
+    print(&#34;&#34;)
+    for t1 in rows[-10:]:
       print(&#34;\t&#34;, len(t1.rows), t1.ys())
 
   def egbestRest(the):
@@ -705,7 +708,7 @@ class yardstick:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=Lib.first):
+    for s, x in sorted(tmp, key=lib.first):
       print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)
 
   def egstats(the):
@@ -722,7 +725,7 @@ class yardstick:
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
       un = not i.unlike(j, the)
-      yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+      yes, no = lib.green(&#34;✔ &#34;), lib.red(&#34;✖ &#34;)
       print(&#34;\t&#34;, yes if cf else no,
             yes if bs else no,
             yes if un else no,
@@ -740,7 +743,7 @@ class yardstick:
 # ---------------------------
 # ## Main
 if __name__ == &#34;__main__&#34;:
-  yardstick.all(Lib.cli(_DEFAULTS, __doc__))
+  yardstick.all(lib.cli(_DEFAULTS, __doc__))
   sys.exit(1 if _FAILS &gt; 1 else 0)</code></pre>
 </details>
 </section>
@@ -880,31 +883,23 @@ if __name__ == &#34;__main__&#34;:
     x = row.cells[do.at]
     return x != &#34;?&#34; and do.down &lt;= x &lt;= do.up
 
-  def trio(all): return (all.at, all.down, all.up)
+  def go(rows, b4, pre=&#34;&#34;):
+    best, rest = bestRest(b4, the, cols=cols)
+    do, hi = True, -1
+    for great, dull in zip(best.x, rest.x):
+      for x in great.ranges(dull, the):
+        tmp = goal(x.best, x.rest)
+        if tmp &gt; hi:
+          do, hi = x, tmp
+    rows1 = [row for row in rows if select(do, row)]
+    if enough &lt;= len(rows1) &lt; len(rows):
+      now = tbl.clone(rows1)
+      if now &lt; b4:
+        rules.append((now.ys(), (do.at, do.down, do.up)))
+        go(rows1, now, pre + &#34;   |&#34;)
 
-  def old(new):
-    for _, b4 in rules:
-      if new == b4:
-        return True
-    return False
-
-  def go(rows, b4):
-    best, rest = bestRest(tbl, the, cols=cols)
-    lst = [(goal(x.best, x.rest), x)
-           for great, dull in zip(best.x, rest.x)
-           for x in great.ranges(dull, the)
-           if goal(x.best, x.rest) and not old(trio(x))]
-    lst = sorted(lst, reverse=True, key=Lib.first)
-    if lst:
-      do = Lib.first(lst)[1]
-      rows1 = [row for row in rows if select(do, row)]
-      if enough &lt;= len(rows1) &lt; len(rows):
-        now = tbl.clone(rows1)
-        if now &lt; b4 and now.unlike(b4, the):
-          rules.append((now.ys(), trio(do)))
-          go(rows1, now)
-
-  enough = len(tbl.rows)**the.enough
+  enough = 30  # len(tbl.rows)**the.enough
+  print(&#34;e&#34;, enough)
   cols = cols or tbl.x
   rules = [(tbl.ys(), True)]
   go(tbl.rows, tbl)
@@ -1011,139 +1006,6 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def var(i): return 0</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="keys0.Lib"><code class="flex name class">
-<span>class <span class="ident">Lib</span></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Lib:
-  def cli(d, help):
-    # Update `d` with cli flags (if they match  the keys in `d`).
-    j = -1
-    while j &lt; len(sys.argv) - 1:
-      j += 1
-      key = sys.argv[j][1:]
-      if key == &#34;h&#34;:
-        print(help)
-        sys.exit()
-      elif key[0].isupper() and key in d:
-        d[key] = True
-      elif key in d:
-        j += 1
-        x = sys.argv[j]
-        y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
-            float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
-            x)
-        if type(y) == type(d[key]):
-          d[key] = y
-    return o(**d)
-
-  def lines(f):
-    # return non-blanks  likes, split on comma.
-    with open(f) as fp:
-      for line in fp:
-        line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
-        if line:
-          yield line.split(&#34;,&#34;)
-
-  def first(l): return l[0]
-
-  def red(x): return fore.RED + style.BOLD + x + style.RESET
-  def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="keys0.Lib.cli"><code class="name flex">
-<span>def <span class="ident">cli</span></span>(<span>d, help)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cli(d, help):
-  # Update `d` with cli flags (if they match  the keys in `d`).
-  j = -1
-  while j &lt; len(sys.argv) - 1:
-    j += 1
-    key = sys.argv[j][1:]
-    if key == &#34;h&#34;:
-      print(help)
-      sys.exit()
-    elif key[0].isupper() and key in d:
-      d[key] = True
-    elif key in d:
-      j += 1
-      x = sys.argv[j]
-      y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
-          float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
-          x)
-      if type(y) == type(d[key]):
-        d[key] = y
-  return o(**d)</code></pre>
-</details>
-</dd>
-<dt id="keys0.Lib.first"><code class="name flex">
-<span>def <span class="ident">first</span></span>(<span>l)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def first(l): return l[0]</code></pre>
-</details>
-</dd>
-<dt id="keys0.Lib.green"><code class="name flex">
-<span>def <span class="ident">green</span></span>(<span>x)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
-</details>
-</dd>
-<dt id="keys0.Lib.lines"><code class="name flex">
-<span>def <span class="ident">lines</span></span>(<span>f)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def lines(f):
-  # return non-blanks  likes, split on comma.
-  with open(f) as fp:
-    for line in fp:
-      line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
-      if line:
-        yield line.split(&#34;,&#34;)</code></pre>
-</details>
-</dd>
-<dt id="keys0.Lib.red"><code class="name flex">
-<span>def <span class="ident">red</span></span>(<span>x)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def red(x): return fore.RED + style.BOLD + x + style.RESET</code></pre>
 </details>
 </dd>
 </dl>
@@ -1448,13 +1310,14 @@ if __name__ == &#34;__main__&#34;:
   def ys(i): return [i.cells[col.at] for col in i._tbl.y]
 
   def distant(i, the, rows=None, cols=None):
-    tmp = i.neighbors(the, rows, cols)
+    some = [random.choice(rows) for _ in range(50)]
+    tmp = i.neighbors(the, some, cols)
     return tmp[int(the.far / 100 * len(tmp))][1]
 
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=Lib.first)
+    return sorted(tmp, key=lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -1501,7 +1364,8 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def distant(i, the, rows=None, cols=None):
-  tmp = i.neighbors(the, rows, cols)
+  some = [random.choice(rows) for _ in range(50)]
+  tmp = i.neighbors(the, some, cols)
   return tmp[int(the.far / 100 * len(tmp))][1]</code></pre>
 </details>
 </dd>
@@ -1517,7 +1381,7 @@ if __name__ == &#34;__main__&#34;:
 <pre><code class="python">def neighbors(i, the, rows=None, cols=None):
   rows = rows or i._tbl.rows
   tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-  return sorted(tmp, key=Lib.first)</code></pre>
+  return sorted(tmp, key=lib.first)</code></pre>
 </details>
 </dd>
 <dt id="keys0.Row.ys"><code class="name flex">
@@ -1959,7 +1823,7 @@ if __name__ == &#34;__main__&#34;:
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
+  def read(i, f): [i.add(line) for line in lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -2104,7 +1968,7 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i</code></pre>
+<pre><code class="python">def read(i, f): [i.add(line) for line in lib.lines(f)]; return i</code></pre>
 </details>
 </dd>
 <dt id="keys0.Table.row"><code class="name flex">
@@ -2147,6 +2011,139 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def ys(i): return [col.mid() for col in i.y]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="keys0.lib"><code class="flex name class">
+<span>class <span class="ident">lib</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class lib:
+  def cli(d, help):
+    # Update `d` with cli flags (if they match  the keys in `d`).
+    j = -1
+    while j &lt; len(sys.argv) - 1:
+      j += 1
+      key = sys.argv[j][1:]
+      if key == &#34;h&#34;:
+        print(help)
+        sys.exit()
+      elif key[0].isupper() and key in d:
+        d[key] = True
+      elif key in d:
+        j += 1
+        x = sys.argv[j]
+        y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
+            float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
+            x)
+        if type(y) == type(d[key]):
+          d[key] = y
+    return o(**d)
+
+  def lines(f):
+    # return non-blanks  likes, split on comma.
+    with open(f) as fp:
+      for line in fp:
+        line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
+        if line:
+          yield line.split(&#34;,&#34;)
+
+  def first(l): return l[0]
+
+  def red(x): return fore.RED + style.BOLD + x + style.RESET
+  def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="keys0.lib.cli"><code class="name flex">
+<span>def <span class="ident">cli</span></span>(<span>d, help)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cli(d, help):
+  # Update `d` with cli flags (if they match  the keys in `d`).
+  j = -1
+  while j &lt; len(sys.argv) - 1:
+    j += 1
+    key = sys.argv[j][1:]
+    if key == &#34;h&#34;:
+      print(help)
+      sys.exit()
+    elif key[0].isupper() and key in d:
+      d[key] = True
+    elif key in d:
+      j += 1
+      x = sys.argv[j]
+      y = int(x) if re.match(r&#34;^[-+]?[0-9]+$&#34;, x) else (
+          float(x) if re.match(r&#34;^[+-]?((\d+(\.\d+)?)|(\.\d+))$&#34;, x) else
+          x)
+      if type(y) == type(d[key]):
+        d[key] = y
+  return o(**d)</code></pre>
+</details>
+</dd>
+<dt id="keys0.lib.first"><code class="name flex">
+<span>def <span class="ident">first</span></span>(<span>l)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def first(l): return l[0]</code></pre>
+</details>
+</dd>
+<dt id="keys0.lib.green"><code class="name flex">
+<span>def <span class="ident">green</span></span>(<span>x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def green(x): return fore.GREEN + style.BOLD + x + style.RESET</code></pre>
+</details>
+</dd>
+<dt id="keys0.lib.lines"><code class="name flex">
+<span>def <span class="ident">lines</span></span>(<span>f)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lines(f):
+  # return non-blanks  likes, split on comma.
+  with open(f) as fp:
+    for line in fp:
+      line = re.sub(r&#39;([\n\t\r ]|#.*)&#39;, &#39;&#39;, line)
+      if line:
+        yield line.split(&#34;,&#34;)</code></pre>
+</details>
+</dd>
+<dt id="keys0.lib.red"><code class="name flex">
+<span>def <span class="ident">red</span></span>(<span>x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def red(x): return fore.RED + style.BOLD + x + style.RESET</code></pre>
 </details>
 </dd>
 </dl>
@@ -2201,21 +2198,21 @@ if __name__ == &#34;__main__&#34;:
     else:
       funs = funs if the.do == &#34;all&#34; else {
           the.do: funs[&#34;eg&#34; + the.do]}
-      [yardstick.one(the, fun) for name, fun in funs.items()]
+      [yardstick.each(the, fun) for name, fun in funs.items()]
 
-  def one(the, fun):
+  def each(the, fun):
     # Running one  example.
     global _FMT
     _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(Lib.green(&#34;✔&#34;), fun.__name__)
+      print(lib.green(&#34;✔&#34;), fun.__name__)
     except:
       global _FAILS
       _FAILS += 1
       traceback.print_exc()
-      print(Lib.red(&#34;✖&#34;), fun.__name__)
+      print(lib.red(&#34;✖&#34;), fun.__name__)
 
   def egfails(the): assert False, &#34;checking failure behaviour&#34;
 
@@ -2236,7 +2233,7 @@ if __name__ == &#34;__main__&#34;:
   def eglines(the):
     # Read a csv file.
     n = 0
-    for line in lines(the.data):
+    for line in lib.lines(the.data):
       n += 1
       assert len(line) == 8
     assert n == 399
@@ -2266,7 +2263,8 @@ if __name__ == &#34;__main__&#34;:
       print(&#34;\t&#34;, row.ys())
     print(&#34;&#34;)
     for row in t.rows[-5:]:
-      print(&#34;\t&#34;.row.ys())
+      print(&#34;\t&#34;, row.ys())
+    print(&#34;enough&#34;, the.enough)
 
   def egclone(the):
     t = Table().read(the.data)
@@ -2276,6 +2274,15 @@ if __name__ == &#34;__main__&#34;:
   def egcluster(the):
     t = Table().read(the.data)
     for t1 in sorted(cluster(t, the)):
+      print(&#34;\t&#34;, len(t1.rows), t1.ys())
+
+  def egclusterlohi(the):
+    t = Table().read(the.data)
+    rows = sorted(cluster(t, the))
+    for t1 in rows[:10]:
+      print(&#34;\t&#34;, len(t1.rows), t1.ys())
+    print(&#34;&#34;)
+    for t1 in rows[-10:]:
       print(&#34;\t&#34;, len(t1.rows), t1.ys())
 
   def egbestRest(the):
@@ -2291,7 +2298,7 @@ if __name__ == &#34;__main__&#34;:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=Lib.first):
+    for s, x in sorted(tmp, key=lib.first):
       print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)
 
   def egstats(the):
@@ -2308,7 +2315,7 @@ if __name__ == &#34;__main__&#34;:
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
       un = not i.unlike(j, the)
-      yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+      yes, no = lib.green(&#34;✔ &#34;), lib.red(&#34;✖ &#34;)
       print(&#34;\t&#34;, yes if cf else no,
             yes if bs else no,
             yes if un else no,
@@ -2349,7 +2356,31 @@ if __name__ == &#34;__main__&#34;:
   else:
     funs = funs if the.do == &#34;all&#34; else {
         the.do: funs[&#34;eg&#34; + the.do]}
-    [yardstick.one(the, fun) for name, fun in funs.items()]</code></pre>
+    [yardstick.each(the, fun) for name, fun in funs.items()]</code></pre>
+</details>
+</dd>
+<dt id="keys0.yardstick.each"><code class="name flex">
+<span>def <span class="ident">each</span></span>(<span>the, fun)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def each(the, fun):
+  # Running one  example.
+  global _FMT
+  _FMT = the.fmt
+  random.seed(the.seed)
+  try:
+    fun(copy.deepcopy(the))
+    print(lib.green(&#34;✔&#34;), fun.__name__)
+  except:
+    global _FAILS
+    _FAILS += 1
+    traceback.print_exc()
+    print(lib.red(&#34;✖&#34;), fun.__name__)</code></pre>
 </details>
 </dd>
 <dt id="keys0.yardstick.egbestRest"><code class="name flex">
@@ -2397,6 +2428,25 @@ if __name__ == &#34;__main__&#34;:
     print(&#34;\t&#34;, len(t1.rows), t1.ys())</code></pre>
 </details>
 </dd>
+<dt id="keys0.yardstick.egclusterlohi"><code class="name flex">
+<span>def <span class="ident">egclusterlohi</span></span>(<span>the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def egclusterlohi(the):
+  t = Table().read(the.data)
+  rows = sorted(cluster(t, the))
+  for t1 in rows[:10]:
+    print(&#34;\t&#34;, len(t1.rows), t1.ys())
+  print(&#34;&#34;)
+  for t1 in rows[-10:]:
+    print(&#34;\t&#34;, len(t1.rows), t1.ys())</code></pre>
+</details>
+</dd>
 <dt id="keys0.yardstick.egdiscrete"><code class="name flex">
 <span>def <span class="ident">egdiscrete</span></span>(<span>the)</span>
 </code></dt>
@@ -2414,7 +2464,7 @@ if __name__ == &#34;__main__&#34;:
   tmp = [(x.best**2 / (x.best + x.rest), x)
          for great, dull in zip(best.x, rest.x)
          for x in great.ranges(dull, the)]
-  for s, x in sorted(tmp, key=Lib.first):
+  for s, x in sorted(tmp, key=lib.first):
     print(f&#34;\t{s:5.2f}) {x.at}\t {x.down:&gt;5} .. {x.up:&gt;5}&#34;)</code></pre>
 </details>
 </dd>
@@ -2476,7 +2526,7 @@ if __name__ == &#34;__main__&#34;:
 <pre><code class="python">def eglines(the):
   # Read a csv file.
   n = 0
-  for line in lines(the.data):
+  for line in lib.lines(the.data):
     n += 1
     assert len(line) == 8
   assert n == 399</code></pre>
@@ -2516,7 +2566,8 @@ if __name__ == &#34;__main__&#34;:
     print(&#34;\t&#34;, row.ys())
   print(&#34;&#34;)
   for row in t.rows[-5:]:
-    print(&#34;\t&#34;.row.ys())</code></pre>
+    print(&#34;\t&#34;, row.ys())
+  print(&#34;enough&#34;, the.enough)</code></pre>
 </details>
 </dd>
 <dt id="keys0.yardstick.egstats"><code class="name flex">
@@ -2542,7 +2593,7 @@ if __name__ == &#34;__main__&#34;:
     j = Num(inits=b)
     cd = abs(i.mid() - j.mid()) &lt; i.sd() * .35
     un = not i.unlike(j, the)
-    yes, no = Lib.green(&#34;✔ &#34;), Lib.red(&#34;✖ &#34;)
+    yes, no = lib.green(&#34;✔ &#34;), lib.red(&#34;✖ &#34;)
     print(&#34;\t&#34;, yes if cf else no,
           yes if bs else no,
           yes if un else no,
@@ -2587,30 +2638,6 @@ if __name__ == &#34;__main__&#34;:
   assert t.y[0].hi() == 5140</code></pre>
 </details>
 </dd>
-<dt id="keys0.yardstick.one"><code class="name flex">
-<span>def <span class="ident">one</span></span>(<span>the, fun)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def one(the, fun):
-  # Running one  example.
-  global _FMT
-  _FMT = the.fmt
-  random.seed(the.seed)
-  try:
-    fun(copy.deepcopy(the))
-    print(Lib.green(&#34;✔&#34;), fun.__name__)
-  except:
-    global _FAILS
-    _FAILS += 1
-    traceback.print_exc()
-    print(Lib.red(&#34;✖&#34;), fun.__name__)</code></pre>
-</details>
-</dd>
 </dl>
 </dd>
 </dl>
@@ -2641,16 +2668,6 @@ if __name__ == &#34;__main__&#34;:
 <li><code><a title="keys0.Column.mid" href="#keys0.Column.mid">mid</a></code></li>
 <li><code><a title="keys0.Column.norm" href="#keys0.Column.norm">norm</a></code></li>
 <li><code><a title="keys0.Column.var" href="#keys0.Column.var">var</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="keys0.Lib" href="#keys0.Lib">Lib</a></code></h4>
-<ul class="">
-<li><code><a title="keys0.Lib.cli" href="#keys0.Lib.cli">cli</a></code></li>
-<li><code><a title="keys0.Lib.first" href="#keys0.Lib.first">first</a></code></li>
-<li><code><a title="keys0.Lib.green" href="#keys0.Lib.green">green</a></code></li>
-<li><code><a title="keys0.Lib.lines" href="#keys0.Lib.lines">lines</a></code></li>
-<li><code><a title="keys0.Lib.red" href="#keys0.Lib.red">red</a></code></li>
 </ul>
 </li>
 <li>
@@ -2725,15 +2742,27 @@ if __name__ == &#34;__main__&#34;:
 </ul>
 </li>
 <li>
+<h4><code><a title="keys0.lib" href="#keys0.lib">lib</a></code></h4>
+<ul class="">
+<li><code><a title="keys0.lib.cli" href="#keys0.lib.cli">cli</a></code></li>
+<li><code><a title="keys0.lib.first" href="#keys0.lib.first">first</a></code></li>
+<li><code><a title="keys0.lib.green" href="#keys0.lib.green">green</a></code></li>
+<li><code><a title="keys0.lib.lines" href="#keys0.lib.lines">lines</a></code></li>
+<li><code><a title="keys0.lib.red" href="#keys0.lib.red">red</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="keys0.o" href="#keys0.o">o</a></code></h4>
 </li>
 <li>
 <h4><code><a title="keys0.yardstick" href="#keys0.yardstick">yardstick</a></code></h4>
 <ul class="two-column">
 <li><code><a title="keys0.yardstick.all" href="#keys0.yardstick.all">all</a></code></li>
+<li><code><a title="keys0.yardstick.each" href="#keys0.yardstick.each">each</a></code></li>
 <li><code><a title="keys0.yardstick.egbestRest" href="#keys0.yardstick.egbestRest">egbestRest</a></code></li>
 <li><code><a title="keys0.yardstick.egclone" href="#keys0.yardstick.egclone">egclone</a></code></li>
 <li><code><a title="keys0.yardstick.egcluster" href="#keys0.yardstick.egcluster">egcluster</a></code></li>
+<li><code><a title="keys0.yardstick.egclusterlohi" href="#keys0.yardstick.egclusterlohi">egclusterlohi</a></code></li>
 <li><code><a title="keys0.yardstick.egdiscrete" href="#keys0.yardstick.egdiscrete">egdiscrete</a></code></li>
 <li><code><a title="keys0.yardstick.egdist" href="#keys0.yardstick.egdist">egdist</a></code></li>
 <li><code><a title="keys0.yardstick.egfails" href="#keys0.yardstick.egfails">egfails</a></code></li>
@@ -2744,7 +2773,6 @@ if __name__ == &#34;__main__&#34;:
 <li><code><a title="keys0.yardstick.egstats" href="#keys0.yardstick.egstats">egstats</a></code></li>
 <li><code><a title="keys0.yardstick.egsym" href="#keys0.yardstick.egsym">egsym</a></code></li>
 <li><code><a title="keys0.yardstick.egtbl" href="#keys0.yardstick.egtbl">egtbl</a></code></li>
-<li><code><a title="keys0.yardstick.one" href="#keys0.yardstick.one">one</a></code></li>
 </ul>
 </li>
 </ul>

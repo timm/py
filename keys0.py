@@ -38,7 +38,6 @@ from colored import fore, back, style
 import traceback
 
 _FMT = "%8.2f"
-_FAILS = 0
 _DEFAULTS = dict(cohen=.35,  #
                  b=500, #
                  conf=0.05,  #
@@ -306,7 +305,7 @@ class Row(o):
   def neighbors(i, the, rows=None, cols=None):
     rows = rows or i._tbl.rows
     tmp = [(i.dist(j, the, cols or i._tbl.x), j) for j in rows]
-    return sorted(tmp, key=Lib.first)
+    return sorted(tmp, key=lib.first)
 
   def __lt__(i, j):
     cols = i._tbl.y
@@ -327,7 +326,7 @@ class Table(o):
   def row(i, lst): return Row(i, [col.add(x)
                                   for col, x in zip(i.cols, lst)])
 
-  def read(i, f): [i.add(line) for line in Lib.lines(f)]; return i
+  def read(i, f): [i.add(line) for line in lib.lines(f)]; return i
   def mid(i): return [col.mid() for col in i.cols]
   def ys(i): return [col.mid() for col in i.y]
   def unlike(i, j, the):
@@ -444,7 +443,7 @@ def discretize(xy, epsilon, width):
     now.also.add(y)
   return merge(out)
 
-class Lib:
+class lib:
   def cli(d, help):
     # Update `d` with cli flags (if they match  the keys in `d`).
     j = -1
@@ -536,6 +535,7 @@ class Stats:
 # ---------------------------
 # ## Demos
 class yardstick:
+  FAILS=0
   def all(the):
     # Main controller  for  the examples.
     funs = {name: fun for name, fun in yardstick.__dict__.items()
@@ -550,23 +550,23 @@ class yardstick:
         print(f" -{k} {v}")
       sys.exit()
     else:
-      funs = funs if the.do == "all" else {
-          the.do: funs["eg" + the.do]}
-      [yardstick.one(the, fun) for name, fun in funs.items()]
+      yardstick.FAILS = 0
+      funs = funs if the.do == "all" else {the.do: funs["eg" + the.do]}
+      [yardstick.each(the, fun) for name, fun in funs.items()]
+      sys.exit(1 if yardstick.FAILS > 1 else 0)
 
-  def one(the, fun):
+  def each(the, fun):
     # Running one  example.
     global _FMT
     _FMT = the.fmt
     random.seed(the.seed)
     try:
       fun(copy.deepcopy(the))
-      print(Lib.green("✔"), fun.__name__)
+      print(lib.green("✔"), fun.__name__)
     except:
-      global _FAILS
-      _FAILS += 1
+      yardstick.FAILS += 1
       traceback.print_exc()
-      print(Lib.red("✖"), fun.__name__)
+      print(lib.red("✖"), fun.__name__)
 
   def egfails(the): assert False, "checking failure behaviour"
 
@@ -587,7 +587,7 @@ class yardstick:
   def eglines(the):
     # Read a csv file.
     n = 0
-    for line in Lib.lines(the.data):
+    for line in lib.lines(the.data):
       n += 1
       assert len(line) == 8
     assert n == 399
@@ -652,31 +652,33 @@ class yardstick:
     tmp = [(x.best**2 / (x.best + x.rest), x)
            for great, dull in zip(best.x, rest.x)
            for x in great.ranges(dull, the)]
-    for s, x in sorted(tmp, key=Lib.first):
+    for s, x in sorted(tmp, key=lib.first):
       print(f"\t{s:5.2f}) {x.at}\t {x.down:>5} .. {x.up:>5}")
 
   def egstats(the):
     "compare bootstrap to effect size"
     n = 30
-    a = [random.random() for _ in range(n)]
-    print("\tcf bs un cd  k   ", n)
+    a = [random.random()**0.5 for _ in range(n)]
+    print("\tcf bs un cd bo  k   ", n)
     k = 1
-    while k < 1.5:
+    while k <= 1.5:
       b = [x * k for x in a]
       cf = Stats.cliffsDelta(a, b, the.dull)
       bs = Stats.bootstrap(a, b, the.conf, the.b)
+      bo = cf and bs
       i = Num(inits=a)
       j = Num(inits=b)
       cd = abs(i.mid() - j.mid()) < i.sd() * .35
       un = not i.unlike(j, the)
-      yes, no = Lib.green("✔ "), Lib.red("✖ ")
+      yes, no = lib.green("✔ "), lib.red("✖ ")
       print("\t", yes if cf else no,
             yes if bs else no,
             yes if un else no,
             yes if cd else no,
+            yes if bo else no,
             n,
             f"{k:5.2f}")
-      k += 0.025
+      k += 0.02
 
   def egkeys0(the):
     t = Table().read(the.data)
@@ -687,5 +689,4 @@ class yardstick:
 # ---------------------------
 # ## Main
 if __name__ == "__main__":
-  yardstick.all(Lib.cli(_DEFAULTS, __doc__))
-  sys.exit(1 if _FAILS > 1 else 0)
+  yardstick.all(lib.cli(_DEFAULTS, __doc__))

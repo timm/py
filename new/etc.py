@@ -1,4 +1,4 @@
-import re,sys,copy,random,traceback
+import re,sys,copy,random
 
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)

@@ -9,5 +9,51 @@ doc() {
   mv $Ell/docs/keys0.html $Ell/docs/index.html)
 }
 
-alias gp="git commit -am saving; git push"
 alias keys="python3.9 $Ell/keys0.py "
+
+alias ..='cd ..'
+alias ...='cd ../../../'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias gp="git add *;git commit -am save;git push;git status"
+alias hello="git pull"
+alias bye="gp; tmux detach"
+alias h="history"
+alias hh=". $Etc/etc/h"
+alias ls="ls -G"
+alias tmux="tmux -f $Etc/etc/tmux-conf "
+alias vi="vim -u $Etc/etc/vimrc "
+alias vims="vim +PluginInstall +qall"         
+
+here() { cd $1; basename `pwd`; }
+
+PROMPT_COMMAND='echo -ne "🔑 $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
+
+
+tput bold; tput setaf 5
+cat<<EOF
+
+                                       _.oo.
+                 _.u[[/;:,.         .odMMMMMM'
+              .o888UU[[[/;:-.  .o@P^    MMM^
+             oN88888UU[[[/;::-.        dP^
+            dNMMNN888UU[[[/;:--.   .o@P^ _                   ___
+           ,MMMMMMN888UU[[/;::-. o@^    | |                 / _ \    
+           NNMMMNN888UU[[[/~.o@P^       | | _____ _   _ ___| | | |      _ __  _   _
+           888888888UU[[[/o@^-..        | |/ / _ \ | | / __| | | |     | '_ \| | | |
+          oI8888UU[[[/o@P^:--..         |   <  __/ |_| \__ \ |_| |  _  | |_) | |_| |
+       .@^  YUU[[[/o@^;::---..          |_|\_\___|\__, |___/\___/  (_) | .__/ \__, |
+     oMP     ^/o@P^;:::---..                       __/ |               | |     __/ |
+  .dMMM    .o@^ ^;::---...                        |___/                |_|    |___/
+dMMMMMMM@^`       `^^^^     
+YMMMUP^                     
+ ^^                        
+EOF
+tput bold; tput setaf 241
+echo "Short cuts:"
+alias | sed 's/alias /  /'
+echo ""
+tput sgr0
+
+

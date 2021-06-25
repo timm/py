@@ -2,20 +2,21 @@ import sys, copy, random, traceback
 from exam import __doc__ as doc
 from exam import options,Head,Data,slurp 
 from etc import csv,cli,red,green
+from eg import Num,Sym,Tab
 
 def all(funs,defaults,help):
   fails = 0
   the = cli(defaults,help)
-  for name, fun in funs.items():
-    if name[:2] != "eg": continue
-    if the.do=="all" or the.do==name[2:]:
+  for s, fun in funs.items():
+    if s[:2] != "eg": continue
+    if s[:2] == "eg" and (the.do=="all" or the.do==s[2:]):
       try:
         random.seed(the.seed)
         fun(copy.deepcopy(the))
-        print(green("✔"),name)
+        print(green("✔"),s)
       except:
         traceback.print_exc()
-        print(red("✖"),name)
+        print(red("✖"),s)
         fails += 1
   sys.exit(1 if fails > 1 else 0) 
 
