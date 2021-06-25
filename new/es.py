@@ -1,15 +1,17 @@
 #!/usr/bin/env python3.9
 """
-Keys1,py : optimization via discretization.
+./es.py : version2,  optimization via data mining.
 (c) 2021, Tim Menzies, http://unlicense.org
 
 Options:
 
  -data    FILE   data for data
- -do      S      start-up action; default=None
+ -do      STR    start-up action; default=None
  -p       INT    distance co-efficient; default=2
  -seed    INT    default random number seed; default=10013
 """
+import re,sys,copy,random,traceback
+from etc import o,csv,cli
 
 options = dict(
   Verbose = 0,
@@ -19,14 +21,13 @@ options = dict(
   sample  = 32,
   seed    = 10013)
 
-import re,sys,copy,random,traceback
-from etc import o,csv,cli
-
 class Col(o):
   def __init__(i,txt="",at=0, inits=[]):
     i.n, i.txt, i.at, i.w = 0,txt, at, -1 if "-" in txt else 1
     [self.add(z) for z in inits]
   def add(i,z): return z
+  def dist(i,x,y): 
+    return 1 if x=="?" and y=="?" else i.dist1(x,y)
 
 class Skip(Col): pass
 
@@ -44,10 +45,10 @@ class Num(Col):
     if not i.sorted: i._all.sort()
     i.sorted=True
     return i._all
-  def dist(i,x,y):
+  def dist1(i,x,y):
     if   x=="?": y = i.norm(y); x= 0 if y>.5 else 1
     elif y=="?": x = i.norm(x); y= 0 if x>.5 else 1
-    else        : x, y = i.norm(x), i.norm(y)
+    else       : x, y = i.norm(x), i.norm(y)
     return abs(x-y)
 
 def Sym(Col): 
@@ -56,7 +57,7 @@ def Sym(Col):
     super().__init__(*l, **kw)
   def add(i,z): 
     i.seen[z] = 1 + i.seen.get(z,0); i.n += 1; return z
-  def dist(i,x,y):
+  def dist1(i,x,y):
     return 0 if x==y else 1
     
 class Tab(o):
@@ -64,8 +65,8 @@ class Tab(o):
     i.xy,i.x,i.y,i.rows = [],[],[],[]
     for lst in rows: i.row(lst)
 
-  def clone(i,rows=[]): return Tab([col.txt for col in i.xy] + rows)
-  def slurp(i,f)      : [i.row(lst) for lst in csv(f)]
+  def clone(i,rows=[]): return Tab([[col.txt for col in i.xy] + rows])
+  def fromFile(i,f)   : [i.row(lst) for lst in csv(f)]
   def row(i,lst)      : (i.data if i.xy else i.head)(i,lst)
 
   def head(i,lst):

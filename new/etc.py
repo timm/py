@@ -9,8 +9,7 @@ class o(object):
 def csv(f):
   with open(f) as fp:
     for line in fp:
-      line = re.sub(r'([\n\t\r ]|#.*)', '', line)
-      if line:
+      if line := re.sub(r'([\n\t\r ]|#.*)', '', line):
         yield line.split(",")
 
 def cli(d,help):
@@ -32,6 +31,6 @@ def coerce(x):
     except: return x
 
 from colored import fore,back,style
-def green(x): return fore.GREEN+style.BOLD+ x +style.RESET
-def red(x):   return fore.RED  +style.BOLD+ x +style.RESET
- 
+def bold(x):  return style.BOLD + x + style.RESET
+def green(x): return fore.GREEN + bold(x)
+def red(x):   return fore.RED   + bold(x)

@@ -1,8 +1,7 @@
 import sys, copy, random, traceback
-from exam import __doc__ as doc
-from exam import options,Head,Data,slurp 
+from es import __doc__ as doc
+from es import options,Head,Data,slurp 
 from etc import csv,cli,red,green
-from eg import Num,Sym,Tab
 
 def all(funs,defaults,help):
   fails = 0
