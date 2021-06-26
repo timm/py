@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# vim: ts=2 sw=2 sts=2 et :
+
+Ful="$(cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )"
+
+if [ -z "$SubShell" ]; then
+  SubShell=1 Ful="$Ful" bash --init-file $Ful/ful -i
+else
+  doc() {
+    (cd $Ful
+    pdoc3 -o $Ful/docs -f --html $Ful/keys0.py
+    mv $Ful/docs/keys0.html $Ful/docs/index.html)
+  }
+  
+  alias keys="python3.9 $Ful/keys0.py "
+  
+  alias ..='cd ..'
+  alias ...='cd ../../../'
+  alias grep='grep --color=auto'
+  alias egrep='egrep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias gp="git add *;git commit -am save;git push;git status"
+  alias hello="git pull"
+  alias bye="gp; tmux detach"
+  alias h="history"
+  alias ls="ls -G"
+  alias tmux="tmux -f $Ful/etc/dottmux "
+  alias vi="vim -u $Ful/etc/dotvimrc "
+  alias vims="vim +PluginInstall +qall"         
+  
+  here() { cd $1; basename `pwd`; }
+  
+  PROMPT_COMMAND='echo -ne "🕵️  $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
+  
+  
+  tput bold; tput setaf 5
+  cat<<-'EOF'
+  
+                                         _.oo.
+                   _.u[[/;:,.         .odMMMMMM'
+                .o888UU[[[/;:-.  .o@P^    MMM^
+               oN88888UU[[[/;::-.        dP^
+              dNMMNN888UU[[[/;:--.   .o@P^
+             ,MMMMMMN888UU[[/;::-. o@^   
+             NNMMMNN888UU[[[/~.o@P^     
+             888888888UU[[[/o@^-..     
+            oI8888UU[[[/o@P^:--..     
+         .@^  YUU[[[/o@^;::---..     
+       oMP     ^/o@P^;:::---.. ___  ___       _ __  _   _    
+    .dMMM    .o@^ ^;::---...  / _ \/ __|     | '_ \| | | |    
+  dMMMMMMM@^`       `^^^^    |  __/\__ \  _  | |_) | |_| | 
+  YMMMUP^                     \___||___/ (_) | .__/ \__, | 
+   ^^                                        |_|    |___/                 
+	EOF
+  tput bold; tput setaf 241
+  echo "Short cuts:"
+  alias | sed 's/alias /  /'
+  echo ""
+  tput sgr0
+fi
+
