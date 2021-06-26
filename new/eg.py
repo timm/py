@@ -60,24 +60,26 @@ def egdist(the):
     for row2 in t.rows[5:10]:
       print(row1.dist(row2,the))
 
+def r(the,lst): return ', '.join([(the.fmt % x) for x in lst])
+
 def egcluster(the):
   t = Tab(csv(the.data)) 
   for t1 in sorted(cluster(t,the, t.y)):
-    print(t1.goals())
-  print([("+++" if c.w>0 else "---") for c in t.y])
+    print(r(the,t1.goals()))
+  print("±"+r(the, [col.var()*.35 for col in t.y]))
+  print("   ",[col.w for col in t.y])
 
 def egsway(the):
-  r = lambda lst: [round(x,3) for x in lst]
+  R = lambda lst: r(the,lst)
   t = Tab(csv(the.data)) 
   rows = sorted(t.rows)
   lo  = t.clone(rows[:25]).goals()
   hi  = t.clone(rows[25:]).goals()
-  print(sway(t,the, t.x).goals(),"<== sway")
-  print(lo,"<== lo")
-  print(hi,"<== hi")
-  print([("+++" if c.w>0 else "---") for c in t.y])
-  print([c.w for c in t.y])
-  print(r([col.var()*.35 for col in t.y]))
+  print(R(sway(t,the, t.x).goals()),"<== sway")
+  print(R(lo),"<== lo")
+  print(R(hi),"<== hi")
+  print("±"+R([col.var()*.35 for col in t.y]))
+  print("   ",[col.w for col in t.y])
 
 if __name__ == "__main__":
   all(vars(), options, doc)

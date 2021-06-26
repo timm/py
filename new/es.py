@@ -18,7 +18,8 @@ options = dict(
   data    = "../data/auto93.csv",
   do      = "none",
   enough  = .5,
-  l       = 2,
+  l       = 1,
+  fmt     = "%6.3g",
   sample  = 32,
   seed    = 10013)
 
