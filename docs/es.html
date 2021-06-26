@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>es API documentation</title>
+<meta name="description" content="./es.py : version2,
+optimization via data mining.
+(c) 2021, Tim Menzies, http://unlicense.org …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>es</code></h1>
+</header>
+<section id="section-intro">
+<p>./es.py : version2,
+optimization via data mining.
+<br>
+(c) 2021, Tim Menzies, <a href="http://unlicense.org">http://unlicense.org</a>
+</p>
+<p>Options:
+</p>
+<p>-data
+FILE
+data for data
+<br>
+-do
+STR
+start-up action; default=None
+<br>
+-p
+INT
+distance co-efficient; default=2
+<br>
+-seed
+INT
+default random number seed; default=10013</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3.9
+&#34;&#34;&#34;
+./es.py : version2,  optimization via data mining.    
+(c) 2021, Tim Menzies, http://unlicense.org    
+    
+Options:    
+    
+ -data    FILE   data for data    
+ -do      STR    start-up action; default=None    
+ -p       INT    distance co-efficient; default=2    
+ -seed    INT    default random number seed; default=10013    
+&#34;&#34;&#34;
+import re
+import sys
+import copy
+import math
+import random
+import traceback
+from etc import o, csv, cli
+
+options = dict(
+    Verbose=0,
+    data=&#34;../data/auto93.csv&#34;,
+    do=&#34;none&#34;,
+    enough=.5,
+    l=1,
+    fmt=&#34;{:&gt;7.2g}&#34;,
+    sample=32,
+    seed=10013)
+
+class Col(o):
+  &#34;`Col`s are generic columns.&#34;
+  def __init__(i, txt=&#34;&#34;, at=0, inits=[]):
+    i.n, i.txt, i.at, i.w = 0, txt, at, -1 if &#34;-&#34; in txt else 1
+    [self.add(z) for z in inits]
+  def add(i, z): return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return &#34;?&#34;
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return &#34;?&#34;
+  def dist(i, x, y):
+    &#34;Distance.&#34;
+    return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)
+
+class Skip(Col):
+  &#34;`Skip`s are column of things we are going to ignore.&#34;
+  pass
+
+class Num(Col):
+  &#34;`Num`s summarize numerics&#34;
+  def __init__(i, *l, **kw):
+    i._all, i.sorted = [], True
+    super().__init__(*l, **kw)
+  def add(i, z):
+    &#34;Add anything that we are not skipping.&#34;
+    if z != &#34;?&#34;:
+      i.n += 1
+      z = float(z)
+      i._all += [z]
+      i.sorted = False
+    return z
+  def norm(i, z):
+    &#34;Normalize 0..1.&#34;
+    if z == &#34;?&#34;:
+      return z
+    lo, hi = i.all()[0], i.all()[-1]
+    tmp = (z - lo) / (hi - lo + 1E-32)
+    return max(0, min(tmp, 1))
+  def all(i):
+    &#34;Return sorted list of  all the numbers.&#34;
+    if not i.sorted:
+      i._all.sort()
+    i.sorted = True
+    return i._all
+  def dist1(i, x, y):
+    &#34;Numeric distances. Make guesses for missing values.&#34;
+    if x == &#34;?&#34;:
+      y = i.norm(y)
+      x = 0 if y &gt; .5 else 1 #
+    elif y == &#34;?&#34;:
+      x = i.norm(x)
+      y = 0 if x &gt; .5 else 1 #
+    else:
+      x, y = i.norm(x), i.norm(y)
+    return abs(x - y)
+  def per(i, p=.5):
+    &#34;Return the pth percentil value in all the numbers.&#34;
+    a = i.all()
+    return a[int(p * len(a))]
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.per(.5)
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return (i.per(.9) - i.per(.1)) / 2.56
+
+class Sym(Col):
+  &#34;`Sym`s summarize symbols.&#34;
+  def __init__(i, *l, **kw):
+    i.seen, i.mode, i.most = {}, None, 0
+    super().__init__(*l, **kw)
+  def add(i, z, n=1):
+    &#34;Add anything that we are not skipping.&#34;
+    if z != &#34;?&#34;:
+      i.n += n
+      tmp = i.seen[z] = i.seen.get(z, 0) + n
+      if tmp &gt; i.most:
+        i.most, i.mode = tmp, z
+    return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.mode
+  def dist1(i, x, y):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return 0 if x == y else 1
+
+class Row(o):
+  &#34;`Row`s hold one example.&#34;
+  def __init__(i, t, cells): i._tab, i.cells = t, cells
+
+  def __lt__(i, j):
+    &#34;Continuous domination.&#34;
+    cols = i._tab.y
+    s1, s2, n = 0, 0, len(cols)
+    for col in cols:
+      a, b = i.cells[col.at], j.cells[col.at]
+      if a == &#34;?&#34; or b == &#34;?&#34;:
+        continue
+      a, b = col.norm(a), col.norm(b)
+      s1 -= math.e**(col.w * (a - b) / n)
+      s2 -= math.e**(col.w * (b - a) / n)
+    return s1 / n &lt; s2 / n
+
+  def dist(i, j, the, cols=None):
+    &#34;Distance between examples.&#34;
+    gap, n = 0, 1E-32
+    for col in cols or i._tab.x:
+      tmp = col.dist(i.cells[col.at], j.cells[col.at])
+      gap += tmp**the.l
+      n += 1
+    return (gap / n)**(1 / the.l)
+
+class Tab(o):
+  &#34;`Tab`les store examples, summarized in columns.&#34;
+  def __init__(i, rows=[]):
+    i.xy, i.x, i.y, i.all, i.rows = [], [], [], [], []
+    for lst in rows:
+      i.row(lst)
+
+  def __lt__(i, j):
+    &#34;Sort tables based on their central tendency.&#34;
+    return Row(i, i.mid()) &lt; Row(j, j.mid())
+
+  def goals(i):
+    &#34;Returns the goal values of the central tendencies.&#34;
+    return [col.mid() for col in i.y]
+
+  def mid(i):
+    &#34;Returns the central tendencies.&#34;
+    return [col.mid() for col in i.all]
+
+  def clone(i, rows=[]):
+    &#34;Return a new table with the same structure.&#34;
+    t = Tab()
+    t.row([c.txt for c in i.all])
+    [t.row(row) for row in rows]
+    return t
+
+  def add(i, lst):
+    &#34;&#34;&#34;Add a row to a table. If this is row number1,
+    then these are the names that define the column
+    types.&#34;&#34;&#34;
+    lst = lst.cells if type(lst) == Row else lst
+    (i.data if i.all else i.head)(lst)
+
+  def isa(i, s, at):
+    &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
+     everything else is a Sym.&#34;&#34;&#34;
+    return Skip if &#34;?&#34; in s else (
+        Num if s[0].isupper() else
+        Sym)(txt=s, at=at)
+
+  def head(i, lst):
+    &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
+    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+    columns.&#34;&#34;&#34;
+    for at, s in enumerate(lst):
+      one = i.isa(s, at)
+      i.all += [one] # everyone gets called in `all`
+      if type(one) != Skip:
+        i.xy += [one] # none skipped things are in `xy` or `x` or `y`
+        if &#34;+&#34; in s or &#34;-&#34; in s or &#34;!&#34; in s:
+          i.y += [one]
+        else:
+          i.x += [one]
+
+  def data(i, lst):
+    &#34;Add a new row of data, update the column headers.&#34;
+    for col in i.xy: # update things we are not skipping
+      z = lst[col.at]
+      if z != &#34;?&#34;:
+        lst[col.at] = col.add(z)
+    i.rows += [Row(i, lst)]
+
+  def div(i, the, rows=None, cols=None):
+    &#34;&#34;&#34;Split the table in two according to the proximity
+    of all examples from two distant points.&#34;&#34;&#34;
+    def gap(z1, z2):
+      &#34;Return gap between two examples&gt;&#34;
+      return z1.dist(z2, the, cols)
+
+    def far(r1):
+      &#34;Poke around a little looking for 2 distant points.&#34;
+      a = [random.choice(rows or i.rows) for _ in range(the.sample)]
+      a = sorted([(gap(r1, r2), r2) for r2 in a], key=lambda z: z[0])
+      return a[-3][1]  # Ignore outliers.
+    # -------------------------
+    zero = random.choice(rows)
+    one = far(zero)
+    two = far(one)
+    c = gap(one, two)
+    tmp = {}
+    for row in rows:
+      a = gap(row, one)
+      b = gap(row, two)
+      tmp[id(row)] = (a**2 + c**2 - b**2) / (2 * c + 1E-31)
+    rows.sort(key=lambda row: tmp[id(row)])
+    mid = len(rows) // 2 # split at median point
+    return one, two, rows[:mid], rows[mid:]
+
+def cluster(t, the, cols=None):
+  &#34;Recursively divide all data. Return one table per leaf.&#34;
+  def go(rows, lvl=0):
+    if type(lvl) == int:
+      print(&#39;|.. &#39; * lvl, len(rows))
+    if len(rows) &lt; enough:
+      out.append(t.clone(rows))
+    else:
+      _, _, lefts, rights = t.div(the, rows=rows, cols=cols)
+      go(lefts, lvl + 1)
+      go(rights, lvl + 1)
+
+  enough = 2 * len(t.rows)**the.enough
+  cols = cols or t.x
+  out = []
+  go(t.rows)
+  return out
+
+def sway(t, the, cols=None):
+  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step. 
+     Return one table containing the best leaf.&#34;&#34;&#34;
+  def go(rows, lvl=0):
+    if type(lvl) == int:
+      print(&#39;|.. &#39; * lvl, len(rows))
+    if len(rows) &lt; enough:
+      [best.row(row) for row in rows]
+    else:
+      left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
+      if left &lt; right:
+        [rest.row(row) for row in rights]
+        go(lefts, lvl + 1)
+      else:
+        [rest.row(row) for row in lefts]
+        go(rights, lvl + 1)
+
+  enough = 2 * len(t.rows)**the.enough
+  cols = cols or t.x
+  best, rest = t.clone(), t.clone()
+  go(t.rows)
+  return best, rest</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="es.cluster"><code class="name flex">
+<span>def <span class="ident">cluster</span></span>(<span>t, the, cols=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recursively divide all data. Return one table per leaf.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cluster(t, the, cols=None):
+  &#34;Recursively divide all data. Return one table per leaf.&#34;
+  def go(rows, lvl=0):
+    if type(lvl) == int:
+      print(&#39;|.. &#39; * lvl, len(rows))
+    if len(rows) &lt; enough:
+      out.append(t.clone(rows))
+    else:
+      _, _, lefts, rights = t.div(the, rows=rows, cols=cols)
+      go(lefts, lvl + 1)
+      go(rights, lvl + 1)
+
+  enough = 2 * len(t.rows)**the.enough
+  cols = cols or t.x
+  out = []
+  go(t.rows)
+  return out</code></pre>
+</details>
+</dd>
+<dt id="es.sway"><code class="name flex">
+<span>def <span class="ident">sway</span></span>(<span>t, the, cols=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recursively divide data, pruning worse half at each step.
+Return one table containing the best leaf.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sway(t, the, cols=None):
+  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step. 
+     Return one table containing the best leaf.&#34;&#34;&#34;
+  def go(rows, lvl=0):
+    if type(lvl) == int:
+      print(&#39;|.. &#39; * lvl, len(rows))
+    if len(rows) &lt; enough:
+      [best.row(row) for row in rows]
+    else:
+      left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
+      if left &lt; right:
+        [rest.row(row) for row in rights]
+        go(lefts, lvl + 1)
+      else:
+        [rest.row(row) for row in lefts]
+        go(rights, lvl + 1)
+
+  enough = 2 * len(t.rows)**the.enough
+  cols = cols or t.x
+  best, rest = t.clone(), t.clone()
+  go(t.rows)
+  return best, rest</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="es.Col"><code class="flex name class">
+<span>class <span class="ident">Col</span></span>
+<span>(</span><span>txt='', at=0, inits=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Col" href="#es.Col">Col</a></code>s are generic columns.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Col(o):
+  &#34;`Col`s are generic columns.&#34;
+  def __init__(i, txt=&#34;&#34;, at=0, inits=[]):
+    i.n, i.txt, i.at, i.w = 0, txt, at, -1 if &#34;-&#34; in txt else 1
+    [self.add(z) for z in inits]
+  def add(i, z): return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return &#34;?&#34;
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return &#34;?&#34;
+  def dist(i, x, y):
+    &#34;Distance.&#34;
+    return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="es.Num" href="#es.Num">Num</a></li>
+<li><a title="es.Skip" href="#es.Skip">Skip</a></li>
+<li><a title="es.Sym" href="#es.Sym">Sym</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Col.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>i, z)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(i, z): return z</code></pre>
+</details>
+</dd>
+<dt id="es.Col.dist"><code class="name flex">
+<span>def <span class="ident">dist</span></span>(<span>i, x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Distance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist(i, x, y):
+  &#34;Distance.&#34;
+  return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)</code></pre>
+</details>
+</dd>
+<dt id="es.Col.mid"><code class="name flex">
+<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Estimate of central
+tendency.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mid(i):
+  &#34;Estimate of central  tendency.&#34;
+  return &#34;?&#34;</code></pre>
+</details>
+</dd>
+<dt id="es.Col.var"><code class="name flex">
+<span>def <span class="ident">var</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Estimate of dispersion around central tendency.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def var(i):
+  &#34;Estimate of dispersion around central tendency.&#34;
+  return &#34;?&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="es.Num"><code class="flex name class">
+<span>class <span class="ident">Num</span></span>
+<span>(</span><span>*l, **kw)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Num" href="#es.Num">Num</a></code>s summarize numerics</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Num(Col):
+  &#34;`Num`s summarize numerics&#34;
+  def __init__(i, *l, **kw):
+    i._all, i.sorted = [], True
+    super().__init__(*l, **kw)
+  def add(i, z):
+    &#34;Add anything that we are not skipping.&#34;
+    if z != &#34;?&#34;:
+      i.n += 1
+      z = float(z)
+      i._all += [z]
+      i.sorted = False
+    return z
+  def norm(i, z):
+    &#34;Normalize 0..1.&#34;
+    if z == &#34;?&#34;:
+      return z
+    lo, hi = i.all()[0], i.all()[-1]
+    tmp = (z - lo) / (hi - lo + 1E-32)
+    return max(0, min(tmp, 1))
+  def all(i):
+    &#34;Return sorted list of  all the numbers.&#34;
+    if not i.sorted:
+      i._all.sort()
+    i.sorted = True
+    return i._all
+  def dist1(i, x, y):
+    &#34;Numeric distances. Make guesses for missing values.&#34;
+    if x == &#34;?&#34;:
+      y = i.norm(y)
+      x = 0 if y &gt; .5 else 1 #
+    elif y == &#34;?&#34;:
+      x = i.norm(x)
+      y = 0 if x &gt; .5 else 1 #
+    else:
+      x, y = i.norm(x), i.norm(y)
+    return abs(x - y)
+  def per(i, p=.5):
+    &#34;Return the pth percentil value in all the numbers.&#34;
+    a = i.all()
+    return a[int(p * len(a))]
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.per(.5)
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return (i.per(.9) - i.per(.1)) / 2.56</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="es.Col" href="#es.Col">Col</a></li>
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Num.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>i, z)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add anything that we are not skipping.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(i, z):
+  &#34;Add anything that we are not skipping.&#34;
+  if z != &#34;?&#34;:
+    i.n += 1
+    z = float(z)
+    i._all += [z]
+    i.sorted = False
+  return z</code></pre>
+</details>
+</dd>
+<dt id="es.Num.all"><code class="name flex">
+<span>def <span class="ident">all</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return sorted list of
+all the numbers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def all(i):
+  &#34;Return sorted list of  all the numbers.&#34;
+  if not i.sorted:
+    i._all.sort()
+  i.sorted = True
+  return i._all</code></pre>
+</details>
+</dd>
+<dt id="es.Num.dist1"><code class="name flex">
+<span>def <span class="ident">dist1</span></span>(<span>i, x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Numeric distances. Make guesses for missing values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist1(i, x, y):
+  &#34;Numeric distances. Make guesses for missing values.&#34;
+  if x == &#34;?&#34;:
+    y = i.norm(y)
+    x = 0 if y &gt; .5 else 1 #
+  elif y == &#34;?&#34;:
+    x = i.norm(x)
+    y = 0 if x &gt; .5 else 1 #
+  else:
+    x, y = i.norm(x), i.norm(y)
+  return abs(x - y)</code></pre>
+</details>
+</dd>
+<dt id="es.Num.norm"><code class="name flex">
+<span>def <span class="ident">norm</span></span>(<span>i, z)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalize 0..1.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def norm(i, z):
+  &#34;Normalize 0..1.&#34;
+  if z == &#34;?&#34;:
+    return z
+  lo, hi = i.all()[0], i.all()[-1]
+  tmp = (z - lo) / (hi - lo + 1E-32)
+  return max(0, min(tmp, 1))</code></pre>
+</details>
+</dd>
+<dt id="es.Num.per"><code class="name flex">
+<span>def <span class="ident">per</span></span>(<span>i, p=0.5)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the pth percentil value in all the numbers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def per(i, p=.5):
+  &#34;Return the pth percentil value in all the numbers.&#34;
+  a = i.all()
+  return a[int(p * len(a))]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
+<ul class="hlist">
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
+<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
+<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="es.Row"><code class="flex name class">
+<span>class <span class="ident">Row</span></span>
+<span>(</span><span>t, cells)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Row" href="#es.Row">Row</a></code>s hold one example.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Row(o):
+  &#34;`Row`s hold one example.&#34;
+  def __init__(i, t, cells): i._tab, i.cells = t, cells
+
+  def __lt__(i, j):
+    &#34;Continuous domination.&#34;
+    cols = i._tab.y
+    s1, s2, n = 0, 0, len(cols)
+    for col in cols:
+      a, b = i.cells[col.at], j.cells[col.at]
+      if a == &#34;?&#34; or b == &#34;?&#34;:
+        continue
+      a, b = col.norm(a), col.norm(b)
+      s1 -= math.e**(col.w * (a - b) / n)
+      s2 -= math.e**(col.w * (b - a) / n)
+    return s1 / n &lt; s2 / n
+
+  def dist(i, j, the, cols=None):
+    &#34;Distance between examples.&#34;
+    gap, n = 0, 1E-32
+    for col in cols or i._tab.x:
+      tmp = col.dist(i.cells[col.at], j.cells[col.at])
+      gap += tmp**the.l
+      n += 1
+    return (gap / n)**(1 / the.l)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Row.dist"><code class="name flex">
+<span>def <span class="ident">dist</span></span>(<span>i, j, the, cols=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Distance between examples.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist(i, j, the, cols=None):
+  &#34;Distance between examples.&#34;
+  gap, n = 0, 1E-32
+  for col in cols or i._tab.x:
+    tmp = col.dist(i.cells[col.at], j.cells[col.at])
+    gap += tmp**the.l
+    n += 1
+  return (gap / n)**(1 / the.l)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="es.Skip"><code class="flex name class">
+<span>class <span class="ident">Skip</span></span>
+<span>(</span><span>txt='', at=0, inits=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Skip" href="#es.Skip">Skip</a></code>s are column of things we are going to ignore.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Skip(Col):
+  &#34;`Skip`s are column of things we are going to ignore.&#34;
+  pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="es.Col" href="#es.Col">Col</a></li>
+<li>etc.o</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
+<ul class="hlist">
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
+<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
+<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="es.Sym"><code class="flex name class">
+<span>class <span class="ident">Sym</span></span>
+<span>(</span><span>*l, **kw)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Sym" href="#es.Sym">Sym</a></code>s summarize symbols.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sym(Col):
+  &#34;`Sym`s summarize symbols.&#34;
+  def __init__(i, *l, **kw):
+    i.seen, i.mode, i.most = {}, None, 0
+    super().__init__(*l, **kw)
+  def add(i, z, n=1):
+    &#34;Add anything that we are not skipping.&#34;
+    if z != &#34;?&#34;:
+      i.n += n
+      tmp = i.seen[z] = i.seen.get(z, 0) + n
+      if tmp &gt; i.most:
+        i.most, i.mode = tmp, z
+    return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.mode
+  def dist1(i, x, y):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return 0 if x == y else 1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="es.Col" href="#es.Col">Col</a></li>
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Sym.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>i, z, n=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add anything that we are not skipping.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(i, z, n=1):
+  &#34;Add anything that we are not skipping.&#34;
+  if z != &#34;?&#34;:
+    i.n += n
+    tmp = i.seen[z] = i.seen.get(z, 0) + n
+    if tmp &gt; i.most:
+      i.most, i.mode = tmp, z
+  return z</code></pre>
+</details>
+</dd>
+<dt id="es.Sym.dist1"><code class="name flex">
+<span>def <span class="ident">dist1</span></span>(<span>i, x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Estimate of dispersion around central tendency.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist1(i, x, y):
+  &#34;Estimate of dispersion around central tendency.&#34;
+  return 0 if x == y else 1</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
+<ul class="hlist">
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
+<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
+<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="es.Tab"><code class="flex name class">
+<span>class <span class="ident">Tab</span></span>
+<span>(</span><span>rows=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Tab" href="#es.Tab">Tab</a></code>les store examples, summarized in columns.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Tab(o):
+  &#34;`Tab`les store examples, summarized in columns.&#34;
+  def __init__(i, rows=[]):
+    i.xy, i.x, i.y, i.all, i.rows = [], [], [], [], []
+    for lst in rows:
+      i.row(lst)
+
+  def __lt__(i, j):
+    &#34;Sort tables based on their central tendency.&#34;
+    return Row(i, i.mid()) &lt; Row(j, j.mid())
+
+  def goals(i):
+    &#34;Returns the goal values of the central tendencies.&#34;
+    return [col.mid() for col in i.y]
+
+  def mid(i):
+    &#34;Returns the central tendencies.&#34;
+    return [col.mid() for col in i.all]
+
+  def clone(i, rows=[]):
+    &#34;Return a new table with the same structure.&#34;
+    t = Tab()
+    t.row([c.txt for c in i.all])
+    [t.row(row) for row in rows]
+    return t
+
+  def add(i, lst):
+    &#34;&#34;&#34;Add a row to a table. If this is row number1,
+    then these are the names that define the column
+    types.&#34;&#34;&#34;
+    lst = lst.cells if type(lst) == Row else lst
+    (i.data if i.all else i.head)(lst)
+
+  def isa(i, s, at):
+    &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
+     everything else is a Sym.&#34;&#34;&#34;
+    return Skip if &#34;?&#34; in s else (
+        Num if s[0].isupper() else
+        Sym)(txt=s, at=at)
+
+  def head(i, lst):
+    &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
+    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+    columns.&#34;&#34;&#34;
+    for at, s in enumerate(lst):
+      one = i.isa(s, at)
+      i.all += [one] # everyone gets called in `all`
+      if type(one) != Skip:
+        i.xy += [one] # none skipped things are in `xy` or `x` or `y`
+        if &#34;+&#34; in s or &#34;-&#34; in s or &#34;!&#34; in s:
+          i.y += [one]
+        else:
+          i.x += [one]
+
+  def data(i, lst):
+    &#34;Add a new row of data, update the column headers.&#34;
+    for col in i.xy: # update things we are not skipping
+      z = lst[col.at]
+      if z != &#34;?&#34;:
+        lst[col.at] = col.add(z)
+    i.rows += [Row(i, lst)]
+
+  def div(i, the, rows=None, cols=None):
+    &#34;&#34;&#34;Split the table in two according to the proximity
+    of all examples from two distant points.&#34;&#34;&#34;
+    def gap(z1, z2):
+      &#34;Return gap between two examples&gt;&#34;
+      return z1.dist(z2, the, cols)
+
+    def far(r1):
+      &#34;Poke around a little looking for 2 distant points.&#34;
+      a = [random.choice(rows or i.rows) for _ in range(the.sample)]
+      a = sorted([(gap(r1, r2), r2) for r2 in a], key=lambda z: z[0])
+      return a[-3][1]  # Ignore outliers.
+    # -------------------------
+    zero = random.choice(rows)
+    one = far(zero)
+    two = far(one)
+    c = gap(one, two)
+    tmp = {}
+    for row in rows:
+      a = gap(row, one)
+      b = gap(row, two)
+      tmp[id(row)] = (a**2 + c**2 - b**2) / (2 * c + 1E-31)
+    rows.sort(key=lambda row: tmp[id(row)])
+    mid = len(rows) // 2 # split at median point
+    return one, two, rows[:mid], rows[mid:]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Tab.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>i, lst)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a row to a table. If this is row number1,
+then these are the names that define the column
+types.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(i, lst):
+  &#34;&#34;&#34;Add a row to a table. If this is row number1,
+  then these are the names that define the column
+  types.&#34;&#34;&#34;
+  lst = lst.cells if type(lst) == Row else lst
+  (i.data if i.all else i.head)(lst)</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.clone"><code class="name flex">
+<span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a new table with the same structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clone(i, rows=[]):
+  &#34;Return a new table with the same structure.&#34;
+  t = Tab()
+  t.row([c.txt for c in i.all])
+  [t.row(row) for row in rows]
+  return t</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.data"><code class="name flex">
+<span>def <span class="ident">data</span></span>(<span>i, lst)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a new row of data, update the column headers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data(i, lst):
+  &#34;Add a new row of data, update the column headers.&#34;
+  for col in i.xy: # update things we are not skipping
+    z = lst[col.at]
+    if z != &#34;?&#34;:
+      lst[col.at] = col.add(z)
+  i.rows += [Row(i, lst)]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.div"><code class="name flex">
+<span>def <span class="ident">div</span></span>(<span>i, the, rows=None, cols=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Split the table in two according to the proximity
+of all examples from two distant points.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def div(i, the, rows=None, cols=None):
+  &#34;&#34;&#34;Split the table in two according to the proximity
+  of all examples from two distant points.&#34;&#34;&#34;
+  def gap(z1, z2):
+    &#34;Return gap between two examples&gt;&#34;
+    return z1.dist(z2, the, cols)
+
+  def far(r1):
+    &#34;Poke around a little looking for 2 distant points.&#34;
+    a = [random.choice(rows or i.rows) for _ in range(the.sample)]
+    a = sorted([(gap(r1, r2), r2) for r2 in a], key=lambda z: z[0])
+    return a[-3][1]  # Ignore outliers.
+  # -------------------------
+  zero = random.choice(rows)
+  one = far(zero)
+  two = far(one)
+  c = gap(one, two)
+  tmp = {}
+  for row in rows:
+    a = gap(row, one)
+    b = gap(row, two)
+    tmp[id(row)] = (a**2 + c**2 - b**2) / (2 * c + 1E-31)
+  rows.sort(key=lambda row: tmp[id(row)])
+  mid = len(rows) // 2 # split at median point
+  return one, two, rows[:mid], rows[mid:]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.goals"><code class="name flex">
+<span>def <span class="ident">goals</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the goal values of the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def goals(i):
+  &#34;Returns the goal values of the central tendencies.&#34;
+  return [col.mid() for col in i.y]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.head"><code class="name flex">
+<span>def <span class="ident">head</span></span>(<span>i, lst)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Define the column types, store them in <code>all</code>. If a column
+name contains '?' then do
+not add it to any lst of 'x' or 'y'
+columns.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def head(i, lst):
+  &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
+  name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+  columns.&#34;&#34;&#34;
+  for at, s in enumerate(lst):
+    one = i.isa(s, at)
+    i.all += [one] # everyone gets called in `all`
+    if type(one) != Skip:
+      i.xy += [one] # none skipped things are in `xy` or `x` or `y`
+      if &#34;+&#34; in s or &#34;-&#34; in s or &#34;!&#34; in s:
+        i.y += [one]
+      else:
+        i.x += [one]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.isa"><code class="name flex">
+<span>def <span class="ident">isa</span></span>(<span>i, s, at)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Skip names contain '?', Num names start with upper case,
+everything else is a Sym.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isa(i, s, at):
+  &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
+   everything else is a Sym.&#34;&#34;&#34;
+  return Skip if &#34;?&#34; in s else (
+      Num if s[0].isupper() else
+      Sym)(txt=s, at=at)</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.mid"><code class="name flex">
+<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mid(i):
+  &#34;Returns the central tendencies.&#34;
+  return [col.mid() for col in i.all]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="es.cluster" href="#es.cluster">cluster</a></code></li>
+<li><code><a title="es.sway" href="#es.sway">sway</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="es.Col" href="#es.Col">Col</a></code></h4>
+<ul class="">
+<li><code><a title="es.Col.add" href="#es.Col.add">add</a></code></li>
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
+<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
+<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Num" href="#es.Num">Num</a></code></h4>
+<ul class="">
+<li><code><a title="es.Num.add" href="#es.Num.add">add</a></code></li>
+<li><code><a title="es.Num.all" href="#es.Num.all">all</a></code></li>
+<li><code><a title="es.Num.dist1" href="#es.Num.dist1">dist1</a></code></li>
+<li><code><a title="es.Num.norm" href="#es.Num.norm">norm</a></code></li>
+<li><code><a title="es.Num.per" href="#es.Num.per">per</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Row" href="#es.Row">Row</a></code></h4>
+<ul class="">
+<li><code><a title="es.Row.dist" href="#es.Row.dist">dist</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Skip" href="#es.Skip">Skip</a></code></h4>
+</li>
+<li>
+<h4><code><a title="es.Sym" href="#es.Sym">Sym</a></code></h4>
+<ul class="">
+<li><code><a title="es.Sym.add" href="#es.Sym.add">add</a></code></li>
+<li><code><a title="es.Sym.dist1" href="#es.Sym.dist1">dist1</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Tab" href="#es.Tab">Tab</a></code></h4>
+<ul class="two-column">
+<li><code><a title="es.Tab.add" href="#es.Tab.add">add</a></code></li>
+<li><code><a title="es.Tab.clone" href="#es.Tab.clone">clone</a></code></li>
+<li><code><a title="es.Tab.data" href="#es.Tab.data">data</a></code></li>
+<li><code><a title="es.Tab.div" href="#es.Tab.div">div</a></code></li>
+<li><code><a title="es.Tab.goals" href="#es.Tab.goals">goals</a></code></li>
+<li><code><a title="es.Tab.head" href="#es.Tab.head">head</a></code></li>
+<li><code><a title="es.Tab.isa" href="#es.Tab.isa">isa</a></code></li>
+<li><code><a title="es.Tab.mid" href="#es.Tab.mid">mid</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
