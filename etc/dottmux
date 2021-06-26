@@ -11,7 +11,7 @@ unbind %
 # open new windows in the current path
 bind c new-window -c "#{pane_current_path}"
 # reload config file
-bind r source-file $Tnix/.config/dottmux
+#bind r source-file $Tnix/.config/dottmux
 unbind p
 bind p previous-window
 # shorten command delay
@@ -51,15 +51,18 @@ set -g status-justify left
 set -g status-bg colour232
 set -g status-fg colour137
 ###set -g status-attr dim
-set -g status-left ''
-set -g status-right '#{?window_zoomed_flag,🔍,} #[fg=colour255,bold]#H #[fg=colour255,bg=colour19,bold] %b %d #[fg=colour255,bg=colour8,bold] %H:%M '
-set -g status-right '#{?window_zoomed_flag,🔍,} #[fg=colour255,bold]#H %H:%M '
-set -g status-right-length 50
-set -g status-left-length 20
-setw -g window-status-current-format ' #I#[fg=colour249]:#[fg=colour255]#W#[fg=colour249]#F '
-setw -g window-status-format ' #I#[fg=colour237]:#[fg=colour250]#W#[fg=colour244]#F '
+#set -g status-left ''
+#set -g status-right '#{?window_zoomed_flag,🔍,} #[fg=colour255,bold]#H #[fg=colour255,bg=colour19,bold] %b %d #[fg=colour255,bg=colour8,bold] %H:%M '
+#set -g status-right '#{?window_zoomed_flag,🔍,} #[fg=colour255,bold]#H '
+set status-right '"#22T" %H:%M %d-%b-%y'
+#set -g status-right-length 50
+#set -g status-left-length 20
+#setw -g window-status-current-format ' #I#[fg=colour249]:#[fg=colour255]#W#[fg=colour249]#F %H:%M '
+#setw -g window-status-format ' #I#[fg=colour237]:#[fg=colour250]#W#[fg=colour244]#F %H:%M '
 # messages
 # layouts
-bind S source-file $Tnix/.config/tmux-session1
+#bind S source-file $Tnix/.config/tmux-session1
 setw -g monitor-activity on
 set -g visual-activity on
+
+
