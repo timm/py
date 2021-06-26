@@ -7,20 +7,17 @@ USAGE: ./eg.py [OPTIONS]
 
 OPTIONS:
 
- -data    FILE   data for data; e.g. "../data/auto93.csv"
- -do      STR    start-up action; e.g. "none"
- -enough  FLOAT  min clasuter size; e.g. .5
+ -data    FILE   when to load data from; e.g."../data/auto93.csv"
+ -do      STR    when starting up, what action to run; e.g. "none"
+ -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5
  -fmt     STR    pretty print control for numbers; e.g.["{:>7.2g}"]
- -l       INT    distance co-efficient; e.g. 1
- -sample  INT    how many times to poke around for distant items; e.g.32
+ -l       INT    when computing distance, equation coefficient; e.g. 1
+ -sample  INT    when seeking distant pairs, how samples of the data; e.g.32
  -seed    INT    default random number seed; e.g. 10013
+ -show    INT    when displaying final output, how many rules to show; e.g.10
+ -top     INT    when hunting for rules, max number ranges to explore; e.g.10
 """
-import re
-import sys
-import copy
-import math
-import random
-import traceback
+import re,sys,copy,math,random
 from etc import o, csv, cli
 
 options = dict(
@@ -31,8 +28,11 @@ options = dict(
     fmt="{:>7.2g}",
     l=1,
     sample=32,
-    seed=10013)
+    seed=10013,
+    show=10,
+    top=10)
 
+#---------------------------------------------------------------
 class Col(o):
   "`Col`s are generic columns."
   def __init__(i, txt="", at=0, inits=[]):
@@ -49,10 +49,12 @@ class Col(o):
     "Distance."
     return 1 if x == "?" and y == "?" else i.dist1(x, y)
 
+#---------------------------------------------------------------
 class Skip(Col):
   "`Skip`s are column of things we are going to ignore."
   pass
 
+#---------------------------------------------------------------
 class Num(Col):
   "`Num`s summarize numerics"
   def __init__(i, *l, **kw):
@@ -68,27 +70,20 @@ class Num(Col):
     return z
   def norm(i, z):
     "Normalize 0..1."
-    if z == "?":
-      return z
+    if z == "?": return z
     lo, hi = i.all()[0], i.all()[-1]
     tmp = (z - lo) / (hi - lo + 1E-32)
     return max(0, min(tmp, 1))
   def all(i):
     "Return sorted list of  all the numbers."
-    if not i.sorted:
-      i._all.sort()
+    if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
   def dist1(i, x, y):
     "Numeric distances. Make guesses for missing values."
-    if x == "?":
-      y = i.norm(y)
-      x = 0 if y > .5 else 1 #
-    elif y == "?":
-      x = i.norm(x)
-      y = 0 if x > .5 else 1 #
-    else:
-      x, y = i.norm(x), i.norm(y)
+    if   x == "?": y = i.norm(y); x = 0 if y > .5 else 1 
+    elif y == "?": x = i.norm(x);  y = 0 if x > .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
     return abs(x - y)
   def per(i, p=.5):
     "Return the pth percentil value in all the numbers."
@@ -101,6 +96,7 @@ class Num(Col):
     "Estimate of dispersion around central tendency."
     return (i.per(.9) - i.per(.1)) / 2.56
 
+#---------------------------------------------------------------
 class Sym(Col):
   "`Sym`s summarize symbols."
   def __init__(i, *l, **kw):
@@ -121,6 +117,7 @@ class Sym(Col):
     "Estimate of dispersion around central tendency."
     return 0 if x == y else 1
 
+#---------------------------------------------------------------
 class Row(o):
   "`Row`s hold one example."
   def __init__(i, t, cells): i._tab, i.cells = t, cells
@@ -147,6 +144,7 @@ class Row(o):
       n += 1
     return (gap / n)**(1 / the.l)
 
+#---------------------------------------------------------------
 class Tab(o):
   "`Tab`les store examples, summarized in columns."
   def __init__(i, rows=[]):
@@ -235,6 +233,7 @@ class Tab(o):
     mid = len(rows) // 2 # split at median point
     return one, two, rows[:mid], rows[mid:]
 
+#---------------------------------------------------------------
 def cluster(t, the, cols=None):
   "Recursively divide all data. Return one table per leaf."
   def go(rows, lvl=0):
@@ -253,6 +252,7 @@ def cluster(t, the, cols=None):
   go(t.rows)
   return out
 
+#---------------------------------------------------------------
 def sway(t, the, cols=None):
   """Recursively divide data, pruning worse half at each step.
      Return one table containing the best leaf."""
@@ -263,12 +263,8 @@ def sway(t, the, cols=None):
       [best.row(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left < right:
-        [rest.row(row) for row in rights]
-        go(lefts, lvl + 1)
-      else:
-        [rest.row(row) for row in lefts]
-        go(rights, lvl + 1)
+      if left < right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x
@@ -276,32 +272,25 @@ def sway(t, the, cols=None):
   go(t.rows)
   return best, rest
 
-def contrast(here, there, my):
-  def seen():
-    return {(kl, (col1.txt, col1.at, span)): f
-            for col1, col2 in zip(here.xs, there.xs)
-            for f, kl, span in col1.discretize(col2, my)}
-
+#---------------------------------------------------------------
+def contrast(here, there, the):
   def like(lst, kl):
     prod = math.prod
-    prior = (hs[kl] + my.k) / (n + my.k * 2)
+    prior = (hs[kl] + the.k) / (n + the.k * 2)
     fs = {}
     for txt, pos, span in lst:
       fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
     like = prior
     for val in fs.values():
-      like *= (val + my.m * prior) / (hs[kl] + my.m)
+      like *= (val + the.m * prior) / (hs[kl] + the.m)
     return like
 
   def value(lst):
-    b = like(lst, True)
-    r = like(lst, False)
-    if my.act == 3:
-      return 1 / (b + r)
-    if my.act == 2:
-      return r**2 / (b + r) if (b + r) > 0.01 and r > b else 0
-    else:
-      return b**2 / (b + r) if (b + r) > 0.01 and b > r else 0
+    def optimize(b,r): b**2/(b+r) if b>r else 0
+    def monitor(b,r) : r**2/(b+r) if r>b else 0
+    def safety(b,r)  : return 1/(b+r)
+    f = [optimize,monitor,safety][the.goal]
+    return f(like(lst, True), like(lst,False))
 
   def solos():
     pairs = []
@@ -312,20 +301,16 @@ def contrast(here, there, my):
     return pairs
 
   def top(n, pairs):
-    return [x for _, x in sorted(pairs, reverse=True)[:n]]  # my.top]]
+    return [x for _, x in sorted(pairs, reverse=True)[:n]] 
 
-  f = seen()
   n = len(here.rows) + len(there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
-  ranges = sorted(solos(), reverse=True)
-  for val, (col, _, (lo, hi)) in ranges:
-    most, least = ranges[0][0], ranges[-1][0]
-    val = int(100 * (val - least) / (most - least + 1E-32))
-    print(f"{1 if val<1 else val:>3} : ", col, showSpan((lo, hi)))
-  print("")
+  f  = {(kl, (col1.txt, col1.at, span)): f
+            for col1, col2 in zip(here.x, there.x)
+            for f, kl, span in col1.discretize(col2, the)}
   tidied = [tidy(rule) for rule in
-            top(my.show,
+            top(the.show,
                 [(value(combo), combo)
                  for combo in subsets(
-                    top(my.top, ranges))])]
+                    top(the.top,sorted(solos,reverse=True)))])]
   return list({str(rule): rule for rule in tidied}.values())
