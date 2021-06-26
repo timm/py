@@ -7,9 +7,12 @@ if [ -z "$SubShell" ]; then
   SubShell=1 Etc="$Etc" bash --init-file $Ell/ell -i
 else
   
+  doc1() {
+    pdoc3 -o $Ell/docs -f --html $1
+  }
   doc() {
     (cd $Ell
-    pdoc3 -o $Ell/docs -f --html $Ell/keys0.py
+    doc1 $Ell/keys0.py
     mv $Ell/docs/keys0.html $Ell/docs/index.html)
   }
   
@@ -30,10 +33,8 @@ else
   alias vims="vim +PluginInstall +qall"         
   
   here() { cd $1; basename `pwd`; }
-  
   PROMPT_COMMAND='echo -ne "🕵️  $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
-  
-  
+
   tput bold; tput setaf 5
   cat<<-'EOF'
   
