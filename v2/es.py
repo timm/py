@@ -273,8 +273,39 @@ def sway(t, the, cols=None):
   return best, rest
 
 #---------------------------------------------------------------
-def contrast(here, there, the):
-  def like(lst, kl):
+class Contrast(o):
+  def __init__(i,here,there,the):
+    def top(n, pairs):
+      return [x for _, x in sorted(pairs, reverse=True)[:n]] 
+    n = len(here.rows) + len(there.rows)
+    hs = {True: len(here.rows), False: len(there.rows)}
+    f  = {(kl, (col1.txt, col1.at, span)): f
+             for col1, col2 in zip(here.x, there.x)
+             for f, kl, span in col1.discretize(col2, the)}
+    tmp  = [Rule.canonical(rule) for rule in
+             top(the.show,
+                 [(i.value(combo, f, the), combo)
+                  for combo in subsets(
+                     top(the.top,sorted(i.solos(f,the),
+                                            reverse=True)))])]
+    i.all= list({str(rule): rule for rule in tmp}.values())
+
+  def solos(i,f,the):
+    pairs = []
+    for kl, x in f:
+      if kl == True:
+        if s := i.value([x],f,the):  # if zero, then skip x
+          pairs += [(s, x)]
+    return pairs
+
+  def value(i,lst,f,the):
+    def optimize(b,r): b**2/(b+r) if b>r else 0
+    def monitor(b,r) : r**2/(b+r) if r>b else 0
+    def safety(b,r)  : return 1/(b+r)
+    f = [optimize,monitor,safety][the.goal]
+    return f(i.like(lst, True,f,the), i.like(lst,False.f,the))
+
+  def like(i, lst, kl,f,the):
     prod = math.prod
     prior = (hs[kl] + the.k) / (n + the.k * 2)
     fs = {}
@@ -285,32 +316,38 @@ def contrast(here, there, the):
       like *= (val + the.m * prior) / (hs[kl] + the.m)
     return like
 
-  def value(lst):
-    def optimize(b,r): b**2/(b+r) if b>r else 0
-    def monitor(b,r) : r**2/(b+r) if r>b else 0
-    def safety(b,r)  : return 1/(b+r)
-    f = [optimize,monitor,safety][the.goal]
-    return f(like(lst, True), like(lst,False))
+#--------------------------------------------------------
+class Rule:
+  def combineRanges(b4):
+    if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+       return None
+    j, tmp = 0, []
+    while j < len(b4):
+      a = b4[j]
+      if j < len(b4)-1:
+        b = b4[j+1]
+        if a[1] == b[0]:
+          a = (a[0], b[1])
+          j += 1
+      tmp += [a]
+      j += 1
+      return tmp if len(tmp) == len(b4) else combineRanges(tmp)
 
-  def solos():
-    pairs = []
-    for kl, x in f:
-      if kl == True:
-        if s := value([x]):  # if zero, then skip x
-          pairs += [(s, x)]
-    return pairs
+  def canonical(rule):
+    cols = {}
+    where={}
+    for col, at, span in rule:
+      where[col]=at
+      cols[col] = cols.get(col, []) + [span]
+    d = {}
+    for k, v in cols.items():
+      s = f"{k}"
+      if v1 := Rule.combineRanges(sorted(v)):
+        d[k] = v1
+    return [(k,where[k],d[k])  for k in d]
 
-  def top(n, pairs):
-    return [x for _, x in sorted(pairs, reverse=True)[:n]] 
+  def show(rule):
+    return ' and '.join([txt + ' (' + (' or '.join(map(showSpan, spans)) + ')')
+                         for txt,_,spans in rule])
 
-  n = len(here.rows) + len(there.rows)
-  hs = {True: len(here.rows), False: len(there.rows)}
-  f  = {(kl, (col1.txt, col1.at, span)): f
-            for col1, col2 in zip(here.x, there.x)
-            for f, kl, span in col1.discretize(col2, the)}
-  tidied = [tidy(rule) for rule in
-            top(the.show,
-                [(value(combo), combo)
-                 for combo in subsets(
-                    top(the.top,sorted(solos,reverse=True)))])]
-  return list({str(rule): rule for rule in tidied}.values())
+

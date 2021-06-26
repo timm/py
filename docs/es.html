@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>es API documentation</title>
-<meta name="description" content="./es.py : version2,
+<meta name="description" content="espy : version2,
 optimization via data mining.
 (c) 2021, Tim Menzies, http://unlicense.org …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -24,50 +24,62 @@ optimization via data mining.
 <h1 class="title">Module <code>es</code></h1>
 </header>
 <section id="section-intro">
-<p>./es.py : version2,
+<p>espy : version2,
 optimization via data mining.
-<br>
-(c) 2021, Tim Menzies, <a href="http://unlicense.org">http://unlicense.org</a>
-</p>
-<p>Options:
-</p>
+(c) 2021, Tim Menzies, <a href="http://unlicense.org">http://unlicense.org</a></p>
+<p>USAGE: ./eg.py [OPTIONS]</p>
+<p>OPTIONS:</p>
 <p>-data
 FILE
-data for data
-<br>
+when to load data from; e.g."../data/auto93.csv"
 -do
 STR
-start-up action; default=None
-<br>
--p
+when starting up, what action to run; e.g. "none"
+-enough
+FLOAT
+when recurring on clusters, when to stop; e.g. .5
+-fmt
+STR
+pretty print control for numbers; e.g.["{:&gt;7.2g}"]
+-l
 INT
-distance co-efficient; default=2
-<br>
+when computing distance, equation coefficient; e.g. 1
+-sample
+INT
+when seeking distant pairs, how samples of the data; e.g.32
 -seed
 INT
-default random number seed; default=10013</p>
+default random number seed; e.g. 10013
+-show
+INT
+when displaying final output, how many rules to show; e.g.10
+-top
+INT
+when hunting for rules, max number ranges to explore; e.g.10</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">#!/usr/bin/env python3.9
 &#34;&#34;&#34;
-./es.py : version2,  optimization via data mining.    
-(c) 2021, Tim Menzies, http://unlicense.org    
-    
-Options:    
-    
- -data    FILE   data for data    
- -do      STR    start-up action; default=None    
- -p       INT    distance co-efficient; default=2    
- -seed    INT    default random number seed; default=10013    
+espy : version2,  optimization via data mining.
+(c) 2021, Tim Menzies, http://unlicense.org
+
+USAGE: ./eg.py [OPTIONS]
+
+OPTIONS:
+
+ -data    FILE   when to load data from; e.g.&#34;../data/auto93.csv&#34;
+ -do      STR    when starting up, what action to run; e.g. &#34;none&#34;
+ -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5
+ -fmt     STR    pretty print control for numbers; e.g.[&#34;{:&gt;7.2g}&#34;]
+ -l       INT    when computing distance, equation coefficient; e.g. 1
+ -sample  INT    when seeking distant pairs, how samples of the data; e.g.32
+ -seed    INT    default random number seed; e.g. 10013
+ -show    INT    when displaying final output, how many rules to show; e.g.10
+ -top     INT    when hunting for rules, max number ranges to explore; e.g.10
 &#34;&#34;&#34;
-import re
-import sys
-import copy
-import math
-import random
-import traceback
+import re,sys,copy,math,random
 from etc import o, csv, cli
 
 options = dict(
@@ -75,11 +87,14 @@ options = dict(
     data=&#34;../data/auto93.csv&#34;,
     do=&#34;none&#34;,
     enough=.5,
-    l=1,
     fmt=&#34;{:&gt;7.2g}&#34;,
+    l=1,
     sample=32,
-    seed=10013)
+    seed=10013,
+    show=10,
+    top=10)
 
+#---------------------------------------------------------------
 class Col(o):
   &#34;`Col`s are generic columns.&#34;
   def __init__(i, txt=&#34;&#34;, at=0, inits=[]):
@@ -96,10 +111,12 @@ class Col(o):
     &#34;Distance.&#34;
     return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)
 
+#---------------------------------------------------------------
 class Skip(Col):
   &#34;`Skip`s are column of things we are going to ignore.&#34;
   pass
 
+#---------------------------------------------------------------
 class Num(Col):
   &#34;`Num`s summarize numerics&#34;
   def __init__(i, *l, **kw):
@@ -115,27 +132,20 @@ class Num(Col):
     return z
   def norm(i, z):
     &#34;Normalize 0..1.&#34;
-    if z == &#34;?&#34;:
-      return z
+    if z == &#34;?&#34;: return z
     lo, hi = i.all()[0], i.all()[-1]
     tmp = (z - lo) / (hi - lo + 1E-32)
     return max(0, min(tmp, 1))
   def all(i):
     &#34;Return sorted list of  all the numbers.&#34;
-    if not i.sorted:
-      i._all.sort()
+    if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
   def dist1(i, x, y):
     &#34;Numeric distances. Make guesses for missing values.&#34;
-    if x == &#34;?&#34;:
-      y = i.norm(y)
-      x = 0 if y &gt; .5 else 1 #
-    elif y == &#34;?&#34;:
-      x = i.norm(x)
-      y = 0 if x &gt; .5 else 1 #
-    else:
-      x, y = i.norm(x), i.norm(y)
+    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
     return abs(x - y)
   def per(i, p=.5):
     &#34;Return the pth percentil value in all the numbers.&#34;
@@ -148,6 +158,7 @@ class Num(Col):
     &#34;Estimate of dispersion around central tendency.&#34;
     return (i.per(.9) - i.per(.1)) / 2.56
 
+#---------------------------------------------------------------
 class Sym(Col):
   &#34;`Sym`s summarize symbols.&#34;
   def __init__(i, *l, **kw):
@@ -168,6 +179,7 @@ class Sym(Col):
     &#34;Estimate of dispersion around central tendency.&#34;
     return 0 if x == y else 1
 
+#---------------------------------------------------------------
 class Row(o):
   &#34;`Row`s hold one example.&#34;
   def __init__(i, t, cells): i._tab, i.cells = t, cells
@@ -194,6 +206,7 @@ class Row(o):
       n += 1
     return (gap / n)**(1 / the.l)
 
+#---------------------------------------------------------------
 class Tab(o):
   &#34;`Tab`les store examples, summarized in columns.&#34;
   def __init__(i, rows=[]):
@@ -235,8 +248,8 @@ class Tab(o):
         Sym)(txt=s, at=at)
 
   def head(i, lst):
-    &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
-    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+    &#34;&#34;&#34;Define the column types, store them in `all`. If a column
+    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39;
     columns.&#34;&#34;&#34;
     for at, s in enumerate(lst):
       one = i.isa(s, at)
@@ -282,6 +295,7 @@ class Tab(o):
     mid = len(rows) // 2 # split at median point
     return one, two, rows[:mid], rows[mid:]
 
+#---------------------------------------------------------------
 def cluster(t, the, cols=None):
   &#34;Recursively divide all data. Return one table per leaf.&#34;
   def go(rows, lvl=0):
@@ -300,8 +314,9 @@ def cluster(t, the, cols=None):
   go(t.rows)
   return out
 
+#---------------------------------------------------------------
 def sway(t, the, cols=None):
-  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step. 
+  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step.
      Return one table containing the best leaf.&#34;&#34;&#34;
   def go(rows, lvl=0):
     if type(lvl) == int:
@@ -310,18 +325,92 @@ def sway(t, the, cols=None):
       [best.row(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left &lt; right:
-        [rest.row(row) for row in rights]
-        go(lefts, lvl + 1)
-      else:
-        [rest.row(row) for row in lefts]
-        go(rights, lvl + 1)
+      if left &lt; right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x
   best, rest = t.clone(), t.clone()
   go(t.rows)
-  return best, rest</code></pre>
+  return best, rest
+
+#---------------------------------------------------------------
+class Contrast(o):
+  def __init__(i,here,there,the):
+    def top(n, pairs):
+      return [x for _, x in sorted(pairs, reverse=True)[:n]] 
+    n = len(here.rows) + len(there.rows)
+    hs = {True: len(here.rows), False: len(there.rows)}
+    f  = {(kl, (col1.txt, col1.at, span)): f
+             for col1, col2 in zip(here.x, there.x)
+             for f, kl, span in col1.discretize(col2, the)}
+    tmp  = [Rule.canonical(rule) for rule in
+             top(the.show,
+                 [(i.value(combo, f, the), combo)
+                  for combo in subsets(
+                     top(the.top,sorted(i.solos(f,the),
+                                            reverse=True)))])]
+    i.all= list({str(rule): rule for rule in tmp}.values())
+
+  def solos(i,f,the):
+    pairs = []
+    for kl, x in f:
+      if kl == True:
+        if s := i.value([x],f,the):  # if zero, then skip x
+          pairs += [(s, x)]
+    return pairs
+
+  def value(i,lst,f,the):
+    def optimize(b,r): b**2/(b+r) if b&gt;r else 0
+    def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
+    def safety(b,r)  : return 1/(b+r)
+    f = [optimize,monitor,safety][the.goal]
+    return f(i.like(lst, True,f,the), i.like(lst,False.f,the))
+
+  def like(i, lst, kl,f,the):
+    prod = math.prod
+    prior = (hs[kl] + the.k) / (n + the.k * 2)
+    fs = {}
+    for txt, pos, span in lst:
+      fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
+    like = prior
+    for val in fs.values():
+      like *= (val + the.m * prior) / (hs[kl] + the.m)
+    return like
+
+#--------------------------------------------------------
+class Rule:
+  def combineRanges(b4):
+    if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+       return None
+    j, tmp = 0, []
+    while j &lt; len(b4):
+      a = b4[j]
+      if j &lt; len(b4)-1:
+        b = b4[j+1]
+        if a[1] == b[0]:
+          a = (a[0], b[1])
+          j += 1
+      tmp += [a]
+      j += 1
+      return tmp if len(tmp) == len(b4) else combineRanges(tmp)
+
+  def canonical(rule):
+    cols = {}
+    where={}
+    for col, at, span in rule:
+      where[col]=at
+      cols[col] = cols.get(col, []) + [span]
+    d = {}
+    for k, v in cols.items():
+      s = f&#34;{k}&#34;
+      if v1 := Rule.combineRanges(sorted(v)):
+        d[k] = v1
+    return [(k,where[k],d[k])  for k in d]
+
+  def show(rule):
+    return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
+                         for txt,_,spans in rule])</code></pre>
 </details>
 </section>
 <section>
@@ -370,7 +459,7 @@ Return one table containing the best leaf.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sway(t, the, cols=None):
-  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step. 
+  &#34;&#34;&#34;Recursively divide data, pruning worse half at each step.
      Return one table containing the best leaf.&#34;&#34;&#34;
   def go(rows, lvl=0):
     if type(lvl) == int:
@@ -379,12 +468,8 @@ Return one table containing the best leaf.</p></div>
       [best.row(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left &lt; right:
-        [rest.row(row) for row in rights]
-        go(lefts, lvl + 1)
-      else:
-        [rest.row(row) for row in lefts]
-        go(rights, lvl + 1)
+      if left &lt; right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x
@@ -493,6 +578,123 @@ tendency.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="es.Contrast"><code class="flex name class">
+<span>class <span class="ident">Contrast</span></span>
+<span>(</span><span>here, there, the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Contrast(o):
+  def __init__(i,here,there,the):
+    def top(n, pairs):
+      return [x for _, x in sorted(pairs, reverse=True)[:n]] 
+    n = len(here.rows) + len(there.rows)
+    hs = {True: len(here.rows), False: len(there.rows)}
+    f  = {(kl, (col1.txt, col1.at, span)): f
+             for col1, col2 in zip(here.x, there.x)
+             for f, kl, span in col1.discretize(col2, the)}
+    tmp  = [Rule.canonical(rule) for rule in
+             top(the.show,
+                 [(i.value(combo, f, the), combo)
+                  for combo in subsets(
+                     top(the.top,sorted(i.solos(f,the),
+                                            reverse=True)))])]
+    i.all= list({str(rule): rule for rule in tmp}.values())
+
+  def solos(i,f,the):
+    pairs = []
+    for kl, x in f:
+      if kl == True:
+        if s := i.value([x],f,the):  # if zero, then skip x
+          pairs += [(s, x)]
+    return pairs
+
+  def value(i,lst,f,the):
+    def optimize(b,r): b**2/(b+r) if b&gt;r else 0
+    def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
+    def safety(b,r)  : return 1/(b+r)
+    f = [optimize,monitor,safety][the.goal]
+    return f(i.like(lst, True,f,the), i.like(lst,False.f,the))
+
+  def like(i, lst, kl,f,the):
+    prod = math.prod
+    prior = (hs[kl] + the.k) / (n + the.k * 2)
+    fs = {}
+    for txt, pos, span in lst:
+      fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
+    like = prior
+    for val in fs.values():
+      like *= (val + the.m * prior) / (hs[kl] + the.m)
+    return like</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Contrast.like"><code class="name flex">
+<span>def <span class="ident">like</span></span>(<span>i, lst, kl, f, the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def like(i, lst, kl,f,the):
+  prod = math.prod
+  prior = (hs[kl] + the.k) / (n + the.k * 2)
+  fs = {}
+  for txt, pos, span in lst:
+    fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
+  like = prior
+  for val in fs.values():
+    like *= (val + the.m * prior) / (hs[kl] + the.m)
+  return like</code></pre>
+</details>
+</dd>
+<dt id="es.Contrast.solos"><code class="name flex">
+<span>def <span class="ident">solos</span></span>(<span>i, f, the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def solos(i,f,the):
+  pairs = []
+  for kl, x in f:
+    if kl == True:
+      if s := i.value([x],f,the):  # if zero, then skip x
+        pairs += [(s, x)]
+  return pairs</code></pre>
+</details>
+</dd>
+<dt id="es.Contrast.value"><code class="name flex">
+<span>def <span class="ident">value</span></span>(<span>i, lst, f, the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def value(i,lst,f,the):
+  def optimize(b,r): b**2/(b+r) if b&gt;r else 0
+  def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
+  def safety(b,r)  : return 1/(b+r)
+  f = [optimize,monitor,safety][the.goal]
+  return f(i.like(lst, True,f,the), i.like(lst,False.f,the))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="es.Num"><code class="flex name class">
 <span>class <span class="ident">Num</span></span>
 <span>(</span><span>*l, **kw)</span>
@@ -518,27 +720,20 @@ tendency.</p></div>
     return z
   def norm(i, z):
     &#34;Normalize 0..1.&#34;
-    if z == &#34;?&#34;:
-      return z
+    if z == &#34;?&#34;: return z
     lo, hi = i.all()[0], i.all()[-1]
     tmp = (z - lo) / (hi - lo + 1E-32)
     return max(0, min(tmp, 1))
   def all(i):
     &#34;Return sorted list of  all the numbers.&#34;
-    if not i.sorted:
-      i._all.sort()
+    if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
   def dist1(i, x, y):
     &#34;Numeric distances. Make guesses for missing values.&#34;
-    if x == &#34;?&#34;:
-      y = i.norm(y)
-      x = 0 if y &gt; .5 else 1 #
-    elif y == &#34;?&#34;:
-      x = i.norm(x)
-      y = 0 if x &gt; .5 else 1 #
-    else:
-      x, y = i.norm(x), i.norm(y)
+    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
     return abs(x - y)
   def per(i, p=.5):
     &#34;Return the pth percentil value in all the numbers.&#34;
@@ -589,8 +784,7 @@ all the numbers.</p></div>
 </summary>
 <pre><code class="python">def all(i):
   &#34;Return sorted list of  all the numbers.&#34;
-  if not i.sorted:
-    i._all.sort()
+  if not i.sorted: i._all.sort()
   i.sorted = True
   return i._all</code></pre>
 </details>
@@ -606,14 +800,9 @@ all the numbers.</p></div>
 </summary>
 <pre><code class="python">def dist1(i, x, y):
   &#34;Numeric distances. Make guesses for missing values.&#34;
-  if x == &#34;?&#34;:
-    y = i.norm(y)
-    x = 0 if y &gt; .5 else 1 #
-  elif y == &#34;?&#34;:
-    x = i.norm(x)
-    y = 0 if x &gt; .5 else 1 #
-  else:
-    x, y = i.norm(x), i.norm(y)
+  if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+  elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+  else         : x, y = i.norm(x), i.norm(y)
   return abs(x - y)</code></pre>
 </details>
 </dd>
@@ -628,8 +817,7 @@ all the numbers.</p></div>
 </summary>
 <pre><code class="python">def norm(i, z):
   &#34;Normalize 0..1.&#34;
-  if z == &#34;?&#34;:
-    return z
+  if z == &#34;?&#34;: return z
   lo, hi = i.all()[0], i.all()[-1]
   tmp = (z - lo) / (hi - lo + 1E-32)
   return max(0, min(tmp, 1))</code></pre>
@@ -721,6 +909,114 @@ all the numbers.</p></div>
     gap += tmp**the.l
     n += 1
   return (gap / n)**(1 / the.l)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="es.Rule"><code class="flex name class">
+<span>class <span class="ident">Rule</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Rule:
+  def combineRanges(b4):
+    if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+       return None
+    j, tmp = 0, []
+    while j &lt; len(b4):
+      a = b4[j]
+      if j &lt; len(b4)-1:
+        b = b4[j+1]
+        if a[1] == b[0]:
+          a = (a[0], b[1])
+          j += 1
+      tmp += [a]
+      j += 1
+      return tmp if len(tmp) == len(b4) else combineRanges(tmp)
+
+  def canonical(rule):
+    cols = {}
+    where={}
+    for col, at, span in rule:
+      where[col]=at
+      cols[col] = cols.get(col, []) + [span]
+    d = {}
+    for k, v in cols.items():
+      s = f&#34;{k}&#34;
+      if v1 := Rule.combineRanges(sorted(v)):
+        d[k] = v1
+    return [(k,where[k],d[k])  for k in d]
+
+  def show(rule):
+    return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
+                         for txt,_,spans in rule])</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Rule.canonical"><code class="name flex">
+<span>def <span class="ident">canonical</span></span>(<span>rule)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def canonical(rule):
+  cols = {}
+  where={}
+  for col, at, span in rule:
+    where[col]=at
+    cols[col] = cols.get(col, []) + [span]
+  d = {}
+  for k, v in cols.items():
+    s = f&#34;{k}&#34;
+    if v1 := Rule.combineRanges(sorted(v)):
+      d[k] = v1
+  return [(k,where[k],d[k])  for k in d]</code></pre>
+</details>
+</dd>
+<dt id="es.Rule.combineRanges"><code class="name flex">
+<span>def <span class="ident">combineRanges</span></span>(<span>b4)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def combineRanges(b4):
+  if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+     return None
+  j, tmp = 0, []
+  while j &lt; len(b4):
+    a = b4[j]
+    if j &lt; len(b4)-1:
+      b = b4[j+1]
+      if a[1] == b[0]:
+        a = (a[0], b[1])
+        j += 1
+    tmp += [a]
+    j += 1
+    return tmp if len(tmp) == len(b4) else combineRanges(tmp)</code></pre>
+</details>
+</dd>
+<dt id="es.Rule.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>rule)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(rule):
+  return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
+                       for txt,_,spans in rule])</code></pre>
 </details>
 </dd>
 </dl>
@@ -888,8 +1184,8 @@ all the numbers.</p></div>
         Sym)(txt=s, at=at)
 
   def head(i, lst):
-    &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
-    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+    &#34;&#34;&#34;Define the column types, store them in `all`. If a column
+    name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39;
     columns.&#34;&#34;&#34;
     for at, s in enumerate(lst):
       one = i.isa(s, at)
@@ -1059,8 +1355,8 @@ columns.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def head(i, lst):
-  &#34;&#34;&#34;Define the column types, store them in `all`. If a column 
-  name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39; 
+  &#34;&#34;&#34;Define the column types, store them in `all`. If a column
+  name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39;
   columns.&#34;&#34;&#34;
   for at, s in enumerate(lst):
     one = i.isa(s, at)
@@ -1134,6 +1430,14 @@ everything else is a Sym.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="es.Contrast" href="#es.Contrast">Contrast</a></code></h4>
+<ul class="">
+<li><code><a title="es.Contrast.like" href="#es.Contrast.like">like</a></code></li>
+<li><code><a title="es.Contrast.solos" href="#es.Contrast.solos">solos</a></code></li>
+<li><code><a title="es.Contrast.value" href="#es.Contrast.value">value</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="es.Num" href="#es.Num">Num</a></code></h4>
 <ul class="">
 <li><code><a title="es.Num.add" href="#es.Num.add">add</a></code></li>
@@ -1147,6 +1451,14 @@ everything else is a Sym.</p></div>
 <h4><code><a title="es.Row" href="#es.Row">Row</a></code></h4>
 <ul class="">
 <li><code><a title="es.Row.dist" href="#es.Row.dist">dist</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Rule" href="#es.Rule">Rule</a></code></h4>
+<ul class="">
+<li><code><a title="es.Rule.canonical" href="#es.Rule.canonical">canonical</a></code></li>
+<li><code><a title="es.Rule.combineRanges" href="#es.Rule.combineRanges">combineRanges</a></code></li>
+<li><code><a title="es.Rule.show" href="#es.Rule.show">show</a></code></li>
 </ul>
 </li>
 <li>

@@ -12,8 +12,6 @@ else
     mv $Ful/docs/keys0.html $Ful/docs/index.html)
   }
   
-  alias keys="python3.9 $Ful/keys0.py "
-  
   alias ..='cd ..'
   alias ...='cd ../../../'
   alias grep='grep --color=auto'
@@ -24,6 +22,7 @@ else
   alias bye="gp; tmux detach"
   alias h="history"
   alias ls="ls -G"
+  alias pdoc="pdoc3 -o $Ful/docs -f --html "
   alias tmux="tmux -f $Ful/etc/dottmux "
   alias vi="vim -u $Ful/etc/dotvimrc "
   alias vims="vim +PluginInstall +qall"         
