@@ -80,8 +80,8 @@ def egsway(the):
   hi = t.clone(rows[25:]).goals()
   best, rest = sway(t, the, t.x)
   print(R(best.goals()), "<== sway")
-  print(R(lo), "<== lo")
-  print(R(hi), "<== hi")
+  print(R(lo), "<== top25")
+  print(R(hi), "<== last25")
   print("±" + R([col.var() * .35 for col in t.y]))
   print("   ", [col.w for col in t.y])
 

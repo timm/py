@@ -2,6 +2,7 @@ import re
 import sys
 import copy
 import random
+from collections import UserDict
 
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)

@@ -149,8 +149,7 @@ class Tab(o):
   "`Tab`les store examples, summarized in columns."
   def __init__(i, rows=[]):
     i.xy, i.x, i.y, i.all, i.rows = [], [], [], [], []
-    for lst in rows:
-      i.row(lst)
+    [i.add(lst) for lst in rows]
 
   def __lt__(i, j):
     "Sort tables based on their central tendency."
@@ -167,8 +166,8 @@ class Tab(o):
   def clone(i, rows=[]):
     "Return a new table with the same structure."
     t = Tab()
-    t.row([c.txt for c in i.all])
-    [t.row(row) for row in rows]
+    t.add([c.txt for c in i.all])
+    [t.add(row) for row in rows]
     return t
 
   def add(i, lst):
@@ -260,11 +259,11 @@ def sway(t, the, cols=None):
     if type(lvl) == int:
       print('|.. ' * lvl, len(rows))
     if len(rows) < enough:
-      [best.row(row) for row in rows]
+      [best.add(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left < right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
-      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
+      if left < right: [rest.add(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.add(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x

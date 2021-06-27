@@ -8,6 +8,38 @@ class o(object):
         {k: v for k, v in i.__dict__.items() if k[0] != "_"})
 
 class Rule:
+  def __init__(i): i._ready=False
+  def __repr__(i): i.ready(); return i.show()
+  def ready(i):
+    if not i._ready:
+      i._ready=True
+      i.ready1()
+    return  len(i.has)> 0
+  
+def And(Rule):
+  def __init__(i,*l,**kw):
+    i.has={}
+    super().__init__(*l,**kw)
+  def ready1(i):
+    i.has={k:v for k,v in i.features.items() if i.ready(v)}
+    
+  def show(i):
+    return " and ".join([f"{k}= {i.show(i.has[k])" 
+                        for k in sorted(i.has.keys())])
+def Or(Rule):
+  def __init__(i,*l,**kw):
+    i.has=set() # needed for socring cause the raw scores are on raw ranges
+    i.reduced=[] # someitmes, when we combine ranges, we re duce this set
+    super().__init__(*l,**kw)
+  def ready1(i):
+    "return the size of i.has"
+  def show(i):
+    return " or ".join(i.reduced)
+
+   
+
+
+class Ruler:
   def __init__(i,n): i.has,i.n,i._s =  {},n,None
   def add(i,feature,range):
     s = i.has[feature] = i.has(feature,set())
