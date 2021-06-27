@@ -8,10 +8,12 @@ if [ -z "$SubShell" ]; then
 else
   doc() {
     (cd $Ful
-    pdoc3 -o $Ful/docs -f --html $Ful/keys0.py
+    pdoc $Ful/keys0.py
     mv $Ful/docs/keys0.html $Ful/docs/index.html)
   }
-  
+ 
+  PDOC="-f --html --config sort_identifiers=False  \
+       --template-dir $Ful/docs/ -c latex_math=True"
   alias ..='cd ..'
   alias ...='cd ../../../'
   alias grep='grep --color=auto'
@@ -22,7 +24,7 @@ else
   alias bye="gp; tmux detach"
   alias h="history"
   alias ls="ls -G"
-  alias pdoc="pdoc3 -o $Ful/docs -f --html "
+  alias pdoc="pdoc3 -o $Ful/docs $PDOC "
   alias tmux="tmux -f $Ful/etc/dottmux "
   alias vi="vim -u $Ful/etc/dotvimrc "
   alias vims="vim +PluginInstall +qall"         
@@ -31,7 +33,7 @@ else
   
   PROMPT_COMMAND='echo -ne "🕵️  $(git branch 2>/dev/null | grep '^*' | colrm 1 2):";PS1="$(here ..)/$(here .):\!\e[m ▶ "'
   
-  
+  hi() { 
   tput bold; tput setaf 5
   cat<<-'EOF'
                              ___  ___       _ __  _   _ 
@@ -40,8 +42,8 @@ else
   | Ba    | Bad <----.      \___||___/ (_) | .__/ \__, |   
   |    56 |          |                     |_|    |___/  
   :-------:------:   |     
-          | Be   |   v      explore = min(bad+better)
-          |    4 | Better   optimze = max(better - bad)
+          | B    |   v      explore = min(bad+better)
+          |    5 | Better   optimze = max(better - bad)
           :------:          monitor = max(bad - better)
 
 EOF
@@ -50,5 +52,7 @@ EOF
   alias | sed 's/alias /  /'
   echo ""
   tput sgr0
+  }
+  hi
 fi
 

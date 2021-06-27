@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>es API documentation</title>
-<meta name="description" content="espy : version2,
-optimization via data mining.
+<meta name="description" content="espy : version2, optimization via data mining
 (c) 2021, Tim Menzies, http://unlicense.org …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -14,6 +13,7 @@ optimization via data mining.
 <style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
@@ -24,35 +24,53 @@ optimization via data mining.
 <h1 class="title">Module <code>es</code></h1>
 </header>
 <section id="section-intro">
-<p>espy : version2,
-optimization via data mining.
-(c) 2021, Tim Menzies, <a href="http://unlicense.org">http://unlicense.org</a></p>
-<p>USAGE: ./eg.py [OPTIONS]</p>
-<p>OPTIONS:</p>
-<p>-data
+<p>espy : version2, optimization via data mining <br>
+(c) 2021, Tim Menzies, <a href="http://unlicense.org">http://unlicense.org</a>
+</p>
+<pre><code>:-------:                  
+| Ba    | Bad &lt;----.      
+|    56 |          |    
+:-------:------:   |         
+        | Be   |   v      explore  = min(better + bad)   
+        |    4 | Better   optimize = max(better - bad)   
+        :------:          monitor  = max(bad - better)
+</code></pre>
+<p>USAGE: ./eg.py [OPTIONS] [GROUP DETAILS]
+</p>
+<p>GROUP: row, rule
+</p>
+<p>OPTIONS:
+-h
+show help <br>
+-data
 FILE
-when to load data from; e.g."../data/auto93.csv"
+when to load data from; e.g."../data/auto93.csv" <br>
 -do
 STR
-when starting up, what action to run; e.g. "none"
--enough
-FLOAT
-when recurring on clusters, when to stop; e.g. .5
+when starting up, what action to run; e.g. "none" <br>
 -fmt
 STR
-pretty print control for numbers; e.g.["{:&gt;7.2g}"]
--l
-INT
-when computing distance, equation coefficient; e.g. 1
--sample
-INT
-when seeking distant pairs, how samples of the data; e.g.32
+pretty print control for numbers; e.g.["{:&gt;7.2g}"] <br>
 -seed
 INT
 default random number seed; e.g. 10013
+</p>
+<p>DETAILS:</p>
+<p>row <br>
+-l
+INT
+when computing distance, equation coefficient; e.g. 1 <br>
+-enough
+FLOAT
+when recurring on clusters, when to stop; e.g. .5 <br>
+-sample
+INT
+when seeking distant pairs, how samples of the data; e.g.32
+</p>
+<p>rule <br>
 -show
 INT
-when displaying final output, how many rules to show; e.g.10
+when displaying final output, how many rules to show; e.g.10 <br>
 -top
 INT
 when hunting for rules, max number ranges to explore; e.g.10</p>
@@ -62,37 +80,53 @@ when hunting for rules, max number ranges to explore; e.g.10</p>
 </summary>
 <pre><code class="python">#!/usr/bin/env python3.9
 &#34;&#34;&#34;
-espy : version2,  optimization via data mining.
-(c) 2021, Tim Menzies, http://unlicense.org
+espy : version2, optimization via data mining   
+(c) 2021, Tim Menzies, http://unlicense.org   
 
-USAGE: ./eg.py [OPTIONS]
+    :-------:                  
+    | Ba    | Bad &lt;----.      
+    |    56 |          |    
+    :-------:------:   |         
+            | Be   |   v      explore  = min(better + bad)   
+            |    4 | Better   optimize = max(better - bad)   
+            :------:          monitor  = max(bad - better)   
+
+USAGE: ./eg.py [OPTIONS] [GROUP DETAILS]    
+
+GROUP: row, rule   
 
 OPTIONS:
+ -h              show help   
+ -data    FILE   when to load data from; e.g.&#34;../data/auto93.csv&#34;   
+ -do      STR    when starting up, what action to run; e.g. &#34;none&#34;   
+ -fmt     STR    pretty print control for numbers; e.g.[&#34;{:&gt;7.2g}&#34;]   
+ -seed    INT    default random number seed; e.g. 10013   
 
- -data    FILE   when to load data from; e.g.&#34;../data/auto93.csv&#34;
- -do      STR    when starting up, what action to run; e.g. &#34;none&#34;
- -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5
- -fmt     STR    pretty print control for numbers; e.g.[&#34;{:&gt;7.2g}&#34;]
- -l       INT    when computing distance, equation coefficient; e.g. 1
- -sample  INT    when seeking distant pairs, how samples of the data; e.g.32
- -seed    INT    default random number seed; e.g. 10013
- -show    INT    when displaying final output, how many rules to show; e.g.10
- -top     INT    when hunting for rules, max number ranges to explore; e.g.10
+DETAILS:
+
+row   
+ -l       INT    when computing distance, equation coefficient; e.g. 1   
+ -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5   
+ -sample  INT    when seeking distant pairs, how samples of the data; e.g.32   
+   
+rule   
+ -show    INT    when displaying final output, how many rules to show; e.g.10   
+ -top     INT    when hunting for rules, max number ranges to explore; e.g.10   
 &#34;&#34;&#34;
 import re,sys,copy,math,random
 from etc import o, csv, cli
 
-options = dict(
-    Verbose=0,
-    data=&#34;../data/auto93.csv&#34;,
-    do=&#34;none&#34;,
-    enough=.5,
-    fmt=&#34;{:&gt;7.2g}&#34;,
-    l=1,
-    sample=32,
-    seed=10013,
-    show=10,
-    top=10)
+options =   dict(
+   all =    dict(Verbose=0,
+                 data=&#34;../data/auto93.csv&#34;,
+                 do=&#34;none&#34;,
+                 seed=10013,
+                 fmt=&#34;{:&gt;7.2g}&#34;),
+  row=      dict(l=1),
+  cluster=  dict(enough=.5,
+                 sample=32),
+  rule=     dict(show=10,
+                 top=10))
 
 #---------------------------------------------------------------
 class Col(o):
@@ -211,8 +245,7 @@ class Tab(o):
   &#34;`Tab`les store examples, summarized in columns.&#34;
   def __init__(i, rows=[]):
     i.xy, i.x, i.y, i.all, i.rows = [], [], [], [], []
-    for lst in rows:
-      i.row(lst)
+    [i.add(lst) for lst in rows]
 
   def __lt__(i, j):
     &#34;Sort tables based on their central tendency.&#34;
@@ -229,8 +262,8 @@ class Tab(o):
   def clone(i, rows=[]):
     &#34;Return a new table with the same structure.&#34;
     t = Tab()
-    t.row([c.txt for c in i.all])
-    [t.row(row) for row in rows]
+    t.add([c.txt for c in i.all])
+    [t.add(row) for row in rows]
     return t
 
   def add(i, lst):
@@ -322,11 +355,11 @@ def sway(t, the, cols=None):
     if type(lvl) == int:
       print(&#39;|.. &#39; * lvl, len(rows))
     if len(rows) &lt; enough:
-      [best.row(row) for row in rows]
+      [best.add(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left &lt; right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
-      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
+      if left &lt; right: [rest.add(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.add(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x
@@ -356,8 +389,8 @@ class Contrast(o):
     pairs = []
     for kl, x in f:
       if kl == True:
-        if s := i.value([x],f,the):  # if zero, then skip x
-          pairs += [(s, x)]
+        s = i.value([x],f,the)  # if zero, then skip x
+        pairs += [(s, x)]
     return pairs
 
   def value(i,lst,f,the):
@@ -380,6 +413,7 @@ class Contrast(o):
 
 #--------------------------------------------------------
 class Rule:
+  # rule dict. one key per attribute, values per key
   def combineRanges(b4):
     if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
        return None
@@ -465,11 +499,11 @@ Return one table containing the best leaf.</p></div>
     if type(lvl) == int:
       print(&#39;|.. &#39; * lvl, len(rows))
     if len(rows) &lt; enough:
-      [best.row(row) for row in rows]
+      [best.add(row) for row in rows]
     else:
       left, right, lefts, rights = t.div(the, rows=rows, cols=cols)
-      if left &lt; right: [rest.row(row) for row in rights]; go(lefts,  lvl + 1)
-      else           : [rest.row(row) for row in lefts ]; go(rights, lvl + 1)
+      if left &lt; right: [rest.add(row) for row in rights]; go(lefts,  lvl + 1)
+      else           : [rest.add(row) for row in lefts ]; go(rights, lvl + 1)
 
   enough = 2 * len(t.rows)**the.enough
   cols = cols or t.x
@@ -533,20 +567,6 @@ Return one table containing the best leaf.</p></div>
 <pre><code class="python">def add(i, z): return z</code></pre>
 </details>
 </dd>
-<dt id="es.Col.dist"><code class="name flex">
-<span>def <span class="ident">dist</span></span>(<span>i, x, y)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Distance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dist(i, x, y):
-  &#34;Distance.&#34;
-  return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)</code></pre>
-</details>
-</dd>
 <dt id="es.Col.mid"><code class="name flex">
 <span>def <span class="ident">mid</span></span>(<span>i)</span>
 </code></dt>
@@ -576,124 +596,51 @@ tendency.</p></div>
   return &#34;?&#34;</code></pre>
 </details>
 </dd>
-</dl>
-</dd>
-<dt id="es.Contrast"><code class="flex name class">
-<span>class <span class="ident">Contrast</span></span>
-<span>(</span><span>here, there, the)</span>
+<dt id="es.Col.dist"><code class="name flex">
+<span>def <span class="ident">dist</span></span>(<span>i, x, y)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Distance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Contrast(o):
-  def __init__(i,here,there,the):
-    def top(n, pairs):
-      return [x for _, x in sorted(pairs, reverse=True)[:n]] 
-    n = len(here.rows) + len(there.rows)
-    hs = {True: len(here.rows), False: len(there.rows)}
-    f  = {(kl, (col1.txt, col1.at, span)): f
-             for col1, col2 in zip(here.x, there.x)
-             for f, kl, span in col1.discretize(col2, the)}
-    tmp  = [Rule.canonical(rule) for rule in
-             top(the.show,
-                 [(i.value(combo, f, the), combo)
-                  for combo in subsets(
-                     top(the.top,sorted(i.solos(f,the),
-                                            reverse=True)))])]
-    i.all= list({str(rule): rule for rule in tmp}.values())
-
-  def solos(i,f,the):
-    pairs = []
-    for kl, x in f:
-      if kl == True:
-        if s := i.value([x],f,the):  # if zero, then skip x
-          pairs += [(s, x)]
-    return pairs
-
-  def value(i,lst,f,the):
-    def optimize(b,r): b**2/(b+r) if b&gt;r else 0
-    def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
-    def safety(b,r)  : return 1/(b+r)
-    f = [optimize,monitor,safety][the.goal]
-    return f(i.like(lst, True,f,the), i.like(lst,False.f,the))
-
-  def like(i, lst, kl,f,the):
-    prod = math.prod
-    prior = (hs[kl] + the.k) / (n + the.k * 2)
-    fs = {}
-    for txt, pos, span in lst:
-      fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
-    like = prior
-    for val in fs.values():
-      like *= (val + the.m * prior) / (hs[kl] + the.m)
-    return like</code></pre>
+<pre><code class="python">def dist(i, x, y):
+  &#34;Distance.&#34;
+  return 1 if x == &#34;?&#34; and y == &#34;?&#34; else i.dist1(x, y)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="es.Skip"><code class="flex name class">
+<span>class <span class="ident">Skip</span></span>
+<span>(</span><span>txt='', at=0, inits=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Skip" href="#es.Skip">Skip</a></code>s are column of things we are going to ignore.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Skip(Col):
+  &#34;`Skip`s are column of things we are going to ignore.&#34;
+  pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="es.Col" href="#es.Col">Col</a></li>
 <li>etc.o</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="es.Contrast.like"><code class="name flex">
-<span>def <span class="ident">like</span></span>(<span>i, lst, kl, f, the)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def like(i, lst, kl,f,the):
-  prod = math.prod
-  prior = (hs[kl] + the.k) / (n + the.k * 2)
-  fs = {}
-  for txt, pos, span in lst:
-    fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
-  like = prior
-  for val in fs.values():
-    like *= (val + the.m * prior) / (hs[kl] + the.m)
-  return like</code></pre>
-</details>
-</dd>
-<dt id="es.Contrast.solos"><code class="name flex">
-<span>def <span class="ident">solos</span></span>(<span>i, f, the)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def solos(i,f,the):
-  pairs = []
-  for kl, x in f:
-    if kl == True:
-      if s := i.value([x],f,the):  # if zero, then skip x
-        pairs += [(s, x)]
-  return pairs</code></pre>
-</details>
-</dd>
-<dt id="es.Contrast.value"><code class="name flex">
-<span>def <span class="ident">value</span></span>(<span>i, lst, f, the)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def value(i,lst,f,the):
-  def optimize(b,r): b**2/(b+r) if b&gt;r else 0
-  def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
-  def safety(b,r)  : return 1/(b+r)
-  f = [optimize,monitor,safety][the.goal]
-  return f(i.like(lst, True,f,the), i.like(lst,False.f,the))</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
+<ul class="hlist">
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
+<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
+<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="es.Num"><code class="flex name class">
 <span>class <span class="ident">Num</span></span>
@@ -772,6 +719,23 @@ tendency.</p></div>
   return z</code></pre>
 </details>
 </dd>
+<dt id="es.Num.norm"><code class="name flex">
+<span>def <span class="ident">norm</span></span>(<span>i, z)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalize 0..1.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def norm(i, z):
+  &#34;Normalize 0..1.&#34;
+  if z == &#34;?&#34;: return z
+  lo, hi = i.all()[0], i.all()[-1]
+  tmp = (z - lo) / (hi - lo + 1E-32)
+  return max(0, min(tmp, 1))</code></pre>
+</details>
+</dd>
 <dt id="es.Num.all"><code class="name flex">
 <span>def <span class="ident">all</span></span>(<span>i)</span>
 </code></dt>
@@ -806,23 +770,6 @@ all the numbers.</p></div>
   return abs(x - y)</code></pre>
 </details>
 </dd>
-<dt id="es.Num.norm"><code class="name flex">
-<span>def <span class="ident">norm</span></span>(<span>i, z)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Normalize 0..1.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def norm(i, z):
-  &#34;Normalize 0..1.&#34;
-  if z == &#34;?&#34;: return z
-  lo, hi = i.all()[0], i.all()[-1]
-  tmp = (z - lo) / (hi - lo + 1E-32)
-  return max(0, min(tmp, 1))</code></pre>
-</details>
-</dd>
 <dt id="es.Num.per"><code class="name flex">
 <span>def <span class="ident">per</span></span>(<span>i, p=0.5)</span>
 </code></dt>
@@ -839,207 +786,6 @@ all the numbers.</p></div>
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
-<ul class="hlist">
-<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
-<li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
-<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="es.Row"><code class="flex name class">
-<span>class <span class="ident">Row</span></span>
-<span>(</span><span>t, cells)</span>
-</code></dt>
-<dd>
-<div class="desc"><p><code><a title="es.Row" href="#es.Row">Row</a></code>s hold one example.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Row(o):
-  &#34;`Row`s hold one example.&#34;
-  def __init__(i, t, cells): i._tab, i.cells = t, cells
-
-  def __lt__(i, j):
-    &#34;Continuous domination.&#34;
-    cols = i._tab.y
-    s1, s2, n = 0, 0, len(cols)
-    for col in cols:
-      a, b = i.cells[col.at], j.cells[col.at]
-      if a == &#34;?&#34; or b == &#34;?&#34;:
-        continue
-      a, b = col.norm(a), col.norm(b)
-      s1 -= math.e**(col.w * (a - b) / n)
-      s2 -= math.e**(col.w * (b - a) / n)
-    return s1 / n &lt; s2 / n
-
-  def dist(i, j, the, cols=None):
-    &#34;Distance between examples.&#34;
-    gap, n = 0, 1E-32
-    for col in cols or i._tab.x:
-      tmp = col.dist(i.cells[col.at], j.cells[col.at])
-      gap += tmp**the.l
-      n += 1
-    return (gap / n)**(1 / the.l)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>etc.o</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="es.Row.dist"><code class="name flex">
-<span>def <span class="ident">dist</span></span>(<span>i, j, the, cols=None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Distance between examples.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dist(i, j, the, cols=None):
-  &#34;Distance between examples.&#34;
-  gap, n = 0, 1E-32
-  for col in cols or i._tab.x:
-    tmp = col.dist(i.cells[col.at], j.cells[col.at])
-    gap += tmp**the.l
-    n += 1
-  return (gap / n)**(1 / the.l)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="es.Rule"><code class="flex name class">
-<span>class <span class="ident">Rule</span></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Rule:
-  def combineRanges(b4):
-    if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
-       return None
-    j, tmp = 0, []
-    while j &lt; len(b4):
-      a = b4[j]
-      if j &lt; len(b4)-1:
-        b = b4[j+1]
-        if a[1] == b[0]:
-          a = (a[0], b[1])
-          j += 1
-      tmp += [a]
-      j += 1
-      return tmp if len(tmp) == len(b4) else combineRanges(tmp)
-
-  def canonical(rule):
-    cols = {}
-    where={}
-    for col, at, span in rule:
-      where[col]=at
-      cols[col] = cols.get(col, []) + [span]
-    d = {}
-    for k, v in cols.items():
-      s = f&#34;{k}&#34;
-      if v1 := Rule.combineRanges(sorted(v)):
-        d[k] = v1
-    return [(k,where[k],d[k])  for k in d]
-
-  def show(rule):
-    return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
-                         for txt,_,spans in rule])</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="es.Rule.canonical"><code class="name flex">
-<span>def <span class="ident">canonical</span></span>(<span>rule)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def canonical(rule):
-  cols = {}
-  where={}
-  for col, at, span in rule:
-    where[col]=at
-    cols[col] = cols.get(col, []) + [span]
-  d = {}
-  for k, v in cols.items():
-    s = f&#34;{k}&#34;
-    if v1 := Rule.combineRanges(sorted(v)):
-      d[k] = v1
-  return [(k,where[k],d[k])  for k in d]</code></pre>
-</details>
-</dd>
-<dt id="es.Rule.combineRanges"><code class="name flex">
-<span>def <span class="ident">combineRanges</span></span>(<span>b4)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def combineRanges(b4):
-  if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
-     return None
-  j, tmp = 0, []
-  while j &lt; len(b4):
-    a = b4[j]
-    if j &lt; len(b4)-1:
-      b = b4[j+1]
-      if a[1] == b[0]:
-        a = (a[0], b[1])
-        j += 1
-    tmp += [a]
-    j += 1
-    return tmp if len(tmp) == len(b4) else combineRanges(tmp)</code></pre>
-</details>
-</dd>
-<dt id="es.Rule.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>rule)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def show(rule):
-  return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
-                       for txt,_,spans in rule])</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="es.Skip"><code class="flex name class">
-<span>class <span class="ident">Skip</span></span>
-<span>(</span><span>txt='', at=0, inits=[])</span>
-</code></dt>
-<dd>
-<div class="desc"><p><code><a title="es.Skip" href="#es.Skip">Skip</a></code>s are column of things we are going to ignore.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Skip(Col):
-  &#34;`Skip`s are column of things we are going to ignore.&#34;
-  pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="es.Col" href="#es.Col">Col</a></li>
-<li>etc.o</li>
-</ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="es.Col" href="#es.Col">Col</a></b></code>:
@@ -1133,6 +879,69 @@ all the numbers.</p></div>
 </li>
 </ul>
 </dd>
+<dt id="es.Row"><code class="flex name class">
+<span>class <span class="ident">Row</span></span>
+<span>(</span><span>t, cells)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code><a title="es.Row" href="#es.Row">Row</a></code>s hold one example.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Row(o):
+  &#34;`Row`s hold one example.&#34;
+  def __init__(i, t, cells): i._tab, i.cells = t, cells
+
+  def __lt__(i, j):
+    &#34;Continuous domination.&#34;
+    cols = i._tab.y
+    s1, s2, n = 0, 0, len(cols)
+    for col in cols:
+      a, b = i.cells[col.at], j.cells[col.at]
+      if a == &#34;?&#34; or b == &#34;?&#34;:
+        continue
+      a, b = col.norm(a), col.norm(b)
+      s1 -= math.e**(col.w * (a - b) / n)
+      s2 -= math.e**(col.w * (b - a) / n)
+    return s1 / n &lt; s2 / n
+
+  def dist(i, j, the, cols=None):
+    &#34;Distance between examples.&#34;
+    gap, n = 0, 1E-32
+    for col in cols or i._tab.x:
+      tmp = col.dist(i.cells[col.at], j.cells[col.at])
+      gap += tmp**the.l
+      n += 1
+    return (gap / n)**(1 / the.l)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Row.dist"><code class="name flex">
+<span>def <span class="ident">dist</span></span>(<span>i, j, the, cols=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Distance between examples.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist(i, j, the, cols=None):
+  &#34;Distance between examples.&#34;
+  gap, n = 0, 1E-32
+  for col in cols or i._tab.x:
+    tmp = col.dist(i.cells[col.at], j.cells[col.at])
+    gap += tmp**the.l
+    n += 1
+  return (gap / n)**(1 / the.l)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="es.Tab"><code class="flex name class">
 <span>class <span class="ident">Tab</span></span>
 <span>(</span><span>rows=[])</span>
@@ -1147,8 +956,7 @@ all the numbers.</p></div>
   &#34;`Tab`les store examples, summarized in columns.&#34;
   def __init__(i, rows=[]):
     i.xy, i.x, i.y, i.all, i.rows = [], [], [], [], []
-    for lst in rows:
-      i.row(lst)
+    [i.add(lst) for lst in rows]
 
   def __lt__(i, j):
     &#34;Sort tables based on their central tendency.&#34;
@@ -1165,8 +973,8 @@ all the numbers.</p></div>
   def clone(i, rows=[]):
     &#34;Return a new table with the same structure.&#34;
     t = Tab()
-    t.row([c.txt for c in i.all])
-    [t.row(row) for row in rows]
+    t.add([c.txt for c in i.all])
+    [t.add(row) for row in rows]
     return t
 
   def add(i, lst):
@@ -1237,6 +1045,51 @@ all the numbers.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="es.Tab.goals"><code class="name flex">
+<span>def <span class="ident">goals</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the goal values of the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def goals(i):
+  &#34;Returns the goal values of the central tendencies.&#34;
+  return [col.mid() for col in i.y]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.mid"><code class="name flex">
+<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mid(i):
+  &#34;Returns the central tendencies.&#34;
+  return [col.mid() for col in i.all]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.clone"><code class="name flex">
+<span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a new table with the same structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clone(i, rows=[]):
+  &#34;Return a new table with the same structure.&#34;
+  t = Tab()
+  t.add([c.txt for c in i.all])
+  [t.add(row) for row in rows]
+  return t</code></pre>
+</details>
+</dd>
 <dt id="es.Tab.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, lst)</span>
 </code></dt>
@@ -1256,21 +1109,49 @@ types.</p></div>
   (i.data if i.all else i.head)(lst)</code></pre>
 </details>
 </dd>
-<dt id="es.Tab.clone"><code class="name flex">
-<span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
+<dt id="es.Tab.isa"><code class="name flex">
+<span>def <span class="ident">isa</span></span>(<span>i, s, at)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return a new table with the same structure.</p></div>
+<div class="desc"><p>Skip names contain '?', Num names start with upper case,
+everything else is a Sym.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def clone(i, rows=[]):
-  &#34;Return a new table with the same structure.&#34;
-  t = Tab()
-  t.row([c.txt for c in i.all])
-  [t.row(row) for row in rows]
-  return t</code></pre>
+<pre><code class="python">def isa(i, s, at):
+  &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
+   everything else is a Sym.&#34;&#34;&#34;
+  return Skip if &#34;?&#34; in s else (
+      Num if s[0].isupper() else
+      Sym)(txt=s, at=at)</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.head"><code class="name flex">
+<span>def <span class="ident">head</span></span>(<span>i, lst)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Define the column types, store them in <code>all</code>. If a column
+name contains '?' then do
+not add it to any lst of 'x' or 'y'
+columns.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def head(i, lst):
+  &#34;&#34;&#34;Define the column types, store them in `all`. If a column
+  name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39;
+  columns.&#34;&#34;&#34;
+  for at, s in enumerate(lst):
+    one = i.isa(s, at)
+    i.all += [one] # everyone gets called in `all`
+    if type(one) != Skip:
+      i.xy += [one] # none skipped things are in `xy` or `x` or `y`
+      if &#34;+&#34; in s or &#34;-&#34; in s or &#34;!&#34; in s:
+        i.y += [one]
+      else:
+        i.x += [one]</code></pre>
 </details>
 </dd>
 <dt id="es.Tab.data"><code class="name flex">
@@ -1328,77 +1209,230 @@ of all examples from two distant points.</p></div>
   return one, two, rows[:mid], rows[mid:]</code></pre>
 </details>
 </dd>
-<dt id="es.Tab.goals"><code class="name flex">
-<span>def <span class="ident">goals</span></span>(<span>i)</span>
+</dl>
+</dd>
+<dt id="es.Contrast"><code class="flex name class">
+<span>class <span class="ident">Contrast</span></span>
+<span>(</span><span>here, there, the)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the goal values of the central tendencies.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def goals(i):
-  &#34;Returns the goal values of the central tendencies.&#34;
-  return [col.mid() for col in i.y]</code></pre>
+<pre><code class="python">class Contrast(o):
+  def __init__(i,here,there,the):
+    def top(n, pairs):
+      return [x for _, x in sorted(pairs, reverse=True)[:n]] 
+    n = len(here.rows) + len(there.rows)
+    hs = {True: len(here.rows), False: len(there.rows)}
+    f  = {(kl, (col1.txt, col1.at, span)): f
+             for col1, col2 in zip(here.x, there.x)
+             for f, kl, span in col1.discretize(col2, the)}
+    tmp  = [Rule.canonical(rule) for rule in
+             top(the.show,
+                 [(i.value(combo, f, the), combo)
+                  for combo in subsets(
+                     top(the.top,sorted(i.solos(f,the),
+                                            reverse=True)))])]
+    i.all= list({str(rule): rule for rule in tmp}.values())
+
+  def solos(i,f,the):
+    pairs = []
+    for kl, x in f:
+      if kl == True:
+        s = i.value([x],f,the)  # if zero, then skip x
+        pairs += [(s, x)]
+    return pairs
+
+  def value(i,lst,f,the):
+    def optimize(b,r): b**2/(b+r) if b&gt;r else 0
+    def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
+    def safety(b,r)  : return 1/(b+r)
+    f = [optimize,monitor,safety][the.goal]
+    return f(i.like(lst, True,f,the), i.like(lst,False.f,the))
+
+  def like(i, lst, kl,f,the):
+    prod = math.prod
+    prior = (hs[kl] + the.k) / (n + the.k * 2)
+    fs = {}
+    for txt, pos, span in lst:
+      fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
+    like = prior
+    for val in fs.values():
+      like *= (val + the.m * prior) / (hs[kl] + the.m)
+    return like</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>etc.o</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Contrast.solos"><code class="name flex">
+<span>def <span class="ident">solos</span></span>(<span>i, f, the)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def solos(i,f,the):
+  pairs = []
+  for kl, x in f:
+    if kl == True:
+      s = i.value([x],f,the)  # if zero, then skip x
+      pairs += [(s, x)]
+  return pairs</code></pre>
 </details>
 </dd>
-<dt id="es.Tab.head"><code class="name flex">
-<span>def <span class="ident">head</span></span>(<span>i, lst)</span>
+<dt id="es.Contrast.value"><code class="name flex">
+<span>def <span class="ident">value</span></span>(<span>i, lst, f, the)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Define the column types, store them in <code>all</code>. If a column
-name contains '?' then do
-not add it to any lst of 'x' or 'y'
-columns.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def head(i, lst):
-  &#34;&#34;&#34;Define the column types, store them in `all`. If a column
-  name contains &#39;?&#39; then do  not add it to any lst of &#39;x&#39; or &#39;y&#39;
-  columns.&#34;&#34;&#34;
-  for at, s in enumerate(lst):
-    one = i.isa(s, at)
-    i.all += [one] # everyone gets called in `all`
-    if type(one) != Skip:
-      i.xy += [one] # none skipped things are in `xy` or `x` or `y`
-      if &#34;+&#34; in s or &#34;-&#34; in s or &#34;!&#34; in s:
-        i.y += [one]
-      else:
-        i.x += [one]</code></pre>
+<pre><code class="python">def value(i,lst,f,the):
+  def optimize(b,r): b**2/(b+r) if b&gt;r else 0
+  def monitor(b,r) : r**2/(b+r) if r&gt;b else 0
+  def safety(b,r)  : return 1/(b+r)
+  f = [optimize,monitor,safety][the.goal]
+  return f(i.like(lst, True,f,the), i.like(lst,False.f,the))</code></pre>
 </details>
 </dd>
-<dt id="es.Tab.isa"><code class="name flex">
-<span>def <span class="ident">isa</span></span>(<span>i, s, at)</span>
+<dt id="es.Contrast.like"><code class="name flex">
+<span>def <span class="ident">like</span></span>(<span>i, lst, kl, f, the)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Skip names contain '?', Num names start with upper case,
-everything else is a Sym.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def isa(i, s, at):
-  &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
-   everything else is a Sym.&#34;&#34;&#34;
-  return Skip if &#34;?&#34; in s else (
-      Num if s[0].isupper() else
-      Sym)(txt=s, at=at)</code></pre>
+<pre><code class="python">def like(i, lst, kl,f,the):
+  prod = math.prod
+  prior = (hs[kl] + the.k) / (n + the.k * 2)
+  fs = {}
+  for txt, pos, span in lst:
+    fs[txt] = fs.get(txt, 0) + f.get((kl, (txt, pos, span)), 0)
+  like = prior
+  for val in fs.values():
+    like *= (val + the.m * prior) / (hs[kl] + the.m)
+  return like</code></pre>
 </details>
 </dd>
-<dt id="es.Tab.mid"><code class="name flex">
-<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</dl>
+</dd>
+<dt id="es.Rule"><code class="flex name class">
+<span>class <span class="ident">Rule</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the central tendencies.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mid(i):
-  &#34;Returns the central tendencies.&#34;
-  return [col.mid() for col in i.all]</code></pre>
+<pre><code class="python">class Rule:
+  # rule dict. one key per attribute, values per key
+  def combineRanges(b4):
+    if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+       return None
+    j, tmp = 0, []
+    while j &lt; len(b4):
+      a = b4[j]
+      if j &lt; len(b4)-1:
+        b = b4[j+1]
+        if a[1] == b[0]:
+          a = (a[0], b[1])
+          j += 1
+      tmp += [a]
+      j += 1
+      return tmp if len(tmp) == len(b4) else combineRanges(tmp)
+
+  def canonical(rule):
+    cols = {}
+    where={}
+    for col, at, span in rule:
+      where[col]=at
+      cols[col] = cols.get(col, []) + [span]
+    d = {}
+    for k, v in cols.items():
+      s = f&#34;{k}&#34;
+      if v1 := Rule.combineRanges(sorted(v)):
+        d[k] = v1
+    return [(k,where[k],d[k])  for k in d]
+
+  def show(rule):
+    return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
+                         for txt,_,spans in rule])</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="es.Rule.combineRanges"><code class="name flex">
+<span>def <span class="ident">combineRanges</span></span>(<span>b4)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def combineRanges(b4):
+  if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
+     return None
+  j, tmp = 0, []
+  while j &lt; len(b4):
+    a = b4[j]
+    if j &lt; len(b4)-1:
+      b = b4[j+1]
+      if a[1] == b[0]:
+        a = (a[0], b[1])
+        j += 1
+    tmp += [a]
+    j += 1
+    return tmp if len(tmp) == len(b4) else combineRanges(tmp)</code></pre>
+</details>
+</dd>
+<dt id="es.Rule.canonical"><code class="name flex">
+<span>def <span class="ident">canonical</span></span>(<span>rule)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def canonical(rule):
+  cols = {}
+  where={}
+  for col, at, span in rule:
+    where[col]=at
+    cols[col] = cols.get(col, []) + [span]
+  d = {}
+  for k, v in cols.items():
+    s = f&#34;{k}&#34;
+    if v1 := Rule.combineRanges(sorted(v)):
+      d[k] = v1
+  return [(k,where[k],d[k])  for k in d]</code></pre>
+</details>
+</dd>
+<dt id="es.Rule.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>rule)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(rule):
+  return &#39; and &#39;.join([txt + &#39; (&#39; + (&#39; or &#39;.join(map(showSpan, spans)) + &#39;)&#39;)
+                       for txt,_,spans in rule])</code></pre>
 </details>
 </dd>
 </dl>
@@ -1407,6 +1441,36 @@ everything else is a Sym.</p></div>
 </section>
 </article>
 <nav id="sidebar">
+<center>
+<a href="http://menzies.us/bnbad"><img src="letscook.png" width=500></a>
+<p><a href="#license">&copy; 2020</a>, Tim Menzies<br>
+<a href="mailto:timm@ieee.org">timm@ieee.org</a><br>
+<a href="http://menzies.us">http://menzies.us</a>
+</p>
+<p>
+"Give me the fruitful error any time,
+full of seeds, bursting with its own
+corrections. You can keep your sterile
+truth for yourself."
+-&nbsp;Vilfredo&nbsp;Pareto</p>
+<p>
+<img src="https://img.shields.io/badge/purpose-ai%20,%20se-blueviolet">
+<a href="https://github.com/timm/bnbad/blob/master/LICENSE.md"><img
+alt="License" src="https://img.shields.io/badge/license-mit-red"></a>
+<a href="https://doi.org/10.5281/zenodo.3947026"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3947026.svg" alt="DOI"></a>
+</p>
+<p>
+<img alt="Platform" src="https://img.shields.io/badge/platform-osx%20,%20linux-lightgrey">
+<img alt="Python" src="https://img.shields.io/badge/python-v3.8-blue">
+<a href="https://pep8.readthedocs.io/en/release-1.7.x/intro.html#error-codes"><img alt="Style" src="https://img.shields.io/badge/style-pep8-yellow"></a>
+<a href="https://flake8.pycqa.org/en/latest/user/error-codes.html"><img alt="syntax" src="https://img.shields.io/badge/syntax-pyflake8-orange"></a>
+<a href="https://travis-ci.org/github/timm/bnbad"><img alt="tests" src="https://travis-ci.org/timm/bnbad.svg?branch=master"></a>
+</p>
+<p>
+<a href="https://github.com/timm/bnbad/blob/master/README.md"><img src="github.png" width=40></a>
+<a href="https://github.com/timm/bnbad/archive/master.zip"> <img src="zip.png" width=40></a>
+</p>
+</center>
 <h1>Index</h1>
 <div class="toc">
 <ul></ul>
@@ -1424,45 +1488,23 @@ everything else is a Sym.</p></div>
 <h4><code><a title="es.Col" href="#es.Col">Col</a></code></h4>
 <ul class="">
 <li><code><a title="es.Col.add" href="#es.Col.add">add</a></code></li>
-<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
 <li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
 <li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
+<li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="es.Contrast" href="#es.Contrast">Contrast</a></code></h4>
-<ul class="">
-<li><code><a title="es.Contrast.like" href="#es.Contrast.like">like</a></code></li>
-<li><code><a title="es.Contrast.solos" href="#es.Contrast.solos">solos</a></code></li>
-<li><code><a title="es.Contrast.value" href="#es.Contrast.value">value</a></code></li>
-</ul>
+<h4><code><a title="es.Skip" href="#es.Skip">Skip</a></code></h4>
 </li>
 <li>
 <h4><code><a title="es.Num" href="#es.Num">Num</a></code></h4>
 <ul class="">
 <li><code><a title="es.Num.add" href="#es.Num.add">add</a></code></li>
+<li><code><a title="es.Num.norm" href="#es.Num.norm">norm</a></code></li>
 <li><code><a title="es.Num.all" href="#es.Num.all">all</a></code></li>
 <li><code><a title="es.Num.dist1" href="#es.Num.dist1">dist1</a></code></li>
-<li><code><a title="es.Num.norm" href="#es.Num.norm">norm</a></code></li>
 <li><code><a title="es.Num.per" href="#es.Num.per">per</a></code></li>
 </ul>
-</li>
-<li>
-<h4><code><a title="es.Row" href="#es.Row">Row</a></code></h4>
-<ul class="">
-<li><code><a title="es.Row.dist" href="#es.Row.dist">dist</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="es.Rule" href="#es.Rule">Rule</a></code></h4>
-<ul class="">
-<li><code><a title="es.Rule.canonical" href="#es.Rule.canonical">canonical</a></code></li>
-<li><code><a title="es.Rule.combineRanges" href="#es.Rule.combineRanges">combineRanges</a></code></li>
-<li><code><a title="es.Rule.show" href="#es.Rule.show">show</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="es.Skip" href="#es.Skip">Skip</a></code></h4>
 </li>
 <li>
 <h4><code><a title="es.Sym" href="#es.Sym">Sym</a></code></h4>
@@ -1472,16 +1514,38 @@ everything else is a Sym.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="es.Row" href="#es.Row">Row</a></code></h4>
+<ul class="">
+<li><code><a title="es.Row.dist" href="#es.Row.dist">dist</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="es.Tab" href="#es.Tab">Tab</a></code></h4>
 <ul class="two-column">
-<li><code><a title="es.Tab.add" href="#es.Tab.add">add</a></code></li>
+<li><code><a title="es.Tab.goals" href="#es.Tab.goals">goals</a></code></li>
+<li><code><a title="es.Tab.mid" href="#es.Tab.mid">mid</a></code></li>
 <li><code><a title="es.Tab.clone" href="#es.Tab.clone">clone</a></code></li>
+<li><code><a title="es.Tab.add" href="#es.Tab.add">add</a></code></li>
+<li><code><a title="es.Tab.isa" href="#es.Tab.isa">isa</a></code></li>
+<li><code><a title="es.Tab.head" href="#es.Tab.head">head</a></code></li>
 <li><code><a title="es.Tab.data" href="#es.Tab.data">data</a></code></li>
 <li><code><a title="es.Tab.div" href="#es.Tab.div">div</a></code></li>
-<li><code><a title="es.Tab.goals" href="#es.Tab.goals">goals</a></code></li>
-<li><code><a title="es.Tab.head" href="#es.Tab.head">head</a></code></li>
-<li><code><a title="es.Tab.isa" href="#es.Tab.isa">isa</a></code></li>
-<li><code><a title="es.Tab.mid" href="#es.Tab.mid">mid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Contrast" href="#es.Contrast">Contrast</a></code></h4>
+<ul class="">
+<li><code><a title="es.Contrast.solos" href="#es.Contrast.solos">solos</a></code></li>
+<li><code><a title="es.Contrast.value" href="#es.Contrast.value">value</a></code></li>
+<li><code><a title="es.Contrast.like" href="#es.Contrast.like">like</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="es.Rule" href="#es.Rule">Rule</a></code></h4>
+<ul class="">
+<li><code><a title="es.Rule.combineRanges" href="#es.Rule.combineRanges">combineRanges</a></code></li>
+<li><code><a title="es.Rule.canonical" href="#es.Rule.canonical">canonical</a></code></li>
+<li><code><a title="es.Rule.show" href="#es.Rule.show">show</a></code></li>
 </ul>
 </li>
 </ul>

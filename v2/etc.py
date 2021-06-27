@@ -18,13 +18,16 @@ def csv(f):
 
 def cli(d, help):
   it = iter(sys.argv)
+  d1 = d["all"] 
   for x in it:
+    if x in d: d1=d[x]
     x = x[1:]
     if x == "h":
       print(help)
-    elif x in d:
-      d[x] = True if x[0].isupper() else coerce(next(it))
-  return o(**d)
+    elif x in d1:
+      d1[x] = True if x[0].isupper() else coerce(next(it))
+  return o(**{k:(o(**d1) if type(d1)==dict else d1)
+              for k,d1 in d.items()})
 
 def coerce(x):
   if x == "True":

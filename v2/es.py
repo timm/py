@@ -1,44 +1,52 @@
 #!/usr/bin/env python3.9
 """
-espy : version2, optimization via data mining
-(c) 2021, Tim Menzies, http://unlicense.org
-                           
-  :-------:               
-  | Ba    | Bad <----.   
-  |    56 |          | 
-  :-------:------:   |      
-          | Be   |   v      explore  = min(better + bad)
-          |    4 | Better   optimize = max(better - bad)
-          :------:          monitor  = max(bad - better)
+espy : version2, optimization via data mining   
+(c) 2021, Tim Menzies, http://unlicense.org   
 
-USAGE: ./eg.py [OPTIONS]
+    :-------:                  
+    | Ba    | Bad <----.      
+    |    56 |          |    
+    :-------:------:   |         
+            | B    |   v      explore  = min(better + bad)   
+            |    5 | Better   optimize = max(better - bad)   
+            :------:          monitor  = max(bad - better)   
+
+USAGE: ./eg.py [OPTIONS] [GROUP DETAILS]    
+
+GROUP: row, rule   
 
 OPTIONS:
+ -h              show help   
+ -data    FILE   when to load data from; e.g."../data/auto93.csv"   
+ -do      STR    when starting up, what action to run; e.g. "none"   
+ -fmt     STR    pretty print control for numbers; e.g.["{:>7.2g}"]   
+ -seed    INT    default random number seed; e.g. 10013   
 
- -data    FILE   when to load data from; e.g."../data/auto93.csv"
- -do      STR    when starting up, what action to run; e.g. "none"
- -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5
- -fmt     STR    pretty print control for numbers; e.g.["{:>7.2g}"]
- -l       INT    when computing distance, equation coefficient; e.g. 1
- -sample  INT    when seeking distant pairs, how samples of the data; e.g.32
- -seed    INT    default random number seed; e.g. 10013
- -show    INT    when displaying final output, how many rules to show; e.g.10
- -top     INT    when hunting for rules, max number ranges to explore; e.g.10
+DETAILS:
+
+row   
+ -l       INT    when computing distance, equation coefficient; e.g. 1   
+ -enough  FLOAT  when recurring on clusters, when to stop; e.g. .5   
+ -sample  INT    when seeking distant pairs, how samples of the data; e.g.32   
+   
+rule   
+ -show    INT    when displaying final output, how many rules to show; e.g.10   
+ -top     INT    when hunting for rules, max number ranges to explore; e.g.10   
 """
 import re,sys,copy,math,random
 from etc import o, csv, cli
 
-options = dict(
-    Verbose=0,
-    data="../data/auto93.csv",
-    do="none",
-    enough=.5,
-    fmt="{:>7.2g}",
-    l=1,
-    sample=32,
-    seed=10013,
-    show=10,
-    top=10)
+options =   dict(
+   all =    dict(Verbose=0,
+                 data="../data/auto93.csv",
+                 do="none",
+                 seed=10013,
+                 fmt="{:>7.2g}"),
+  row=      dict(l=1),
+  cluster=  dict(enough=.5,
+                 sample=32),
+  rule=     dict(show=10,
+                 top=10))
 
 #---------------------------------------------------------------
 class Col(o):

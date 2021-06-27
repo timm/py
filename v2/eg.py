@@ -12,9 +12,9 @@ def all(funs, defaults, help):
   fails = 0
   the = cli(defaults, help)
   for s, fun in funs.items():
-    if s[:2] == "eg" and (the.do == "all" or the.do == s[2:]):
+    if s[:2] == "eg" and (the.all.do == "all" or the.all.do == s[2:]):
       try:
-        random.seed(the.seed)
+        random.seed(the.all.seed)
         fun(copy.deepcopy(the))
         print(green("✔"), s)
       except:
