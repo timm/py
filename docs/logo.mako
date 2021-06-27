@@ -1,7 +1,7 @@
 <center>
 <a href="http://menzies.us/py/es.html"><img src="letscook.png" width=500></a>
 <p><h3>es.py: optimizing via data mining</h3>
-<a href="#license">&copy; 2021</a>, Tim Menzies<br>
+<a href="http://github.com/timm/py/blob/master/LICENSE.md">&copy; 2021</a>, Tim Menzies<br>
 <a href="mailto:timm@ieee.org">timm@ieee.org</a><br> 
 <a href="http://menzies.us">http://menzies.us</a>
 </p>
