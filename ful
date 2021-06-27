@@ -34,14 +34,16 @@ else
   
   tput bold; tput setaf 5
   cat<<-'EOF'
+                             ___  ___       _ __  _   _ 
+                            / _ \/ __|     | '_ \| | | |
+  :-------:                |  __/\__ \  _  | |_) | |_| |
+  | Ba    | Bad <----.      \___||___/ (_) | .__/ \__, |   
+  |    56 |          |                     |_|    |___/  
+  :-------:------:   |     
+          | Be   |   v      explore = min(bad+better)
+          |    4 | Better   optimze = max(better - bad)
+          :------:          monitor = max(bad - better)
 
-  :-------:                 explore  = min(bad+better_
-  | Ba    | Bad <----.      planning = max(better - bad)
-  |    56 |          |      monitor  = max(bad - better)
-  :-------:------:   |      
-          | B    |   v
-          |    5 | Better
-          :------:
 EOF
   tput bold; tput setaf 241
   echo "Short cuts:"

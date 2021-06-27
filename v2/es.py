@@ -1,7 +1,15 @@
 #!/usr/bin/env python3.9
 """
-espy : version2,  optimization via data mining.
+espy : version2, optimization via data mining
 (c) 2021, Tim Menzies, http://unlicense.org
+                           
+  :-------:               
+  | Ba    | Bad <----.   
+  |    56 |          | 
+  :-------:------:   |      
+          | Be   |   v      explore  = min(better + bad)
+          |    4 | Better   optimize = max(better - bad)
+          :------:          monitor  = max(bad - better)
 
 USAGE: ./eg.py [OPTIONS]
 
