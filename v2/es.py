@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.9
+# vim: ts=2 sw=2 sts=2 et :
 """
 espy : version2, optimization via data mining   
 (c) 2021, Tim Menzies, http://unlicense.org   
@@ -84,6 +85,18 @@ class Num(Col):
       i._all += [z]
       i.sorted = False
     return z
+  def mid(i):
+    "Estimate of central  tendency."
+    return i.per(.5)
+  def var(i):
+    "Estimate of dispersion around central tendency."
+    return (i.per(.9) - i.per(.1)) / 2.56
+  def dist1(i, x, y):
+    "Numeric distances. Make guesses for missing values."
+    if   x == "?": y = i.norm(y); x = 0 if y > .5 else 1 
+    elif y == "?": x = i.norm(x);  y = 0 if x > .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
+    return abs(x - y)
   def norm(i, z):
     "Normalize 0..1."
     if z == "?": return z
@@ -95,22 +108,10 @@ class Num(Col):
     if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
-  def dist1(i, x, y):
-    "Numeric distances. Make guesses for missing values."
-    if   x == "?": y = i.norm(y); x = 0 if y > .5 else 1 
-    elif y == "?": x = i.norm(x);  y = 0 if x > .5 else 1 #
-    else         : x, y = i.norm(x), i.norm(y)
-    return abs(x - y)
   def per(i, p=.5):
     "Return the pth percentil value in all the numbers."
     a = i.all()
     return a[int(p * len(a))]
-  def mid(i):
-    "Estimate of central  tendency."
-    return i.per(.5)
-  def var(i):
-    "Estimate of dispersion around central tendency."
-    return (i.per(.9) - i.per(.1)) / 2.56
 
 #---------------------------------------------------------------
 class Sym(Col):
@@ -129,6 +130,9 @@ class Sym(Col):
   def mid(i):
     "Estimate of central  tendency."
     return i.mode
+  def var(i):
+    "Return entropy."
+    return sum(-v/i.n * math.log(v/i.n,2) for v in i.seen.values())
   def dist1(i, x, y):
     "Estimate of dispersion around central tendency."
     return 0 if x == y else 1
@@ -171,13 +175,20 @@ class Tab(o):
     "Sort tables based on their central tendency."
     return Row(i, i.mid()) < Row(j, j.mid())
 
-  def goals(i):
-    "Returns the goal values of the central tendencies."
-    return [col.mid() for col in i.y]
+  def add(i, lst):
+    """Add a row to a table. If this is row number1,
+    then these are the names that define the column
+    types."""
+    lst = lst.cells if type(lst) == Row else lst
+    (i.data if i.all else i.head)(lst)
 
   def mid(i):
     "Returns the central tendencies."
     return [col.mid() for col in i.all]
+
+  def goals(i):
+    "Returns the goal values of the central tendencies."
+    return [col.mid() for col in i.y]
 
   def clone(i, rows=[]):
     "Return a new table with the same structure."
@@ -185,13 +196,6 @@ class Tab(o):
     t.add([c.txt for c in i.all])
     [t.add(row) for row in rows]
     return t
-
-  def add(i, lst):
-    """Add a row to a table. If this is row number1,
-    then these are the names that define the column
-    types."""
-    lst = lst.cells if type(lst) == Row else lst
-    (i.data if i.all else i.head)(lst)
 
   def isa(i, s, at):
     """Skip names contain '?', Num names start with upper case,

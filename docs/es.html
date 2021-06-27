@@ -31,8 +31,8 @@
 | Ba    | Bad &lt;----.      
 |    56 |          |    
 :-------:------:   |         
-        | Be   |   v      explore  = min(better + bad)   
-        |    4 | Better   optimize = max(better - bad)   
+        | B    |   v      explore  = min(better + bad)   
+        |    5 | Better   optimize = max(better - bad)   
         :------:          monitor  = max(bad - better)
 </code></pre>
 <p>USAGE: ./eg.py [OPTIONS] [GROUP DETAILS]
@@ -79,6 +79,7 @@ when hunting for rules, max number ranges to explore; e.g.10</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">#!/usr/bin/env python3.9
+# vim: ts=2 sw=2 sts=2 et :
 &#34;&#34;&#34;
 espy : version2, optimization via data mining   
 (c) 2021, Tim Menzies, http://unlicense.org   
@@ -87,8 +88,8 @@ espy : version2, optimization via data mining
     | Ba    | Bad &lt;----.      
     |    56 |          |    
     :-------:------:   |         
-            | Be   |   v      explore  = min(better + bad)   
-            |    4 | Better   optimize = max(better - bad)   
+            | B    |   v      explore  = min(better + bad)   
+            |    5 | Better   optimize = max(better - bad)   
             :------:          monitor  = max(bad - better)   
 
 USAGE: ./eg.py [OPTIONS] [GROUP DETAILS]    
@@ -164,6 +165,18 @@ class Num(Col):
       i._all += [z]
       i.sorted = False
     return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.per(.5)
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return (i.per(.9) - i.per(.1)) / 2.56
+  def dist1(i, x, y):
+    &#34;Numeric distances. Make guesses for missing values.&#34;
+    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
+    return abs(x - y)
   def norm(i, z):
     &#34;Normalize 0..1.&#34;
     if z == &#34;?&#34;: return z
@@ -175,22 +188,10 @@ class Num(Col):
     if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
-  def dist1(i, x, y):
-    &#34;Numeric distances. Make guesses for missing values.&#34;
-    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
-    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
-    else         : x, y = i.norm(x), i.norm(y)
-    return abs(x - y)
   def per(i, p=.5):
     &#34;Return the pth percentil value in all the numbers.&#34;
     a = i.all()
     return a[int(p * len(a))]
-  def mid(i):
-    &#34;Estimate of central  tendency.&#34;
-    return i.per(.5)
-  def var(i):
-    &#34;Estimate of dispersion around central tendency.&#34;
-    return (i.per(.9) - i.per(.1)) / 2.56
 
 #---------------------------------------------------------------
 class Sym(Col):
@@ -209,6 +210,9 @@ class Sym(Col):
   def mid(i):
     &#34;Estimate of central  tendency.&#34;
     return i.mode
+  def var(i):
+    &#34;Return entropy.&#34;
+    return sum(-v/i.n * math.log(v/i.n,2) for v in i.seen.values())
   def dist1(i, x, y):
     &#34;Estimate of dispersion around central tendency.&#34;
     return 0 if x == y else 1
@@ -251,13 +255,20 @@ class Tab(o):
     &#34;Sort tables based on their central tendency.&#34;
     return Row(i, i.mid()) &lt; Row(j, j.mid())
 
-  def goals(i):
-    &#34;Returns the goal values of the central tendencies.&#34;
-    return [col.mid() for col in i.y]
+  def add(i, lst):
+    &#34;&#34;&#34;Add a row to a table. If this is row number1,
+    then these are the names that define the column
+    types.&#34;&#34;&#34;
+    lst = lst.cells if type(lst) == Row else lst
+    (i.data if i.all else i.head)(lst)
 
   def mid(i):
     &#34;Returns the central tendencies.&#34;
     return [col.mid() for col in i.all]
+
+  def goals(i):
+    &#34;Returns the goal values of the central tendencies.&#34;
+    return [col.mid() for col in i.y]
 
   def clone(i, rows=[]):
     &#34;Return a new table with the same structure.&#34;
@@ -265,13 +276,6 @@ class Tab(o):
     t.add([c.txt for c in i.all])
     [t.add(row) for row in rows]
     return t
-
-  def add(i, lst):
-    &#34;&#34;&#34;Add a row to a table. If this is row number1,
-    then these are the names that define the column
-    types.&#34;&#34;&#34;
-    lst = lst.cells if type(lst) == Row else lst
-    (i.data if i.all else i.head)(lst)
 
   def isa(i, s, at):
     &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
@@ -665,6 +669,18 @@ tendency.</p></div>
       i._all += [z]
       i.sorted = False
     return z
+  def mid(i):
+    &#34;Estimate of central  tendency.&#34;
+    return i.per(.5)
+  def var(i):
+    &#34;Estimate of dispersion around central tendency.&#34;
+    return (i.per(.9) - i.per(.1)) / 2.56
+  def dist1(i, x, y):
+    &#34;Numeric distances. Make guesses for missing values.&#34;
+    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+    else         : x, y = i.norm(x), i.norm(y)
+    return abs(x - y)
   def norm(i, z):
     &#34;Normalize 0..1.&#34;
     if z == &#34;?&#34;: return z
@@ -676,22 +692,10 @@ tendency.</p></div>
     if not i.sorted: i._all.sort()
     i.sorted = True
     return i._all
-  def dist1(i, x, y):
-    &#34;Numeric distances. Make guesses for missing values.&#34;
-    if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
-    elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
-    else         : x, y = i.norm(x), i.norm(y)
-    return abs(x - y)
   def per(i, p=.5):
     &#34;Return the pth percentil value in all the numbers.&#34;
     a = i.all()
-    return a[int(p * len(a))]
-  def mid(i):
-    &#34;Estimate of central  tendency.&#34;
-    return i.per(.5)
-  def var(i):
-    &#34;Estimate of dispersion around central tendency.&#34;
-    return (i.per(.9) - i.per(.1)) / 2.56</code></pre>
+    return a[int(p * len(a))]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -717,6 +721,23 @@ tendency.</p></div>
     i._all += [z]
     i.sorted = False
   return z</code></pre>
+</details>
+</dd>
+<dt id="es.Num.dist1"><code class="name flex">
+<span>def <span class="ident">dist1</span></span>(<span>i, x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Numeric distances. Make guesses for missing values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist1(i, x, y):
+  &#34;Numeric distances. Make guesses for missing values.&#34;
+  if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
+  elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
+  else         : x, y = i.norm(x), i.norm(y)
+  return abs(x - y)</code></pre>
 </details>
 </dd>
 <dt id="es.Num.norm"><code class="name flex">
@@ -751,23 +772,6 @@ all the numbers.</p></div>
   if not i.sorted: i._all.sort()
   i.sorted = True
   return i._all</code></pre>
-</details>
-</dd>
-<dt id="es.Num.dist1"><code class="name flex">
-<span>def <span class="ident">dist1</span></span>(<span>i, x, y)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Numeric distances. Make guesses for missing values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dist1(i, x, y):
-  &#34;Numeric distances. Make guesses for missing values.&#34;
-  if   x == &#34;?&#34;: y = i.norm(y); x = 0 if y &gt; .5 else 1 
-  elif y == &#34;?&#34;: x = i.norm(x);  y = 0 if x &gt; .5 else 1 #
-  else         : x, y = i.norm(x), i.norm(y)
-  return abs(x - y)</code></pre>
 </details>
 </dd>
 <dt id="es.Num.per"><code class="name flex">
@@ -823,6 +827,9 @@ all the numbers.</p></div>
   def mid(i):
     &#34;Estimate of central  tendency.&#34;
     return i.mode
+  def var(i):
+    &#34;Return entropy.&#34;
+    return sum(-v/i.n * math.log(v/i.n,2) for v in i.seen.values())
   def dist1(i, x, y):
     &#34;Estimate of dispersion around central tendency.&#34;
     return 0 if x == y else 1</code></pre>
@@ -853,6 +860,20 @@ all the numbers.</p></div>
   return z</code></pre>
 </details>
 </dd>
+<dt id="es.Sym.var"><code class="name flex">
+<span>def <span class="ident">var</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return entropy.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def var(i):
+  &#34;Return entropy.&#34;
+  return sum(-v/i.n * math.log(v/i.n,2) for v in i.seen.values())</code></pre>
+</details>
+</dd>
 <dt id="es.Sym.dist1"><code class="name flex">
 <span>def <span class="ident">dist1</span></span>(<span>i, x, y)</span>
 </code></dt>
@@ -874,7 +895,6 @@ all the numbers.</p></div>
 <ul class="hlist">
 <li><code><a title="es.Col.dist" href="#es.Col.dist">dist</a></code></li>
 <li><code><a title="es.Col.mid" href="#es.Col.mid">mid</a></code></li>
-<li><code><a title="es.Col.var" href="#es.Col.var">var</a></code></li>
 </ul>
 </li>
 </ul>
@@ -962,13 +982,20 @@ all the numbers.</p></div>
     &#34;Sort tables based on their central tendency.&#34;
     return Row(i, i.mid()) &lt; Row(j, j.mid())
 
-  def goals(i):
-    &#34;Returns the goal values of the central tendencies.&#34;
-    return [col.mid() for col in i.y]
+  def add(i, lst):
+    &#34;&#34;&#34;Add a row to a table. If this is row number1,
+    then these are the names that define the column
+    types.&#34;&#34;&#34;
+    lst = lst.cells if type(lst) == Row else lst
+    (i.data if i.all else i.head)(lst)
 
   def mid(i):
     &#34;Returns the central tendencies.&#34;
     return [col.mid() for col in i.all]
+
+  def goals(i):
+    &#34;Returns the goal values of the central tendencies.&#34;
+    return [col.mid() for col in i.y]
 
   def clone(i, rows=[]):
     &#34;Return a new table with the same structure.&#34;
@@ -976,13 +1003,6 @@ all the numbers.</p></div>
     t.add([c.txt for c in i.all])
     [t.add(row) for row in rows]
     return t
-
-  def add(i, lst):
-    &#34;&#34;&#34;Add a row to a table. If this is row number1,
-    then these are the names that define the column
-    types.&#34;&#34;&#34;
-    lst = lst.cells if type(lst) == Row else lst
-    (i.data if i.all else i.head)(lst)
 
   def isa(i, s, at):
     &#34;&#34;&#34;Skip names contain &#39;?&#39;, Num names start with upper case,
@@ -1045,51 +1065,6 @@ all the numbers.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="es.Tab.goals"><code class="name flex">
-<span>def <span class="ident">goals</span></span>(<span>i)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns the goal values of the central tendencies.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def goals(i):
-  &#34;Returns the goal values of the central tendencies.&#34;
-  return [col.mid() for col in i.y]</code></pre>
-</details>
-</dd>
-<dt id="es.Tab.mid"><code class="name flex">
-<span>def <span class="ident">mid</span></span>(<span>i)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns the central tendencies.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def mid(i):
-  &#34;Returns the central tendencies.&#34;
-  return [col.mid() for col in i.all]</code></pre>
-</details>
-</dd>
-<dt id="es.Tab.clone"><code class="name flex">
-<span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Return a new table with the same structure.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def clone(i, rows=[]):
-  &#34;Return a new table with the same structure.&#34;
-  t = Tab()
-  t.add([c.txt for c in i.all])
-  [t.add(row) for row in rows]
-  return t</code></pre>
-</details>
-</dd>
 <dt id="es.Tab.add"><code class="name flex">
 <span>def <span class="ident">add</span></span>(<span>i, lst)</span>
 </code></dt>
@@ -1107,6 +1082,51 @@ types.</p></div>
   types.&#34;&#34;&#34;
   lst = lst.cells if type(lst) == Row else lst
   (i.data if i.all else i.head)(lst)</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.mid"><code class="name flex">
+<span>def <span class="ident">mid</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mid(i):
+  &#34;Returns the central tendencies.&#34;
+  return [col.mid() for col in i.all]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.goals"><code class="name flex">
+<span>def <span class="ident">goals</span></span>(<span>i)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the goal values of the central tendencies.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def goals(i):
+  &#34;Returns the goal values of the central tendencies.&#34;
+  return [col.mid() for col in i.y]</code></pre>
+</details>
+</dd>
+<dt id="es.Tab.clone"><code class="name flex">
+<span>def <span class="ident">clone</span></span>(<span>i, rows=[])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a new table with the same structure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clone(i, rows=[]):
+  &#34;Return a new table with the same structure.&#34;
+  t = Tab()
+  t.add([c.txt for c in i.all])
+  [t.add(row) for row in rows]
+  return t</code></pre>
 </details>
 </dd>
 <dt id="es.Tab.isa"><code class="name flex">
@@ -1442,8 +1462,9 @@ of all examples from two distant points.</p></div>
 </article>
 <nav id="sidebar">
 <center>
-<a href="http://menzies.us/bnbad"><img src="letscook.png" width=500></a>
-<p><a href="#license">&copy; 2020</a>, Tim Menzies<br>
+<a href="http://menzies.us/py/es.html"><img src="letscook.png" width=500></a>
+<p><h3>es.py: optimizing via data mining</h3>
+<a href="#license">&copy; 2021</a>, Tim Menzies<br>
 <a href="mailto:timm@ieee.org">timm@ieee.org</a><br>
 <a href="http://menzies.us">http://menzies.us</a>
 </p>
@@ -1455,20 +1476,16 @@ truth for yourself."
 -&nbsp;Vilfredo&nbsp;Pareto</p>
 <p>
 <img src="https://img.shields.io/badge/purpose-ai%20,%20se-blueviolet">
-<a href="https://github.com/timm/bnbad/blob/master/LICENSE.md"><img
-alt="License" src="https://img.shields.io/badge/license-mit-red"></a>
+<a href="https://github.com/timm/py/blob/master/LICENSE.md"><img
+alt="License" src="https://img.shields.io/badge/license-unlicense-red"></a>
 <a href="https://doi.org/10.5281/zenodo.3947026"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3947026.svg" alt="DOI"></a>
-</p>
-<p>
+<br>
 <img alt="Platform" src="https://img.shields.io/badge/platform-osx%20,%20linux-lightgrey">
-<img alt="Python" src="https://img.shields.io/badge/python-v3.8-blue">
-<a href="https://pep8.readthedocs.io/en/release-1.7.x/intro.html#error-codes"><img alt="Style" src="https://img.shields.io/badge/style-pep8-yellow"></a>
+<img alt="Python" src="https://img.shields.io/badge/python-v3.9-blue">
 <a href="https://flake8.pycqa.org/en/latest/user/error-codes.html"><img alt="syntax" src="https://img.shields.io/badge/syntax-pyflake8-orange"></a>
 <a href="https://travis-ci.org/github/timm/bnbad"><img alt="tests" src="https://travis-ci.org/timm/bnbad.svg?branch=master"></a>
-</p>
-<p>
-<a href="https://github.com/timm/bnbad/blob/master/README.md"><img src="github.png" width=40></a>
-<a href="https://github.com/timm/bnbad/archive/master.zip"> <img src="zip.png" width=40></a>
+</p><p>
+<a href="https://github.com/timm/py/blob/master/v2"><img src="github.png" width=40></a>
 </p>
 </center>
 <h1>Index</h1>
@@ -1500,9 +1517,9 @@ alt="License" src="https://img.shields.io/badge/license-mit-red"></a>
 <h4><code><a title="es.Num" href="#es.Num">Num</a></code></h4>
 <ul class="">
 <li><code><a title="es.Num.add" href="#es.Num.add">add</a></code></li>
+<li><code><a title="es.Num.dist1" href="#es.Num.dist1">dist1</a></code></li>
 <li><code><a title="es.Num.norm" href="#es.Num.norm">norm</a></code></li>
 <li><code><a title="es.Num.all" href="#es.Num.all">all</a></code></li>
-<li><code><a title="es.Num.dist1" href="#es.Num.dist1">dist1</a></code></li>
 <li><code><a title="es.Num.per" href="#es.Num.per">per</a></code></li>
 </ul>
 </li>
@@ -1510,6 +1527,7 @@ alt="License" src="https://img.shields.io/badge/license-mit-red"></a>
 <h4><code><a title="es.Sym" href="#es.Sym">Sym</a></code></h4>
 <ul class="">
 <li><code><a title="es.Sym.add" href="#es.Sym.add">add</a></code></li>
+<li><code><a title="es.Sym.var" href="#es.Sym.var">var</a></code></li>
 <li><code><a title="es.Sym.dist1" href="#es.Sym.dist1">dist1</a></code></li>
 </ul>
 </li>
@@ -1522,10 +1540,10 @@ alt="License" src="https://img.shields.io/badge/license-mit-red"></a>
 <li>
 <h4><code><a title="es.Tab" href="#es.Tab">Tab</a></code></h4>
 <ul class="two-column">
-<li><code><a title="es.Tab.goals" href="#es.Tab.goals">goals</a></code></li>
-<li><code><a title="es.Tab.mid" href="#es.Tab.mid">mid</a></code></li>
-<li><code><a title="es.Tab.clone" href="#es.Tab.clone">clone</a></code></li>
 <li><code><a title="es.Tab.add" href="#es.Tab.add">add</a></code></li>
+<li><code><a title="es.Tab.mid" href="#es.Tab.mid">mid</a></code></li>
+<li><code><a title="es.Tab.goals" href="#es.Tab.goals">goals</a></code></li>
+<li><code><a title="es.Tab.clone" href="#es.Tab.clone">clone</a></code></li>
 <li><code><a title="es.Tab.isa" href="#es.Tab.isa">isa</a></code></li>
 <li><code><a title="es.Tab.head" href="#es.Tab.head">head</a></code></li>
 <li><code><a title="es.Tab.data" href="#es.Tab.data">data</a></code></li>
