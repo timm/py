@@ -1,4 +1,3 @@
-from colored import fore, back, style
 import re
 import sys
 import copy
@@ -45,7 +44,7 @@ def subsets(l):
     out += [sub + [x] for sub in out]
   return out[1:]
 
-
+from colored import fore, back, style
 def bold(x): return style.BOLD + x + style.RESET
 def green(x): return fore.GREEN + bold(x)
 def red(x): return fore.RED + bold(x)

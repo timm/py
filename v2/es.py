@@ -294,8 +294,8 @@ class Contrast(o):
     pairs = []
     for kl, x in f:
       if kl == True:
-        if s := i.value([x],f,the):  # if zero, then skip x
-          pairs += [(s, x)]
+        s = i.value([x],f,the)  # if zero, then skip x
+        pairs += [(s, x)]
     return pairs
 
   def value(i,lst,f,the):
@@ -318,6 +318,7 @@ class Contrast(o):
 
 #--------------------------------------------------------
 class Rule:
+  # rule dict. one key per attribute, values per key
   def combineRanges(b4):
     if len(b4) == 1 and b4 == [(-math.inf, math.inf)]:
        return None
