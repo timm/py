@@ -34,31 +34,14 @@ else
   
   tput bold; tput setaf 5
   cat<<-'EOF'
-      ,
-(`-.-/(           .:::::.,
- `-.__)             ``:\:: .               /7_.-,
-     '. -.       -  - `:::'           .- (  `_.=
-       \  `--._   /   _?'`      ___.-'   -`"'
-        \         -  / )----'''' -    .-'
-         `--..   `--' ,'           .-'
-              `\   --'       )---''
-                )           )
-                |  es.py   _|
-                (  v2.0     \  
-                 L          / 
-                 |          \
-                 )__     _   \ 
-                  \ `---' `--'  
-                   L         \
-                   |   \      \
-                    \   L     )
-                     L_ (      \
-                     |   \  .  J
-    a:f              |    `.    \
-                  _.-`--='  \    )
-                 (   _-'     `--'\
-                  '"'        / ' J
-                            (,_./
+
+  :-------:                 explore  = min(bad+better_
+  | Ba    | Bad <----.      planning = max(better - bad)
+  |    56 |          |      monitor  = max(bad - better)
+  :-------:------:   |      
+          | B    |   v
+          |    5 | Better
+          :------:
 EOF
   tput bold; tput setaf 241
   echo "Short cuts:"
