@@ -1,24 +1,25 @@
-(defun str->cells (str) 
-  (labels 
-    ((whitep (c) (member  c '(#\space #\tab #\newline)))
-     (commap (c) (eql c '#\comma))
-     (worker (str &optional (lo 0) (white t) hi)
-             (if white
-               (if (setf hi (position #\comma str :start lo))
-                 (cons (subseq str lo  hi) (worker str hi nil))
-                 (list  (subseq str lo)))
-               (if (setf hi (position-if-not  #'commap str :start lo))
-                 (worker str hi t)))))
-    (worker (remove-if #'whitep str))))
+(defmacro aif (test yes &optional no)
+  `(let ((it ,test)) (if it ,yes ,no)))
 
-(defmacro docells ((cells f &optional out) &body body)
-  (let ((line (gensym))
-        (s    (gensym)))
-    `(let (,line)
-       (with-open-file (,s ,f) 
-         (loop while (setf ,line (read-line ,s nil)) do
-           (setf ,cells (str->cells ,line))
-           ,@body))
-       ,out)))
+(defmacro whale (expr &body body) 
+  `(do ((a ,expr ,expr)) ((not a)) ,@body))
 
-(docells (cells "../data/auto93.csv") (print cells))
+(defun str->words1 (str &optional (lo 0))
+  (aif (position #\comma str :start lo)
+    (cons (subseq str lo  it) (str->words1 str (1+ it) ))
+    (list (subseq str lo))))
+
+(defun str->words (str) 
+  (let ((str (remove-if #'(lambda (c) (member c '(#\space #\tab))) str)))
+    (if (not (zerop (length str))) 
+      (str->words1 str)))) 
+
+(defun file->words (f fn)
+  (with-open-file (s f) 
+    (whale (read-line s nil)
+           (aif (str->words a) (funcall fn it)))))
+
+(print (str->words ""))
+(print (str->words " "))
+
+(file->words "../data/auto93.csv" #'print)
