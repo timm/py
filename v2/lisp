@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+f=$(basename $1 .lisp).lisp
+shift
+sbcl --noinform --script $f  $* 2> >( gawk ' {print} /^5:/ {exit}' ) 
