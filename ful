@@ -46,6 +46,7 @@ else
   alias tmux="tmux -f $Ful/etc/dottmux "
   alias vi="vim -u $Ful/etc/dotvimrc "
   alias vims="vim +PluginInstall +qall"         
+  alias repl="rlwrap sbcl --noinform " 
   
   here() { cd $1; basename `pwd`; }
   
