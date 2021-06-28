@@ -55,7 +55,9 @@ class Col(o):
   def __init__(i, txt="", at=0, inits=[]):
     i.n, i.txt, i.at, i.w = 0, txt, at, -1 if "-" in txt else 1
     [self.add(z) for z in inits]
-  def add(i, z): return z
+  def add(i, z): 
+    "Add `z` to a column, then return it."
+    return z
   def mid(i):
     "Estimate of central  tendency."
     return "?"
