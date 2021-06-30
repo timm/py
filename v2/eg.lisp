@@ -1,7 +1,7 @@
 (load "etc")
 (defpackage :espy-test-suite 
   (:use :cl)  (:nicknames :eg)
-  (:import-from :etc :my :bad :aif :it :a :loading :+config+))
+  (:import-from :etc :my :bad :aif :it :a))
 (in-package :eg)
 
 ;-------------------------------------
