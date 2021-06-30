@@ -1,3 +1,4 @@
+; vim: noai:ts=2:sw=2:et: 
 (load "code")
 (code "config")
 
@@ -12,14 +13,23 @@
 
 (defmacro my (x &rest y) `(?? +config+ ,x ,@y))
 
+;-------------------------------------
+(let* ((seed0      10013)
+       (seed       seed0)
+       (multiplier 16807.0d0)
+       (modulus    2147483647.0d0))
+  (defun srand (&optional (n seed0))  (setf seed n))
+  (defun randi (n) (floor (* n (/ (randf 1000.0) 1000))))
+  (defun randf (n) 
+    (setf seed (mod (* multiplier seed) modulus))
+    (* n (- 1.0d0 (/ seed modulus)))))
+
 ; ------------------------------------
-(defun stop () (sb-ext:exit))
+(defun halt (&optional (status 0)) (sb-ext:exit :code status))
+(defun argv () sb-ext:*posix-argv*)
 
-(defun thing!(s)
-  (ignore-errors 
-    (with-input-from-string (in s) (read in))))
-
-(defmethod num? ((x number)) x)
+; ------------------------------------
+(defmethod num? ((x number))  x)
 (defmethod num? ((x string))
   (let ((y (read-from-string x)))
     (if (typep y 'number) y x)))
@@ -27,16 +37,39 @@
 ; ---------------------------------------------
 (defun cli (&key (plist  (copy-list +config+)) 
                  (help   "")
-                 (argv   (cdr (copy-list sb-ext:*posix-argv*)))
+                 (args   (cdr (copy-list (argv))))
                  (now    (getf plist :all)))
-   (whale (pop argv)
+   (whale (pop args)
       (setf a (read-from-string a))
       (cond ((equalp a :H)  (format t "~a~%" help))
             ((getf plist a) (setf now (getf plist a)))
             ((getf now a)   (setf (getf now a) 
-                                  (read-from-string (car argv))))
+                                  (read-from-string (car args))))
             ((keywordp a)   (format t "; Skipping [~a]" a))))
    plist)
+
+;----------------------------------------------
+(defun powerset (lst)
+  (let ((out (list nil)))
+    (dolist (x lst out)
+      (dolist (tmp out)
+        (push (cons x tmp) out)))))
+
+(defun color (s  c &optional (str t)) 
+ (let((colors '((black . 30) (red . 31) (green . 32)  
+                (yellow . 33)  (blue . 34)  (magenta . 35)
+                (cyan . 36) (white .37))))
+   (format str "~c[~a;1m~a~c[0m" 
+           #\ESC (cdr (assoc c colors)) s #\ESC)))
+
+(defun deepcopy (x)
+   (if (consp x) (mapcar #'deepcopy x) x))
+
+
+(let* ((a '((1) 2 3 4)) b)
+  (setf b (deepcopy a))
+  (incf  (caar a))
+  (print b))
 
 ; ----------------------------------------------
 (defun str->words (s0) 
@@ -53,6 +86,5 @@
   (with-open-file (s f) 
     (whale (read-line s nil)
            (aif (str->words a)
-                (funcall fn (mapcar #'num?g it))))))
+                (funcall fn (mapcar #'num? it))))))
 
-(print (cli))
