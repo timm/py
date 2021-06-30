@@ -21,17 +21,27 @@
 
 (defmethod num? ((x number)) x)
 (defmethod num? ((x string))
-  (let ((y (thing! x)))
+  (let ((y (read-from-string x)))
     (if (typep y 'number) y x)))
 
 ; ---------------------------------------------
-(defun cli (&optional (p (copy-list +config+)) 
-                      (help "") &aux one)
-  (let ((what :all) (lst (copy-list sb-ext:*posix-argv*)))
-    (loop while (thing! (setf one (pop lst))) do
-        (print one)
-        (print (getf one p nil))
-        (format t "[~a] ~a~%" one (type-of one)))))
+(defun cli (&key (options (copy-list +config+)) 
+                 (now :all)
+                 (help ""))
+  (let ((argv (cdr (copy-list sb-ext:*posix-argv*)))
+        (now (getf options now)))
+    (whale (pop argv)
+           (setf a (read-from-string a))
+           (cond  ((equalp a :H)
+                   (format t "~a~%" help))
+                  ((getf options a)
+                   (setf now (getf options a)))
+                  ((getf now a)
+                   (setf (getf now a) 
+                           (read-from-string (car argv))))
+                  ((keywordp a) 
+                   (format t "; WARNING: ignoring [~a]" a))))
+    options))
 
 ; ----------------------------------------------
 (defun str->words (s0) 
@@ -48,6 +58,6 @@
   (with-open-file (s f) 
     (whale (read-line s nil)
            (aif (str->words a)
-                (funcall fn (mapcar #'num? it))))))
+                (funcall fn (mapcar #'num?g it))))))
 
-(cli)
+(print (cli))
