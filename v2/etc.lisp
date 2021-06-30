@@ -22,13 +22,6 @@
 (defmacro bad (x &rest y)
   `(assert ,x () ,@y))
 
-(defmacro once-only ((&rest names) &body body)
-  (let ((gensyms (loop for n in names collect (gensym))))
-    `(let (,@(loop for g in gensyms collect `(,g (gensym))))
-      `(let (,,@(loop for g in gensyms for n in names collect ``(,,g ,,n)))
-        ,(let (,@(loop for n in names for g in gensyms collect `(,n ,g)))
-           ,@body)))))
-
 ;-------------------------------------
 (let* ((seed0      10013)
        (seed       seed0)
@@ -43,12 +36,14 @@
 ; ------------------------------------
 (defun halt (&optional (status 0)) (sb-ext:exit :code status))
 (defun argv () sb-ext:*posix-argv*)
-; ------------------------------------
-(defmethod num? ((x number))  x)
-(defmethod num? ((x string))
-  (let ((y (read-from-string x)))
-    (if (typep y 'number) y x)))
 
+; ------------------------------------
+(defun num? (x &optional looping)
+  (cond (looping     x)
+        ((numberp x) x)
+        ((stringp x) (num? (read-from-string x) t))
+        (t x)))
+  
 ; ---------------------------------------------
 (defun cli (&key (plist  (deepcopy +config+)) 
                  (help   "")
@@ -74,22 +69,20 @@
         (push (cons x tmp) out)))))
 
 (defun color (s  c &optional (str t)) 
- (let((colors '((black . 30) (red . 31) (green . 32)  
-                (yellow . 33)  (blue . 34)  (magenta . 35)
-                (cyan . 36) (white .37))))
-   (format str "~c[~a;1m~a~c[0m" 
-           #\ESC (cdr (assoc c colors)) s #\ESC)))
+ (let ((all '((black . 30) (red . 31) (green . 32)  (yellow . 33) 
+              (blue . 34)  (magenta . 35) (cyan . 36) (white .37))))
+   (format str "~c[~a;1m~a~c[0m" #\ESC (cdr (assoc c all)) s #\ESC)))
 
 (defun red (s) (color s 'red nil))
 (defun green (s) (color s 'green nil))
 (defun yellow (s) (color s 'yellow nil))
+
 ; ----------------------------------------------
 (defun str->words (s0) 
   (labels ((whitep (c) (member c '(#\space #\tab)))
            (worker (str &optional (lo 0))
                    (aif (position #\comma str :start lo)
-                        (cons (subseq str lo  it) 
-                              (worker str (1+ it)))
+                        (cons (subseq str lo  it) (worker str (1+ it)))
                         (list (subseq str lo)))))
     (let ((s1 (remove-if  #'whitep s0)))
       (unless (zerop (length s1)) (worker  s1)))))
@@ -97,6 +90,6 @@
 (defun file->words (f fn)
   (with-open-file (s f) 
     (whale (read-line s nil)
-           (aif (str->words a)
-                (funcall fn (mapcar #'num? it))))))
+           (aif (str->words a) (funcall fn  it)))))
 
+(file->words  "../data/auto93.csv" #'print)
