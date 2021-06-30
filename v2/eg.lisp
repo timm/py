@@ -1,7 +1,7 @@
 (load "etc")
 (defpackage :espy-test-suite 
   (:use :cl)  (:nicknames :eg)
-  (:import-from :etc :my :bad :aif :it :a))
+  (:import-from :etc :? :bad :aif :it :a))
 (in-package :eg)
 
 ;-------------------------------------
@@ -16,7 +16,7 @@
   (dolist (one *tests*)
     (let ((doc (documentation one 'function)))
     (when (or (not what) (eql one what))
-      (etc::srand (my :rand :seed))
+      (etc::srand (? my :rand :seed))
       (multiple-value-bind (_ err)
          (ignore-errors (funcall one (etc::deepcopy my)))
          (incf *fails* (if err 1 0))

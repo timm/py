@@ -16,10 +16,8 @@
 (defmacro whale (expr &body body) 
   `(do ((a ,expr ,expr)) ((not a)) ,@body))
 
-(defmacro ?? (p x &rest xs)
-  (if (null xs) `(getf ,p ,x) `(?? (getf ,p ,x) ,@xs)))
-
-(defmacro my (x &rest y) `(?? +config+ ,x ,@y))
+(defmacro ? (p x &rest xs)
+  (if (null xs) `(getf ,p ,x) `(? (getf ,p ,x) ,@xs)))
 
 (defmacro bad (x &rest y)
   `(assert ,x () ,@y))
