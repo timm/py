@@ -14,7 +14,7 @@
     (when (or (not what) (eql one what))
       (srand (my :rand :seed))
       (multiple-value-bind (_ err)
-         (ignore-errors (funcall one (copy-list my)))
+         (ignore-errors (funcall one (deepcopy my)))
          (incf *fails* (if err 1 0))
          (if err
            (format t "~&~a [~a] ~a ~a~%" 

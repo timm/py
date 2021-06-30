@@ -35,9 +35,9 @@
     (if (typep y 'number) y x)))
 
 ; ---------------------------------------------
-(defun cli (&key (plist  (copy-list +config+)) 
+(defun cli (&key (plist  (deepcopy +config+)) 
                  (help   "")
-                 (args   (cdr (copy-list (argv))))
+                 (args   (cdr (deepcopy (argv))))
                  (now    (getf plist :all)))
    (whale (pop args)
       (setf a (read-from-string a))
@@ -64,12 +64,6 @@
 
 (defun deepcopy (x)
    (if (consp x) (mapcar #'deepcopy x) x))
-
-
-(let* ((a '((1) 2 3 4)) b)
-  (setf b (deepcopy a))
-  (incf  (caar a))
-  (print b))
 
 ; ----------------------------------------------
 (defun str->words (s0) 
