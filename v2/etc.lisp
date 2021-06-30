@@ -49,6 +49,9 @@
    plist)
 
 ;----------------------------------------------
+(defun deepcopy (x)
+   (if (consp x) (mapcar #'deepcopy x) x))
+
 (defun powerset (lst)
   (let ((out (list nil)))
     (dolist (x lst out)
@@ -61,9 +64,6 @@
                 (cyan . 36) (white .37))))
    (format str "~c[~a;1m~a~c[0m" 
            #\ESC (cdr (assoc c colors)) s #\ESC)))
-
-(defun deepcopy (x)
-   (if (consp x) (mapcar #'deepcopy x) x))
 
 ; ----------------------------------------------
 (defun str->words (s0) 
