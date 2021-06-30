@@ -1,6 +1,10 @@
-(load "code")
-(code "etc")
+(load "etc")
+(defpackage :espy-test-suite 
+  (:use :cl)  (:nicknames :eg)
+  (:import-from :etc :my :bad :aif :it :a :loading :+config+))
+(in-package :eg)
 
+;-------------------------------------
 (defvar *tests* nil)
 (defvar *fails* 0)
 
@@ -12,20 +16,20 @@
   (dolist (one *tests*)
     (let ((doc (documentation one 'function)))
     (when (or (not what) (eql one what))
-      (srand (my :rand :seed))
+      (etc::srand (my :rand :seed))
       (multiple-value-bind (_ err)
-         (ignore-errors (funcall one (deepcopy my)))
+         (ignore-errors (funcall one (etc::deepcopy my)))
          (incf *fails* (if err 1 0))
          (if err
            (format t "~&~a [~a] ~a ~a~%" 
-             (color "✖" 'red   nil) one doc (color err 'yellow nil))
+             (etc::red "✖") one doc (etc::yellow err))
            (format t "~&~a [~a] ~a~%"    
-             (color "✔" 'green nil) one doc)))))))
+             (etc::green "✔") one doc)))))))
 
 (deftest _aif (_)
   "testing test"
   (aif (- 3 4)
-    (assert (= it 1))))
+    (bad (= it 1) "aa~a" 2)))
 
-(demos (cli))
-(halt *fails*)
+(demos (etc::cli))
+(etc::halt *fails*)

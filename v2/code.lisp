@@ -1,6 +1,9 @@
 ; vim: noai:ts=2:sw=2:et: 
+(defpackage :code (:use :cl))
+(in-package :code)
+
 (let (gotten)
-  (defun code (&rest files)
+  (defun got (&rest files)
     (mapc #'(lambda(file)
               (unless (member file gotten :test 'equalp)
                 (push file gotten)

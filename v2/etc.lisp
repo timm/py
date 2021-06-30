@@ -1,7 +1,15 @@
 ; vim: noai:ts=2:sw=2:et: 
-(load "code")
-(code "config")
+(defpackage :espy-misc-utils 
+  (:use :cl)  (:nicknames :etc))
+(in-package :etc)
 
+(defun loading (file)
+  (format *error-output* "; loading ~(~a~) ...~%" file)
+  (handler-bind ((style-warning #'muffle-warning))
+    (load file)))
+
+(loading "config")
+;-------------------------------------
 (defmacro aif (test yes &optional no)
   `(let ((it ,test)) (if it ,yes ,no)))
 
@@ -12,6 +20,9 @@
   (if (null xs) `(getf ,p ,x) `(?? (getf ,p ,x) ,@xs)))
 
 (defmacro my (x &rest y) `(?? +config+ ,x ,@y))
+
+(defmacro bad (x &rest y)
+  `(assert ,x () ,@y))
 
 ;-------------------------------------
 (let* ((seed0      10013)
@@ -27,7 +38,6 @@
 ; ------------------------------------
 (defun halt (&optional (status 0)) (sb-ext:exit :code status))
 (defun argv () sb-ext:*posix-argv*)
-
 ; ------------------------------------
 (defmethod num? ((x number))  x)
 (defmethod num? ((x string))
@@ -65,6 +75,9 @@
    (format str "~c[~a;1m~a~c[0m" 
            #\ESC (cdr (assoc c colors)) s #\ESC)))
 
+(defun red (s) (color s 'red nil))
+(defun green (s) (color s 'green nil))
+(defun yellow (s) (color s 'yellow nil))
 ; ----------------------------------------------
 (defun str->words (s0) 
   (labels ((whitep (c) (member c '(#\space #\tab)))
