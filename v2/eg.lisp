@@ -1,7 +1,9 @@
+; vim: noai ts=2 sw=2 et: 
 (load "etc")
 (defpackage :espy-test-suite 
   (:use :cl)  (:nicknames :eg)
-  (:import-from :etc :? :bad :aif :it :a))
+  (:import-from :etc :todo :? :whale :srand :randf :randi
+                     :rnd :want :aif :it :a))
 (in-package :eg)
 
 ;-------------------------------------
@@ -28,8 +30,17 @@
 
 (deftest _aif (_)
   "testing test"
-  (aif (- 3 4)
-    (bad (= it 1) "aa~a" 2)))
+  (aif (- 4 3)
+    (want (= it 1) "fail?" 2)))
+
+(deftest _srand (_)
+  "random number control with srand"
+  (let ((n 100) a b)
+    (srand)
+    (setf a (loop for x below  n collect (randi 1000)) )
+    (srand)
+    (setf b (loop for x below  n collect (randi 1000)) )
+    (want  (equal a b) "lists not equal")))
 
 (demos (etc::cli))
 (etc::halt *fails*)
