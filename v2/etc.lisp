@@ -39,7 +39,7 @@
 
 ; ------------------------------------
 (defun num? (x &optional looping)
-  (cond (looping     x)
+  (if (numbercond (looping     x)
         ((numberp x) x)
         ((stringp x) (num? (read-from-string x) t))
         (t x)))
