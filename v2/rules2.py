@@ -63,8 +63,7 @@ class Tab(o):
 
 class Tabs(o):
   def __init__(i):
-    i.all = Tab()
-    i.one = {}
+    i.all, i.one = Tab(), {}
   def read(i,f):
     [i.add(lst) for lst in csv(f)]
     return i
@@ -79,12 +78,12 @@ class Tabs(o):
     rests = i.one[rest]
     for col1,col2 in zip(bests.cols, rests.cols):
       if col1.at != i.all.klass:
-        for k,n1 in col1.seen.items():
-          b = n1/col1.n
-          n2 = col2.seen.get(k,0)
-          r = n2/col2.n
+        for x,n1 in col1.seen.items():
+          n2 = col2.seen.get(x,0)
+          r  = n2/col2.n
+          b  = n1/col1.n
           if b > r:
-            yield b**2/(b+r),col2.at,k
+            yield b**2/(b+r),(col2.at,x)
 
 class Rule:
   def __init__(i): i.features  = {}
