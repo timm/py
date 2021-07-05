@@ -23,25 +23,25 @@ def cli(d, help):
   for x in it:
     if x in d: d1=d[x]
     x = x[1:]
-    if x == "h":
-      print(help)
-    elif x in d1:
-      d1[x] = True if x[0].isupper() else coerce(next(it))
+    if   x == "h": print(help)
+    elif x in d1 : d1[x] = True if x[0].isupper() else coerce(next(it))
   return o(**{k:(o(**d1) if type(d1)==dict else d1)
               for k,d1 in d.items()})
 
 def coerce(x):
-  if x == "True":
-    return True
-  if x == "False":
-    return False
-  try:
-    return int(x)
+  if x == "True": return True
+  if x == "False": return False
+  try: return int(x)
   except:
-    try:
-      return float(x)
-    except:
-      return x
+    try: return float(x)
+    except: return x
+
+def memo(f):
+  cache = {} # initialized at load time
+  def g(*lst): # called at load time
+    val = cache[lst] = cache.get(lst,None) or f(*lst)
+    return val
+  return g
 
 def subsets(l):
   out = [[]]

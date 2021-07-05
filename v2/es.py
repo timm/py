@@ -97,7 +97,7 @@ class Num(Col):
     "Numeric distances. Make guesses for missing values."
     if   x == "?": y = i.norm(y); x = 0 if y > .5 else 1 
     elif y == "?": x = i.norm(x);  y = 0 if x > .5 else 1 #
-    else         : x, y = i.norm(x), i.norm(y)
+    else         : x,y = i.norm(x), i.norm(y)
     return abs(x - y)
   def norm(i, z):
     "Normalize 0..1."
