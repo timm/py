@@ -32,12 +32,13 @@ def csv(f):
 
 class Sym(o):
   def __init__(i,at,txt): 
-    i.n,i.seen,i.at,i.txt,i.y = 0,{},at,txt,set()
+    i.n,i.seen,i.at,i.txt,i._y = 0,{},at,txt,{}
   def add(i,x,y,n=1):
     if x != "?":
       i.n += n
       i.seen[x] = n + i.seen.get(x,0)
-      i.y.add(y)
+      ys = i._y[x] = i._y.get(x,set())
+      ys.add(y)
     return x
    
 class Row(o):
@@ -86,14 +87,15 @@ class Tabs(o):
           r  = n2/col2.n
           b  = n1/col1.n
           if b > r:
-            yield b**2/(b+r),(col2.at,x),[row.id for row in col2.y]
+            yield o(x=x,at=col1.at,_best=col1, _rest=col2)
 
 class Rule:
   def __init__(i): i.features  = {}
   def add(i,feature, attribute):
     attrs = i.features[feature] = i.features.get(feature,set())
     attrs.add(attribute)
-  
+
 one = Tabs().read("../data/vote.csv")
-for x in sorted(one.contrast('democrat','republican'))[-10:]:
-  print(x)
+for x in one.contrast('democrat','republican'):
+  for y,z in x._best._y.items():
+    print(y,len([w.id for w in z]))
