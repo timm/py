@@ -32,19 +32,21 @@ def csv(f):
 
 class Sym(o):
   def __init__(i,at,txt): 
-    i.n,i.seen,i.at,i.txt = 0,{},at,txt
-  def add(i,x):
+    i.n,i.seen,i.at,i.txt,i.y = 0,{},at,txt,set()
+  def add(i,x,y,n=1):
     if x != "?":
-      i.n += 1
-      i.seen[x] = 1 + i.seen.get(x,0)
+      i.n += n
+      i.seen[x] = n + i.seen.get(x,0)
+      i.y.add(y)
     return x
    
 class Row(o):
   id=0
-  def __init__(i,cells): 
+  def __init__(i,tab, cells): 
     i.id = Row.id = 1 + Row.id
-    i._cells=cells
-  def __hash(i): return i.id
+    i._tab, i.cells = tab, cells
+    [col.add(x,i) for x,col in zip(cells, i._tab.cols)]
+  def __hash__(i): return i.id
 
 class Tab(o):
   def __init__(i,rows=[]): 
@@ -58,7 +60,8 @@ class Tab(o):
     [i.add(lst) for lst in csv("../data/vote.csv")]
     return i
   def add(i,lst):
-     if    i.cols: i._rows += [[col.add(x) for x,col in zip(lst,i.cols)]]
+     lst = lst.cells if type(lst)==Row else lst
+     if    i.cols: i._rows += [Row(i,lst)]
      else: i.cols= [Sym(n,x) for n,x in enumerate(lst)]
 
 class Tabs(o):
@@ -83,7 +86,7 @@ class Tabs(o):
           r  = n2/col2.n
           b  = n1/col1.n
           if b > r:
-            yield b**2/(b+r),(col2.at,x)
+            yield b**2/(b+r),(col2.at,x),[row.id for row in col2.y]
 
 class Rule:
   def __init__(i): i.features  = {}
