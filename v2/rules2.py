@@ -83,11 +83,8 @@ class Tabs(o):
     for col1,col2 in zip(bests.cols, rests.cols):
       if col1.at != i.all.klass:
         for x,n1 in col1.seen.items():
-          n2 = col2.seen.get(x,0)
-          r  = n2/col2.n
-          b  = n1/col1.n
-          if b > r:
-            yield o(x=x,at=col1.at,_best=col1, _rest=col2)
+          yield o(x=x, at=col1.at, _best=col1._y.get(x,set()), 
+                                   _rest=col2._y.get(x,set()))
 
 class Rule:
   def __init__(i): i.features  = {}
@@ -97,5 +94,4 @@ class Rule:
 
 one = Tabs().read("../data/vote.csv")
 for x in one.contrast('democrat','republican'):
-  for y,z in x._best._y.items():
-    print(y,len([w.id for w in z]))
+  print(x, len(x._best))
