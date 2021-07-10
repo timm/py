@@ -29,12 +29,10 @@ def csv(f=None):
   if f:
     with open(f) as fp:
       for s in fp:
-        if s := prep(s): 
-          yield splits(s)
+        if s := prep(s): yield splits(s)
   else:
     for s in sys.stdin:
-      if s := prep(s): 
-        yield splits(s)
+      if s := prep(s): yield splits(s)
 
 #--------------------------------------------
 class Row(o):
