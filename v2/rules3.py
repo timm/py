@@ -1,4 +1,7 @@
-import re
+#!/usr/bin/env python3.9
+# vim: ts=2 sw=2 sts=2 et :
+
+import re,sys
 from collections import defaultdict
 
 def zeros() : return defaultdict(lambda:0)
@@ -15,17 +18,25 @@ def subsets(l):
   for x in l: out += [sub + [x] for sub in out]
   return out[1:]
 
-def csv(f):
+def csv(f=None):
+  def prep(s)  : return re.sub(r'([\n\t\r ]|#.*)', '', s)
+  def splits(s): return [coerce(x) for x in s.split(",")]
   def coerce(s):
     try : return int(s)
     except:
       try : return float(s)
       except: return s
-  with open(f) as fp:
-    for line in fp:
-      if line := re.sub(r'([\n\t\r ]|#.*)', '', line):
-        yield [coerce(x) for x in line.split(",")]
+  if f:
+    with open(f) as fp:
+      for s in fp:
+        if s := prep(s): 
+          yield splits(s)
+  else:
+    for s in sys.stdin:
+      if s := prep(s): 
+        yield splits(s)
 
+#--------------------------------------------
 class Row(o):
   id=0
   def __init__(i,lst):
@@ -33,27 +44,44 @@ class Row(o):
     i.id = Row.id = 1 + Row.id
   def __repr__(i): return str(i.id)
 
-def optimize(b,r,B,R): return (b/B)^2/(b/B + r/R)
-def monitor( b,r,B,R): return (r/R)^2/(b/B + r/R)
-def explore( b,r,B,R): return 1      /(b/B + r/R)
+def optimize(b,r,ball,rall): b/= ball; r/= rall; return b**2/(b + r)
+def monitor( b,r,ball,rall): b/= ball; r/= rall; return r**2/(b + r)
+def explore( b,r,ball,rall): b/= ball; r/= rall; return 1  /(b + r)
 
 class Rule(o):
-  def __init__(i,tbl,goal=optimize): 
-    i.has. i._score,i.tbl,i.goal = sets(),None,tbl,goal
-  def adds(i,pairs): 
-    [i.add(pair) for pair in pairs]
+  def __init__(i,tbl=None,init=None,want=None,goal=optimize): 
+    i.has, i._score,i.tbl,i.goal,i.want = sets(),None,tbl,goal,want
+    if init: i.add(init)
   def add(i,pair):
+    """For pair=(attr,val), add val to attr. If attr now holds
+    all values for attr, then delete attr."""
     i._score=None
-    i.has[pair[0]].add(pair[1])
+    attr,val = pair
+    i.has[attr].add(val)
+    if len(i.has[attr]) == len(i.tbl.attrs[attr]): i.tbl.has.pop(attr)
+  def __lt__(i,j): return i.score() < j.score()
   def __add__(i,j):
-    k=Rule(i.tbl,i.goal)
+    k = Rule(i.tbl,i.goal)
     for rule in [i,k]:
       for attr in rule.has:
-        for val in rule.has[attr]:
-          k.add((attr,val))
-    return k
+        for val in rule.has[attr]: k.add((attr,val))
+    if k != i and k != j:
+      return k
   def __eq__(i,j):
     return i.has == j.has
+  def show(i):
+    def merge(pairs): 
+      j, tmp = 0, []
+      while j < len(pairs):
+        a = pairs[j]
+        if j < len(pairs) - 1:
+          b = pairs[j+1]
+          if a[1]==b[0]: j,a= j+1,(a[0],b[1])
+        tmp += [a]
+        j += 1
+      return tmp
+    return ' and '.join(['%s = (%s) '%(attr,' or '.join(merge(sorted(vals))))
+                         for attr,vals in i.has.items()])
   def selects(i):
     attrs=None
     for attr in i.has:
@@ -63,36 +91,42 @@ class Rule(o):
         vals = (vals | tmp) if vals else tmp
       attrs = (attrs & vals) if attrs else vals
     return attrs
-  def score(i,goal):
+  def score(i):
     if not i._score:
-      bestall = restall = 0
-      bestand = restand = 0
-      found = i.selects()
-      for klass in t.k:
-        ns = len(t.all[klass])
-        n = len(t.all[klass] & found) 
-        if klass == goal : best,BEST = n, N
-        else             : rest += n; REST += N
-      i._score = i.goal(best,rest,BEST,REST)
+      best = rest = bestall = restall = 0
+      for klass in i.tbl.klasses:
+        all      = len(i.tbl.klasses[klass])
+        selected = len(i.tbl.klasses[klass] & i.selects()) 
+        if   klass == i.want : best += selected; bestall += all
+        else                 : rest += selected; restall += all
+      i._score = i.goal(best, rest, bestall, restall)
     return i._score
     
-def tbl(src, kl = -1):
-  t = o(names=next(src), _rows=[], k=zeros(), av=zeros(), all=sets())
+def tbl(src):
+  t = o(names=next(src), _rows=[], klass=0,
+        klasses=sets(), attrs=sets(), all=sets())
   for lst in src:
+    t.klass=t.klass or len(lst) -1 
     row = Row(lst)
     t._rows += [row]
-    klass = lst[kl]
-    t.k[klass] += 1
+    t.klasses[ lst[t.klass] ].add(row)
     for attr,val in enumerate(lst):
       if val != "?":
-        t.av[(attr,(val,val))] += 1
-        for key in [klass, (attr,(val,val))]:
-          t.all[key].add(row)
+        t.attrs[attr].add((val,val))
+        t.all[(attr,(val,val))].add(row)
   return t
 
-def rules(t):
-  for attr,val in t.av: print(attr,val)
+def rules(t,want):
+  rules = []
+  for attr in t.attrs:
+    print(attr, t.klass)
+    if attr != t.klass:
+      for val in t.attrs[attr]: 
+        rules += [Rule(t, (attr,val),want)]
+  rules = subsets(sorted(rules)[-10:])
+  print(len(rules))
 
-t=tbl(csv("../data/vote.csv"))
-print(t.k["democrat"])
-#rules(t)
+if __name__ == "__main__":
+  src = sys.argv[1] if len(sys.argv)>1 else None
+  rules(tbl(csv(src)), "democrat")
+  #rules(t)
