@@ -1,8 +1,10 @@
 #!/usr/bin/env python3.9
 # vim: ts=2 sw=2 sts=2 et :
 
-import re,sys
+import re,sys,copy
 from collections import defaultdict
+
+BEAM=7
 
 def zeros() : return defaultdict(lambda:0)
 def sets()  : return defaultdict(lambda:set())
@@ -42,9 +44,9 @@ class Row(o):
     i.id = Row.id = 1 + Row.id
   def __repr__(i): return str(i.id)
 
-def optimize(b,r,ball,rall): b/= ball; r/= rall; return b**2/(b + r)
-def monitor( b,r,ball,rall): b/= ball; r/= rall; return r**2/(b + r)
-def explore( b,r,ball,rall): b/= ball; r/= rall; return 1  /(b + r)
+def optimize(b,r): return b**2  / (b + r)
+def monitor( b,r): return r**2 / (b + r)
+def explore( b,r): return 1   / (b + r)
 
 class Rule(o):
   def __init__(i,tbl=None,init=None,want=None,goal=optimize): 
@@ -56,15 +58,16 @@ class Rule(o):
     i._score=None
     attr,val = pair
     i.has[attr].add(val)
-    if len(i.has[attr]) == len(i.tbl.attrs[attr]): i.tbl.has.pop(attr)
+    if len(i.has[attr]) == len(i.tbl.attrs[attr]): i.has.pop(attr)
   def __lt__(i,j): return i.score() < j.score()
   def __add__(i,j):
-    k = Rule(i.tbl,i.goal)
-    for rule in [i,k]:
+    k = Rule(tbl=i.tbl,goal=i.goal,want=i.want)
+    for rule in [i,j]:
       for attr in rule.has:
         for val in rule.has[attr]: k.add((attr,val))
     if k != i and k != j:
-      return k
+      if dict(k.has):
+        return k
   def __eq__(i,j):
     return i.has == j.has
   def show(i):
@@ -78,8 +81,12 @@ class Rule(o):
         tmp += [a]
         j += 1
       return tmp
-    return ' and '.join(['%s = (%s) '%(attr,' or '.join(merge(sorted(vals))))
-                         for attr,vals in i.has.items()])
+    def show1(x):
+      return str(x[0]) if x[0]==x[1] else f"{x[0]},,{x[1]}"
+    return  'and '.join([('%s = (%s) '%( 
+      i.tbl.names[attr],(' or '.join([show1(x) for x in merge(sorted(vals))]))))
+      for attr,vals in i.has.items()])
+
   def selects(i):
     attrs=None
     for attr in i.has:
@@ -97,7 +104,12 @@ class Rule(o):
         selected = len(i.tbl.klasses[klass] & i.selects()) 
         if   klass == i.want : best += selected; bestall += all
         else                 : rest += selected; restall += all
-      i._score = i.goal(best, rest, bestall, restall)
+      if best and rest:
+        best /= bestall
+        rest /= restall
+        i._score = i.goal(best, rest) if best>rest else 0
+      else:
+        i._score = 0
     return i._score
     
 def tbl(src):
@@ -114,17 +126,29 @@ def tbl(src):
         t.all[(attr,(val,val))].add(row)
   return t
 
-def rules(t,want):
-  rules = []
+def rules(t,want,top):
+  solos = []
   for attr in t.attrs:
-    print(attr, t.klass)
     if attr != t.klass:
       for val in t.attrs[attr]: 
-        rules += [Rule(t, (attr,val),want)]
-  rules = subsets(sorted(rules)[-10:])
-  print(len(rules))
+        rule =  Rule(t, (attr,val),want)
+        if  rule.score() > .1 :
+          solos += [rule]
+  solos = sorted(solos)[-top:]
+  tmp = {}
+  for n,s in enumerate(subsets(solos)):
+    if s:
+      one = copy.deepcopy(s[0])
+      for another in s[1:]: 
+        if two := one + another:
+          one = two
+      tmp[str(dict(one.has))] = one
+  rules = sorted(tmp.values())[-top:]
+  for rule in rules:
+    print("%.3f : %s" % (rule.score(),rule.show()))
 
 if __name__ == "__main__":
   src = sys.argv[1] if len(sys.argv)>1 else None
-  rules(tbl(csv(src)), "democrat")
+  t= tbl(csv(src))
+  rules(t, "democrat",BEAM)
   #rules(t)
