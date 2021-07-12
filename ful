@@ -3,27 +3,13 @@
   
 hi() { 
   clear
-  tput bold; tput setaf 4
+  tput bold; tput setaf 3
   cat<<-'EOF'
-                                    .::!!!!!!!:.
-  .!!!!!:.                        .:!!!!!!!!!!!!
-  ~~~~!!!!!!.                 .:!!!!!!!!!UWWW$$$
-      :$$NWX!!:           .:!!!!!!XUWW$$$$$$$$$P
-      $$$$$##WX!:      .<!!!!UW$$$$"  $$$$$$$$#
-      $$$$$  $$$UX   :!!UW$$$$$$$$$   4$$$$$*
-      ^$$$B  $$$$\     $$$$$$$$$$$$   d$$R"
-        "*$bd$$$$      '*$$$$$$$$$$$o+#"
-             """"          """""""
 
-                      ___  ___       _ __  _   _ 
-                     / _ \/ __|     | '_ \| | | |
- :-----:            |  __/\__ \  _  | |_) | |_| |
- | Ba  | Bad <---.   \___||___/ (_) | .__/ \__, |   
- |  56 |         |                  |_|    |___/  
- :-----:-----:   |     
-       | B   |   v     explore= min(bad+better)
-       |   5 | Better  optimze= max(better - bad)
-       :-----:         monitor= max(bad - better)
+    |\__/,|   (`\    "The basful are always
+  _.|o o  |_   ) )   aggressive at heart."
+-(((---(((--------        -- Charles Cooley
+
 	EOF
   tput bold; tput setaf 241
   echo "Short cuts:"
@@ -57,6 +43,7 @@ else
   alias vi="vim -u $Ful/etc/dotvimrc "
   alias vims="vim +PluginInstall +qall"         
   alias repl="rlwrap sbcl --noinform " 
+  alias lldoc="cd $Ful/v2; ldoc -d $Ful/docs -o rast.html -f markdown -p KEYS -t rast rast.lua"-
   
   here() { cd $1; basename `pwd`; }
   
