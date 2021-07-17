@@ -70,24 +70,24 @@ function far(i,rows,cols,     j,k,d,max) {
   return j}
 
 # 
-function cluster(all,tree,cols,rows,node,    
+function cluster(above,nodes,rows,cols,tree,node,    
                  one,two,c,r,a,b,xs,mid) {
-  node++
-  for(r in all) tree[node][r]
-  if (length(all) < Enough) return
-  one = far( any(all), rows,cols)
+  tree[nodes][++nodes]
+  for(r in all) node[nodes][r]
+  if (length(above) < Enough) return
+  one = far( any(above), rows,cols)
   two = far( one,      rows,cols)
   c   = dist( rows[one], rows[two], cols)
-  for(r in all) {
+  for(r in above) {
     a     = dist(rows[r], rows[one], cols)
     b     = dist(rows[r], rows[two], cols)
     xs[r] = (a^2 + c^2 - b^2)/(2*c) }
   mid = int(asort(xs,tmp)/2)
   for(r in xs) 
     xs[r] < tmp[mid] ? left[r] : right[r]
-  node = cluster(left, tree,cols,rows,node)  
-  node = cluster(right,tree,cols,rows,node) 
-  return node }
+  nodes = cluster(left, nodes,rows,cols,tree,node)
+  nodes = cluster(right,nodes,rows,cols,tree,node)
+  return nodes }
 
 #------------------------------------------
 # lib
