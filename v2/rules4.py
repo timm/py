@@ -32,6 +32,10 @@ def think(
     def dist(i,x,y)        : return 0  if x==y else 1
     def ent(i): 
       return sum(-v / i.n * math.log(v / i.n) for v in i.has.values())
+    def merge(i, j):
+      k = Sym(at=i.at, txt=i.txt)
+      [k.add(x,n) for seen in [i.has, j.has] for x, n in seen.items()]
+      return k
     def simpler(i, j):
        k = i.merge(j)
        e1, n1 = i.ent(), i.n
@@ -39,10 +43,6 @@ def think(
        e, n   = k.ent(), k.n
        if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
          return k
-    def merge(i, j):
-      k = Sym(at=i.at, txt=i.txt)
-      [k.add(x,n) for seen in [i.has, j.has] for x, n in seen.items()]
-      return k
     
   class Num(Col):
     def __init__(i,**kw): i._all,i.ok=[],False; super().__init__(**kw)
@@ -107,7 +107,6 @@ def think(
   def clone(t,inits=[]):
     return table([[t.names]] + inits)
 
-      
   def bins(xy):
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
@@ -116,7 +115,7 @@ def think(
         if j < n - 1:
          b = b4[j + 1]
          if cy := a.y.simpler(b.y):
-           a = ((a.x[0],b.x[1]),cy)
+           a = o(x=(a.x[0],b.x[1]),y=cy)
            j += 1
         tmp += [a]
         j += 1
@@ -125,7 +124,6 @@ def think(
     xy = sorted(xy,key=first)
     bins=[o(x=Num(),y=Sym())]
     enough = len(xy)**Bins
-    b4 = xy[0][0]
     for i,(x,y) in enumerate(xy):
       if x != b4:
         if last(bins).x.n >= enough:
@@ -134,8 +132,8 @@ def think(
       last(bins).x.add(x)
       last(bins).y.add(y)
       b4 = x
-    return merge([o(x=bin.x.range(), y=bin.y) for bin in bins])      
-    
+    bins= merge([o(bin.x.range(), y=bin.y) for bin in bins])      
+    return [bin.x for bin in bins]
 
 #----------------------------
 # misc utils
