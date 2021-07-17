@@ -4,6 +4,8 @@
 import re,sys,copy
 from collections import defaultdict
 
+def main(): think()
+
 def think( 
   Data:      "where to read data"                  = "../data/auto2.csv",
   Beam:      "focus on this many"                  = 20,
@@ -23,11 +25,11 @@ def think(
         return x
     
   class Skip(o):
-      def __init__(i,*l,**kw):  super().__init__(*l,**kw)
+      def __init__(i,**kw):  super().__init__(**kw)
       def add1(i,x,n=1)      : return x
   
   class Sym(Col):
-    def __init__(i,*l,**kw): i.has={}; super().__init__(*l,**kw)
+    def __init__(i,**kw): i.has={}; super().__init__(**kw)
     def add1(i,x,n=1)      : inc(i.has,x,n); return  x 
     def dist(i,x,y)        : return 0  if x==y else 1
     def ent(i): 
@@ -38,9 +40,7 @@ def think(
       return k
     def simpler(i, j):
        k = i.merge(j)
-       e1, n1 = i.ent(), i.n
-       e2, n2 = j.ent(), j.n
-       e, n   = k.ent(), k.n
+       e1,n1, e2,n2, e,n = i.ent(),i.n, j.ent(),j.n, k.ent(),k.n
        if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
          return k
     
@@ -75,7 +75,7 @@ def think(
 
   def table(src):
     t = o(rows  = [],
-          counts= o(n=0, klass={},  freq={}),
+          counts= o(n=0, klass={}, freq={}),
           cols  = o(all=[], names=None, x=[], y=[], klass=None))
     def num(x)   : return x[0].isupper()
     def skip(x)  : return "?" in x 
@@ -83,7 +83,8 @@ def think(
     def header(a):
       t.names= a
       for at,x in enumerate(a):
-        new = (Skip if skip(x) in x else (Num if num(x) else Sym))(at,x)
+        new = Skip if skip(x) else (Num if num(x) else Sym)
+        new = new(at=at,txt=x)
         t.cols.all += [new]
         if skip(x): continue
         t.cols["y" if goal(x) else "x"] += [new]
@@ -94,7 +95,8 @@ def think(
       inc(t.klass, kl)
       for col in t.col.x:
         v= a[col.at]
-        if v != "?": inc(t.counts.freq, (klass,(col.pos,(val,val))))
+        if v != "?": 
+          inc(t.counts.freq, (klass,(col.pos,(val,val))))
     def data(a):
       a= row.cells if type(a)==Row else a
       a= [col.add(a[col.pos]) for col in t.cols.all]
@@ -134,6 +136,9 @@ def think(
       b4 = x
     bins= merge([o(bin.x.range(), y=bin.y) for bin in bins])      
     return [bin.x for bin in bins]
+  #--- --- --- --- ---
+  if Data:
+    print(table(csv(Data)))
 
 #----------------------------
 # misc utils
@@ -150,9 +155,11 @@ def subsets(l):
   return out[1:] 
 
 class o(object):
-  def __init__(i, **k): i.__dict__.update(**k)
-  def __repr__(i): return i.__class__.__name__ + str(
-    {k:v for k,v in i.__dict__.items() if k[0] != "_"})
+  def __init__(i, **k)  : i.__dict__.update(**k)
+  def __getitem__(i,k)  : return i.__dict__[k]
+  def __setitem__(i,k,v): i.__dict__[k] = v
+  def __repr__(i)       : return i.__class__.__name__ + str(
+    {k:v for k,v in sorted(i.__dict__.items()) if k[0] != "_"})
 
 def csv(f=None, sep=","):
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
@@ -164,4 +171,4 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
-
+main()
