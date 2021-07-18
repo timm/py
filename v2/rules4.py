@@ -3,21 +3,23 @@
 import re, sys, copy, argparse
 
 def think( 
-  Bins      : "bins are of size n**Bins"            = .5,
-  Cols      : "columns to use for inference"        = "x",
-  Data      : "where to read data"                  = "../data/auto2.csv",
-  FarEnough : "where to look for far things"        = .9,
-  K         : "bayes low frequency hack"            = 2,
-  M         : "bayes low frequency hack"            = 1,
-  P         : "distance coeffecient"                = 2,
-  Sample    : "how many  times to find far things?" = 20,
-  Verbose   : "set verbose"                         = False,
-  Top       : "focus on this many"                  = 20):
-  """asdas asd asd as das as das adas das das as as as
-asdasas a dsas 
+  Bins     :"bins are of size n**Bins"    = .5,
+  Cols     :"columns to use for inference"= "x",
+  Data     :"where to read data"          = "../data/auto2.csv",
+  Epsilon  :"small = sd**Epsilon"         = .3,
+  FarEnough:"where to look for far things"= .9,
+  Goal     :"learning  goals"             = "optimize",
+  K        :"bayes low frequency hack"    = 2,
+  M        :"bayes low frequency hack"    = 1,
+  P        :"distance coeffecient"        = 2,
+  Sample   :"#samples to find far things?"= 20,
+  Verbose  :"set verbose"                 = False,
+  Top      :"focus on this many"          = 20):
 
-asdasd"""
-  
+  """(c) Tim Menzies <timm@ieee.org>, 2021, unlicense.org
+Describing the difference between things is often 
+shorter than describing each thing, separately."""
+
   class Col(o):
     def __init__(i,at=0,txt=""): 
       i.n, i.at, i.txt, i.w = 0, at, txt, -1 if "-" in txt else 1
@@ -44,15 +46,22 @@ asdasd"""
        e1,n1, e2,n2, e,n = i.ent(),i.n, j.ent(),j.n, k.ent(),k.n
        if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
          return k
+    def bins(i, j):
+      for k in (i.has | j.has): 
+        yield i.has.get(k,0), True, (i.at, (k,k))
+        yield j.has.get(k,0), False,(j.at, (k,k))
     
   class Num(Col):
-    def __init__(i,**kw): i._all,i.ok=[],False; super().__init__(**kw)
+    def __init__(i,**kw): 
+      i._all,i.ok=[],False; super().__init__(**kw)
     def all(i)          : 
       if not i.ok: i.ok=True;i._all.sort(); return i._all
-    def range(i): 
+    def span(i): 
       return (first(i.all()), last(i.all()))
     def wide(i,epsilon=0):
       return last(i.all()) - first(i.all()) >= epsilon
+    def sd(i):
+      a=i.all(); return (per(a,.9) - per(a,.1))/2.56
     def add1(i,x,n)     : 
       x, i.ok  = float(x), False  
       for _ in range(n): i._all +=[x] 
@@ -66,6 +75,13 @@ asdasd"""
       elif y=="?": x= i.norm(x); y= 1 if x<0.5 else 0
       else       : x,y = i.norm(x), y.norm(y)
       return abs(x-y)
+    def bins(i, j):
+      xy= [(z,True) for z in i._all]+[(z,False) for z in j._all]   
+      sd= (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
+      for ((lo,hi),sym) in bins(xy, epsilon = sd*Epsilon, 
+                                    enough  = len(xy)**Bins):
+        for klass, n in sym.has.items():
+          yield n, klass, (i.at,(lo,hi))
 
   class Row(o):
     def __init__(i,lst,tab=None): i.tab, i.cells = tab, lst
@@ -80,7 +96,7 @@ asdasd"""
       tmp= [(dist(i,j),j) for _ in  range(Sample)]
       return per(sorted(tmp, key=forst), FarEnough)
 
-  def bins(xy,epsilon=0):
+  def bins(xy,epsilon=0,enough=30):
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
       while j < n:
@@ -94,9 +110,8 @@ asdasd"""
         j += 1
       return merge(tmp) if len(tmp) < len(b4) else b4
     #--- --- --- --- ---
-    xy = sorted(xy,key=first)
-    bins=[o(x=Num(),y=Sym())]
-    enough = len(xy)**Bins
+    xy   = sorted(xy, key=first)
+    bins = [o(x=Num(),y=Sym())]
     for i,(x,y) in enumerate(xy):
       if x != b4:
         if last(bins).x.n >= enough:
@@ -106,11 +121,38 @@ asdasd"""
       last(bins).x.add(x)
       last(bins).y.add(y)
       b4 = x
-    bins= merge([o(bin.x.range(), y=bin.y) for bin in bins])      
-    return [bin.x for bin in bins]
+    return merge([o(bin.x.span(), y=bin.y) for bin in bins])      
+ 
+   def optimize(b,r): return b**2/(b+r)
+   def monitor(b,r) : return r**2/(b+r)
+   def explore(b,r) : return 1/(b+r)
+   todo = dict(optimize=optimize,monitor=monitor,explore=explore)
+
+   def contrasts(here, there, t):
+    counts = {(kl,(at,(lo,hi))): f
+              for col1,col2 in zip(here.cols.x, there.cols.x)
+              for f, kl, (at, (lo,hi)) in col1.bins(col2)}
+
+    n = len(here.rows, there.rows)
+    hs= {True: len(here.rows), False: len(here.rows)}
+    def like(d, kl):
+      like = prior = (hs[kl] + K) / (n + K*2)
+      for at,span in d.items():
+        f     = counts.get((kl,(at,span)),0)  
+        like *= (f + M*prior) / (hs[kl] + M)
+      return like
+    def value(d): return todo[Goal](like(d,True),like(d,False)),d
+    def top(sx) : return [x for _, x in 
+                          sorted(sx, key=first, reverse=True)[:Top]]
+    #--- --- --- --- --- ---
+    solos= [value(dict(at=x)) for at,x in set([z for _,z in counts])]
+    for combo in subsets(top(solos)):
+      for rule in combine(combo): pass
+ 
+      
   #--- --- --- --- ---
   if Data:
-    print(table(csv(Data),Row,Num,Sym,Skip).cols.klass)
+    print(table(csv(Data),Row,Num,Sym,Skip).cols.all[1])
 
 #--------------------------------------------------
 # misc utils. things that don't use the config vars
@@ -119,7 +161,7 @@ def first(a)    : return a[0]
 def last(a)     : return a[-1]
 def inc(d,k,n=1): tmp= d[k]= n + d.get(k,0); return tmp
 def has(d,k)    : return d.get(k,0)
-def per(a,p=.5) : return a[p*len(a)//1]
+def per(a,p=.5) : return a[ p*len(a)//1 ]
 
 def subsets(l):
   out = [[]]
@@ -173,7 +215,7 @@ def clone(t,inits=[]):
 
 def cli(f):
   p= argparse.ArgumentParser(prog= "./"+f.__name__+".py",
-      formatter_class=argparse.RawTextHelpFormatter, epilog=f.__doc__)
+      formatter_class=argparse.RawTextHelpFormatter, description=f.__doc__)
   for (k,h),b4 in zip(list(f.__annotations__.items()),f.__defaults__):
     if b4==False:
       p.add_argument("-"+(k[0].lower()), dest=k, help=h, 
