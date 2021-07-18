@@ -16,13 +16,21 @@ def think(
   Verbose  :"set verbose"                 = False,
   Top      :"focus on this many"          = 20):
 
-  """(c) Tim Menzies <timm@ieee.org>, 2021, unlicense.org
+  """(c) Tim Menzies <timm@ieee.org>, 2021, unlicense.org.
 Describing the difference between things is often 
 shorter than describing each thing, separately."""
 
+  def optimize(b,r): return b**2/(b+r)
+  def monitor(b,r) : return r**2/(b+r)
+  def explore(b,r) : return 1/(b+r)
+  Goal = dict(optimize=optimize,monitor=monitor,
+               explore=explore)[Goal]
+
   class Col(o):
-    def __init__(i,at=0,txt=""): 
-      i.n, i.at, i.txt, i.w = 0, at, txt, -1 if "-" in txt else 1
+    def __init__(i,at=0, txt="", inits=[]): 
+      i.n,i.at,i.txt = 0, at, txt
+      i.w = -1 if "-" in txt else 1
+      [i.add(x) for  x in inits]
     def add(i,x,n=1):
       if x!="?": i.n += 1; x= i.add1(x,n)
       return x
@@ -61,14 +69,14 @@ shorter than describing each thing, separately."""
     def wide(i,epsilon=0):
       return last(i.all()) - first(i.all()) >= epsilon
     def sd(i):
-      a=i.all(); return (per(a,.9) - per(a,.1))/2.56
+      a= i.all(); return (per(a,.9) - per(a,.1))/2.56
     def add1(i,x,n)     : 
-      x, i.ok  = float(x), False  
+      x, i.ok = float(x), False  
       for _ in range(n): i._all +=[x] 
       return x
     def norm(i,x): 
       if x=="?": return x
-      a = i.all()
+      a= i.all()
       return max(0,min(1,(x-first(a))/(last(a)-first(a)+1E-32)))
     def dist(i,x,y):
       if   x=="?": y= i.norm(y); x= 1 if y<0.5 else 0
@@ -123,32 +131,33 @@ shorter than describing each thing, separately."""
       b4 = x
     return merge([o(bin.x.span(), y=bin.y) for bin in bins])      
  
-   def optimize(b,r): return b**2/(b+r)
-   def monitor(b,r) : return r**2/(b+r)
-   def explore(b,r) : return 1/(b+r)
-   todo = dict(optimize=optimize,monitor=monitor,explore=explore)
-
-   def contrasts(here, there, t):
-    counts = {(kl,(at,(lo,hi))): f
-              for col1,col2 in zip(here.cols.x, there.cols.x)
-              for f, kl, (at, (lo,hi)) in col1.bins(col2)}
-
-    n = len(here.rows, there.rows)
-    hs= {True: len(here.rows), False: len(here.rows)}
+  def contrasts(here, there, t):
+    has = {(kl,(at,(lo,hi))): f
+           for col1,col2 in zip(here.cols.x, there.cols.x)
+           for f, kl, (at, (lo,hi)) in col1.bins(col2)}
+    n   = len(here.rows, there.rows)
+    hs  = {True: len(here.rows), False: len(here.rows)}
     def like(d, kl):
       like = prior = (hs[kl] + K) / (n + K*2)
       for at,span in d.items():
-        f     = counts.get((kl,(at,span)),0)  
+        f     = has.get((kl,(at,span)),0)  
         like *= (f + M*prior) / (hs[kl] + M)
       return like
-    def value(d): return todo[Goal](like(d,True),like(d,False)),d
-    def top(sx) : return [x for _, x in 
-                          sorted(sx, key=first, reverse=True)[:Top]]
+    def value(d): return (Goal(like(d,True),like(d,False)), len(d)), d
+    def top(sx) : 
+      out, last, num = [], None, Num(sx1[0][0] for sx1 in sx)
+      same = num.sd()*Cohen
+      for ((score,size),d) in sorted(sx, key=first, reverse=True):
+        if Last:
+           pass
+        else:
+           Last=score
+           out += [d]
+      return out
     #--- --- --- --- --- ---
-    solos= [value(dict(at=x)) for at,x in set([z for _,z in counts])]
+    solos= [value(dict(at=x)) for at,x in set([z for _,z in has])]
     for combo in subsets(top(solos)):
       for rule in combine(combo): pass
- 
       
   #--- --- --- --- ---
   if Data:
