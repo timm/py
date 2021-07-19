@@ -209,12 +209,14 @@ def keys(
       assert(435 == len(t.rows))
       assert(195 == t.cols.all[1].has['y'])
 
-    def clone(file="../data/vote.csv", k="democrat"):
-      "contrast set for files"
+    def bins(file="../data/diabetes.csv", k="positive"):
+      "discretize test"
       t   = Table(csv(file))
       kl  = t.cols.klass.at
       u,v = t.clone(), t.clone()
       [(u if k==r.cells[kl] else v).add(r) for r in t.rows]
+      for good,bad in zip(u.cols.x, v.cols.x): 
+        for x in good.bins(bad): print(x)
 
   #------------------------------------------------------------------
   ### main program for keys
