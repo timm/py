@@ -35,7 +35,9 @@ def keys(
       i.w = -1 if "-" in txt else 1
       [i.add(x) for x in inits]
     def add(i,x,n=1):
-      if x != "?": i.n += 1; x= i.add1(x,n)
+      if x != "?": 
+        i.n += 1
+        x= i.add1(x,n)
       return x
 
   #------------------------------------------------------------------
@@ -69,13 +71,17 @@ def keys(
     def __init__(i,**kw): 
       i._all,i.ok=[],False; super().__init__(**kw)
     def all(i)          : 
-      if not i.ok: i.ok=True;i._all.sort(); return i._all
+      if not i.ok: 
+        i.ok   = True
+        i._all = sorted(i._all)
+      return i._all
     def span(i): 
       return (first(i.all()), last(i.all()))
     def wide(i,epsilon=0):
       return last(i.all()) - first(i.all()) >= epsilon
     def sd(i):
-      a= i.all(); return (per(a,.9) - per(a,.1))/2.56
+      a= i.all(); print("aa",a)
+      return (per(a,.9) - per(a,.1))/2.56
     def add1(i,x,n)     : 
       x, i.ok = float(x), False  
       for _ in range(n): i._all +=[x] 
@@ -85,9 +91,14 @@ def keys(
       a= i.all()
       return max(0,min(1,(x-first(a))/(last(a)-first(a)+1E-32)))
     def dist(i,x,y):
-      if   x=="?": y= i.norm(y); x= 1 if y<0.5 else 0
-      elif y=="?": x= i.norm(x); y= 1 if x<0.5 else 0
-      else       : x,y = i.norm(x), y.norm(y)
+      if   x=="?": 
+        y= i.norm(y)
+        x= 1 if y<0.5 else 0
+      elif y=="?": 
+        x= i.norm(x)
+        y= 1 if x<0.5 else 0
+      else: 
+        x,y = i.norm(x), y.norm(y)
       return abs(x-y)
     def bins(i, j):
       xy= [(z,True) for z in i._all]+[(z,False) for z in j._all]   
@@ -153,7 +164,7 @@ def keys(
     def goalp(i,x)  : return "-" in x or "+" in x or i.klassp(x)
     #------------------------
     def add(i,a): i.data(a) if i.cols.names else i.header(a)
-    def clone(i, inits=[]): return Table([[i.cols.names]] + inits)
+    def clone(i, inits=[]): return Table([i.cols.names] + inits)
     def data(i,a):
       a= a.cells if type(a)==Row else a
       a= [col.add(a[col.at]) for col in i.cols.all]
@@ -164,12 +175,10 @@ def keys(
         new = Skip if i.skipp(x) else (Num if i.nump(x) else Sym)
         new = new(at=at,txt=x)
         i.cols.all += [new]
-        if not i.skipp(x): 
-          i.cols["y" if i.goalp(x) else "x"] += [new]
-          if i.klassp(x): 
-            i.cols.klass = new
-
-  #-------------------------------------------------------------------
+        if i.skipp(x): continue
+        i.cols["y" if i.goalp(x) else "x"] += [new]
+        if i.klassp(x): 
+          i.cols.klass = new
 
   #-------------------------------------------------------------------
   def contrasts(here, there, t):
@@ -209,14 +218,26 @@ def keys(
       assert(435 == len(t.rows))
       assert(195 == t.cols.all[1].has['y'])
 
+    def clone(file="../data/diabetes.csv", k="positive"):
+      "discretize test"
+      t   = Table(csv(file))
+      kl  = t.cols.klass.at
+      u,v = t.clone(), t.clone()
+      [(u if k==row.cells[kl] else v).add(row) for row in t.rows]
+      good, bad = u.cols.x[1], v.cols.x[1] 
+      #print(good.all()[::25], len(good.all()), good.sd())
+      print(bad.all()[ ::25], len(bad.all()),  bad.sd())
+
     def bins(file="../data/diabetes.csv", k="positive"):
       "discretize test"
       t   = Table(csv(file))
       kl  = t.cols.klass.at
       u,v = t.clone(), t.clone()
-      [(u if k==r.cells[kl] else v).add(r) for r in t.rows]
-      for good,bad in zip(u.cols.x, v.cols.x): 
-        for x in good.bins(bad): print(good.at, x)
+      print("========================")
+      for row in t.rows:
+        (u if k==row.cells[kl] else v).add(row) 
+      good, bad = u.cols.x[1], v.cols.x[1] 
+      for x in good.bins(bad): print(good.at, x)
 
   #------------------------------------------------------------------
   ### main program for keys
@@ -241,7 +262,7 @@ def dict_product(d):
 ### lists
 def first(a)    : return a[0]
 def last(a)     : return a[-1]
-def per(a,p=.5) : return a[ p*len(a)//1 ]
+def per(a,p=.5) : return a[ int(p*len(a)) ]
 def subsets(l):
   out = [[]]
   for x in l: out += [sub + [x] for sub in out]
@@ -272,9 +293,10 @@ def csv(f=None, sep=","):
 ### command line options
 def cli(f):
   p= argparse.ArgumentParser(prog = "./"+f.__name__,
-                     description  =  f.__doc__,
-                     formatter_class = argparse.RawTextHelpFormatter)
-  for (k,h),b4 in zip(list(f.__annotations__.items()),f.__defaults__):
+                      description = f.__doc__,
+                  formatter_class = argparse.RawTextHelpFormatter)
+  for (k,h),b4 in zip( list(f.__annotations__.items()),
+                       f.__defaults__):
     if b4==False:
       p.add_argument("-"+(k[0].lower()), dest=k, help=h, 
                      default=False, action="store_true")
