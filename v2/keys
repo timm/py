@@ -233,9 +233,8 @@ def cli(f):
       p.add_argument("-"+(k[0].lower()), dest=k, help=h, 
                      default=False, action="store_true")
     else:
-      p.add_argument("-"+(k[0].lower()), dest=k, 
-                     help= h+" ["+str(b4)+"]",
-                     default=b4, type=type(b4), metavar=k)
+      p.add_argument("-"+(k[0].lower()), dest=k, default=b4, 
+                 help= h+" ["+str(b4)+"]", type=type(b4), metavar=k)
   f(**p.parse_args().__dict__)
 
 # ------ --------- --------- --------- --------- --------- ----------
