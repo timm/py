@@ -2,30 +2,34 @@
 # vim: ts=2 sw=2 sts=2 et :
 # autopep8: ignore E20,E401,E226,E302,E41
 import re, sys, argparse, itertools
+from argparse import ArgumentParser as parse
+from argparse import RawTextHelpFormatter as textual
+Float = Str = Int = Bool = lambda *l: l[0]
 
-def keys(Bins     : "bins are of size n**Bins" = .5,
-         Cols     : "columns to use for inference" = "x",
-         Data     : "where to read data" = "../data/auto2.csv",
-         Epsilon  : "small = sd**Epsilon" = .3,
-         FarEnough: "where to look for far things" = .9,
-         Goal     : "learning goals: best|rest|other" = "best",
-         K        : "bayes low class frequency hack" = 2,
-         M        : "bayes low range frequency hack" = 1,
-         P        : "distance calculation exponent" = 2,
-         Sample   : "#samples to find far things?" = 20,
-         Verbose  : "set verbose" = False,
-         Top      : "focus on this many" = 20,
-         Xample   : "Egs: '-x ls' lists all, '-x all' runs all" = ""):
+def keys(BINS    : Float("bins are of size n**BINS") = .5,
+         COLS    : Str(  "columns to use for inference") = "x",
+         DATA    : Str(  "where to read data") = "../data/auto2.csv",
+         EPSILON : Float("small = sd**EPSILON") = .3,
+         FAR     : Float("where to look for far things") = .9,
+         GOAL    : Str(  "learning goals: best|rest|other") = "best",
+         K       : Int(  "bayes low class frequency hack") = 2,
+         M       : Int(  "bayes low range frequency hack") = 1,
+         P       : Int(  "distance calculation exponent") = 2,
+         SAMPLE  : Int(  "#samples to find far things?") = 20,
+         VERBOSE : Bool( "set verbose") = False,
+         TOP     : Int(  "focus on this many") = 20,
+         XAMPLE  : Str(  "Egs: '-x ls' lists all, '-x all' runs all") = ""
+         ):
   """
     ,-_|\     (c) Tim Menzies, 2021, unlicense.org.
    /     \    The delta between things is   
    \_,-._*    simpler than the things.
         v """
 
-  Goal = {'best' : lambda b, r: b**2/b+r,
+  GOAL = {'best' : lambda b, r: b**2/b+r,
           'rest' : lambda b, r: r**2/(b+r),
           'other': lambda b, r: 1/(b+r)
-          }[Goal]
+          }[GOAL]
 
   class Col(o):
     def __init__(i, at=0, txt="", inits=[]):
@@ -40,12 +44,18 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
       return x
 
   class Skip(Col):
-    def __init__(i, **kw): super().__init__(**kw)
     def add1(i, x, n=1): return x
 
   class Sym(Col):
     def __init__(i, **kw): i.has = {}; super().__init__(**kw)
+
     def add1(i, x, n=1): inc(i.has, x, n); return x
+
+    def bins(i, j):
+      for k in (i.has | j.has):
+        yield i.has.get(k, 0), True, (i.at, (k, k))
+        yield j.has.get(k, 0), False, (j.at, (k, k))
+
     def dist(i, x, y): return 0 if x == y else 1
 
     def ent(i):
@@ -62,28 +72,10 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
       if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
         return k
 
-    def bins(i, j):
-      for k in (i.has | j.has):
-        yield i.has.get(k, 0), True, (i.at, (k, k))
-        yield j.has.get(k, 0), False, (j.at, (k, k))
-
   class Num(Col):
     def __init__(i, **kw):
       i._all, i.ok = [], False
       super().__init__(**kw)
-
-    def span(i): return (first(i.all()), last(i.all()))
-    def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
-
-    def all(i):
-      if not i.ok:
-        i.ok = True
-        i._all = sorted(i._all)
-      return i._all
-
-    def sd(i):
-      a = i.all()
-      return (per(a, .9) - per(a, .1))/2.56
 
     def add1(i, x, n):
       x, i.ok = float(x), False
@@ -91,11 +83,18 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
         i._all += [x]
       return x
 
-    def norm(i, x):
-      if x == "?":
-        return x
-      a = i.all()
-      return max(0, min(1, (x-first(a))/(last(a)-first(a)+1E-32)))
+    def all(i):
+      if not i.ok:
+        i.ok = True
+        i._all = sorted(i._all)
+      return i._all
+
+    def bins(i, j):
+      xy = [(z, True) for z in i._all]+[(z, False) for z in j._all]
+      eps = EPSILON * (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
+      for ((lo, hi), sym) in bins(xy, epsilon=eps, enough=len(xy)**BINS):
+        for klass, n in sym.has.items():
+          yield n, klass, (i.at, (lo, hi))
 
     def dist(i, x, y):
       if x == "?":
@@ -108,27 +107,60 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
         x, y = i.norm(x), y.norm(y)
       return abs(x-y)
 
-    def bins(i, j):
-      xy = [(z, True) for z in i._all]+[(z, False) for z in j._all]
-      eps = Epsilon * (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
-      for ((lo, hi), sym) in bins(xy, epsilon=eps, enough=len(xy)**Bins):
-        for klass, n in sym.has.items():
-          yield n, klass, (i.at, (lo, hi))
+    def norm(i, x):
+      if x == "?":
+        return x
+      a = i.all()
+      return max(0, min(1, (x-first(a))/(last(a)-first(a)+1E-32)))
+
+    def sd(i): return (per(i.all(), .9) - per(i.all(), .1))/2.56
+    def span(i): return (first(i.all()), last(i.all()))
+    def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
 
   class Row(o):
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
 
     def dist(i, j):
       d = n = 1E-32
-      for col in i.tab.cols[Cols]:
+      for col in i.tab.cols[COLS]:
         n += 1
         x, y = i.cells[at], j.cells[at]
         d += 1 if x == "?" and y == "?" else col.dist(x, y) ^ P
       return (d/n) ^ (1/P)
 
     def far(i, rows):
-      tmp = [(dist(i, j), j) for _ in range(Sample)]
-      return per(sorted(tmp, key=first), FarEnough)
+      tmp = [(dist(i, j), j) for _ in range(SAMPLE)]
+      return per(sorted(tmp, key=first), FAR)
+
+  class Table(o):
+    def __init__(i, inits=[]):
+      i.rows = []
+      i.cols = o(all=[], names=[], x=[], y=[], klass=None)
+      [i.add(x) for x in inits]
+
+    def add(i, a): i.data(a) if i.cols.names else i.header(a)
+    def clone(i, inits=[]): return Table([i.cols.names] + inits)
+
+    def data(i, a):
+      a = a.cells if type(a) == Row else a
+      a = [col.add(a[col.at]) for col in i.cols.all]
+      i.rows += [Row(a, tab=i)]
+
+    def header(i, a):
+      i.cols.names = a
+      for at, x in enumerate(a):
+        new = Skip if i.skipp(x) else (Num if i.nump(x) else Sym)
+        new = new(at=at, txt=x)
+        i.cols.all += [new]
+        if not i.skipp(x):
+          i.cols["y" if i.yp(x) else "x"] += [new]
+          if i.klassp(x):
+            i.cols.klass = new
+
+    def klassp(i, x): return "!" in x
+    def nump(i, x): return x[0].isupper()
+    def skipp(i, x): return "?" in x
+    def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
 
   def bins(xy, epsilon=0, enough=30):
     def merge(b4):
@@ -144,7 +176,7 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
         j += 1
       return merge(tmp) if len(tmp) < len(b4) else b4
 
-    def split(xy):
+    def divide(xy):
       xy = sorted(xy, key=first)
       bin = o(x=Num(), y=Sym())
       bins = [bin]
@@ -161,49 +193,19 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
       return bins
 
     return merge(
-             split([o(bin.x.span(), y=bin.y) for bin in bins]))
-
-  class Table(o):
-    def __init__(i, inits=[]):
-      i.rows = []
-      i.cols = o(all=[], names=[], x=[], y=[], klass=None)
-      [i.add(x) for x in inits]
-
-    def klassp(i, x): return "!" in x
-    def skipp(i, x): return "?" in x
-    def nump(i, x): return x[0].isupper()
-    def goalp(i, x): return "-" in x or "+" in x or i.klassp(x)
-
-    def add(i, a): i.data(a) if i.cols.names else i.header(a)
-    def clone(i, inits=[]): return Table([i.cols.names] + inits)
-
-    def data(i, a):
-      a = a.cells if type(a) == Row else a
-      a = [col.add(a[col.at]) for col in i.cols.all]
-      i.rows += [Row(a, tab=i)]
-
-    def header(i, a):
-      i.cols.names = a
-      for at, x in enumerate(a):
-        new = Skip if i.skipp(x) else (Num if i.nump(x) else Sym)
-        new = new(at=at, txt=x)
-        i.cols.all += [new]
-        if i.skipp(x):
-          continue
-        i.cols["y" if i.goalp(x) else "x"] += [new]
-        if i.klassp(x):
-          i.cols.klass = new
+        divide([o(bin.x.span(), y=bin.y) for bin in bins]))
 
   def contrasts(here, there, t):
-    def val(d): return Goal(like(d, True), like(d, False)), d
-    def top(a): return sorted(a, reversed=True, key=first)[:Top]
-
     def like(d, kl):
       out = prior = (hs[kl] + K) / (n + K*2)
       for at, span in d.items():
         f = has.get((kl, (at, span)), 0)
         out *= (f + M*prior) / (hs[kl] + M)
       return out
+
+    def val(d): return GOAL(like(d, True), like(d, False)), d
+    def top(a): return sorted(a, reversed=True, key=first)[:TOP]
+
     has = {(kl, (at, (lo, hi))): f
            for col1, col2 in zip(here.cols.x, there.cols.x)
            for f, kl, (at, (lo, hi)) in col1.bins(col2)}
@@ -254,20 +256,21 @@ def keys(Bins     : "bins are of size n**Bins" = .5,
         print(good.at, x)
 
   # main program for keys
-  if Xample == "all":
+  if XAMPLE == "all":
     for k, f in vars(Eg).items():
       if k[0] != "_":
         print("\n"+k)
         f()
   else:
-    if Xample and Xample in vars(Eg):
-      vars(Eg)[Xample]()
+    if XAMPLE and XAMPLE in vars(Eg):
+      vars(Eg)[XAMPLE]()
 
 # --------------------------------------------------------------------
 # things that don't use the config vars
 # dictionaries
-def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
 def has(d, k): return d.get(k, 0)
+def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
+def public(d): return {k: v for k, v in d.items() if k[0] != "_"}
 
 def dict_product(d):
   keys = d.keys()
@@ -283,9 +286,8 @@ def per(a, p=.5): return a[int(p*len(a))]
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
   def __getitem__(i, k): return i.__dict__[k]
+  def __repr__(i): return i.__class__.__name__+str(public(i.__dict__))
   def __setitem__(i, k, v): i.__dict__[k] = v
-  def __repr__(i): return i.__class__.__name__ + str(
-      {k: v for k, v in sorted(i.__dict__.items()) if k[0] != "_"})
 
 # files
 def csv(f=None, sep=","):
@@ -301,12 +303,10 @@ def csv(f=None, sep=","):
         yield s.split(sep)
 
 # command line options
-from argparse import RawTextHelpFormatter as Text
-
 def cli(f):
-  p = argparse.ArgumentParser(prog="./"+f.__name__,
-                              description=f.__doc__,
-                              formatter_class=Text)
+  p = parse(prog="./"+f.__name__,
+            description=f.__doc__,
+            formatter_class=textual)
   for (k, h), b4 in zip(list(f.__annotations__.items()),
                         f.__defaults__):
     if b4 == False:
@@ -314,7 +314,8 @@ def cli(f):
                      default=False, action="store_true")
     else:
       p.add_argument("-"+(k[0].lower()), dest=k, default=b4,
-                     help=h+" ["+str(b4)+"]", type=type(b4), metavar=k)
+                     help=h+" ["+str(b4)+"]", type=type(b4),
+                     metavar=k)
   f(**p.parse_args().__dict__)
 
 
