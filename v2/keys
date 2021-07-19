@@ -5,6 +5,7 @@ import re, sys, argparse, itertools
 from argparse import ArgumentParser as parse
 from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
+#######################################################
 
 def keys(BINS    : Float("bins are of size n**BINS") = .5,
          COLS    : Str(  "columns to use for inference") = "x",
@@ -30,6 +31,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
           'rest' : lambda b, r: r**2/(b+r),
           'other': lambda b, r: 1/(b+r)
           }[GOAL]
+  # ------------------------------------------------------------------
 
   class Col(o):
     def __init__(i, at=0, txt="", inits=[]):
@@ -42,9 +44,11 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         i.n += 1
         x = i.add1(x, n)
       return x
+  # ------------------------------------------------------------------
 
   class Skip(Col):
     def add1(i, x, n=1): return x
+  # ------------------------------------------------------------------
 
   class Sym(Col):
     def __init__(i, **kw): i.has = {}; super().__init__(**kw)
@@ -71,6 +75,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
       if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
         return k
+  # ------------------------------------------------------------------
 
   class Num(Col):
     def __init__(i, **kw):
@@ -116,6 +121,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     def sd(i): return (per(i.all(), .9) - per(i.all(), .1))/2.56
     def span(i): return (first(i.all()), last(i.all()))
     def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
+  # ------------------------------------------------------------------
 
   class Row(o):
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
@@ -131,6 +137,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     def far(i, rows):
       tmp = [(dist(i, j), j) for _ in range(SAMPLE)]
       return per(sorted(tmp, key=first), FAR)
+  # ------------------------------------------------------------------
 
   class Table(o):
     def __init__(i, inits=[]):
@@ -161,6 +168,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     def nump(i, x): return x[0].isupper()
     def skipp(i, x): return "?" in x
     def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
+  # ------------------------------------------------------------------
 
   def bins(xy, epsilon=0, enough=30):
     def merge(b4):
@@ -194,6 +202,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
 
     return merge(
         divide([o(bin.x.span(), y=bin.y) for bin in bins]))
+  # ------------------------------------------------------------------
 
   def contrasts(here, there, t):
     def like(d, kl):
@@ -218,6 +227,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         ranges[k] = ranges.get(k, set()).add(d[k])
     for rule in top([val(d) for d in dict_product(ranges)]):
       print(rule)
+  # ------------------------------------------------------------------
 
   class Eg:
     def ls():
@@ -254,7 +264,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       good, bad = u.cols.x[1], v.cols.x[1]
       for x in good.bins(bad):
         print(good.at, x)
-
+  # ------------------------------------------------------------------
   # main program for keys
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
@@ -265,7 +275,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     if XAMPLE and XAMPLE in vars(Eg):
       vars(Eg)[XAMPLE]()
 
-# --------------------------------------------------------------------
+#######################################################
 # things that don't use the config vars
 # dictionaries
 def has(d, k): return d.get(k, 0)
@@ -277,11 +287,13 @@ def dict_product(d):
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))
 
+# --------------------------------------------------------------------
 # lists
 def first(a): return a[0]
 def last(a): return a[-1]
 def per(a, p=.5): return a[int(p*len(a))]
 
+# --------------------------------------------------------------------
 # objects
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
@@ -289,6 +301,7 @@ class o(object):
   def __repr__(i): return i.__class__.__name__+str(public(i.__dict__))
   def __setitem__(i, k, v): i.__dict__[k] = v
 
+# --------------------------------------------------------------------
 # files
 def csv(f=None, sep=","):
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
@@ -302,6 +315,7 @@ def csv(f=None, sep=","):
       if s := prep(s):
         yield s.split(sep)
 
+# --------------------------------------------------------------------
 # command line options
 def cli(f):
   p = parse(prog="./"+f.__name__,
@@ -319,5 +333,6 @@ def cli(f):
   f(**p.parse_args().__dict__)
 
 
+#######################################################
 if __name__ == "__main__":
   cli(keys)
