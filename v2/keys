@@ -301,10 +301,12 @@ def csv(f=None, sep=","):
         yield s.split(sep)
 
 # command line options
+from argparse import RawTextHelpFormatter as Text
+
 def cli(f):
   p = argparse.ArgumentParser(prog="./"+f.__name__,
                               description=f.__doc__,
-                              formatter_class=argparse.RawTextHelpFormatter)
+                              formatter_class=Text)
   for (k, h), b4 in zip(list(f.__annotations__.items()),
                         f.__defaults__):
     if b4 == False:
@@ -316,6 +318,5 @@ def cli(f):
   f(**p.parse_args().__dict__)
 
 
-# --------------------------------------------------------------------
 if __name__ == "__main__":
   cli(keys)
