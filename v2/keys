@@ -216,7 +216,7 @@ def keys(
       u,v = t.clone(), t.clone()
       [(u if k==r.cells[kl] else v).add(r) for r in t.rows]
       for good,bad in zip(u.cols.x, v.cols.x): 
-        for x in good.bins(bad): print(x)
+        for x in good.bins(bad): print(good.at, x)
 
   #------------------------------------------------------------------
   ### main program for keys
