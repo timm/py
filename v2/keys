@@ -23,10 +23,10 @@ def keys(
         v """
   
   #------------------------------------------------------------------
-  def optimize(b,r): return b**2/(b+r)
-  def monitor(b,r) : return r**2/(b+r)
-  def explore(b,r) : return 1/(b+r)
-  Goal= dict(best=optimize, rest=monitor, other=explore)[Goal]
+  Goal= {'best'  : lambda b,r: b**2/b+r,
+         'rest'  : lambda b,r: r**2/(b+r),
+         'other' : lambda b,r: 1/(b+r)
+        }[Goal]
 
   #------------------------------------------------------------------
   class Col(o):
