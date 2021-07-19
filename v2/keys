@@ -2,52 +2,50 @@
 # vim: ts=2 sw=2 sts=2 et :
 import re, sys, copy, argparse
 
-def think( 
-  Bins     :"bins are of size n**Bins"    = .5,
-  Cols     :"columns to use for inference"= "x",
-  Data     :"where to read data"          = "../data/auto2.csv",
-  Epsilon  :"small = sd**Epsilon"         = .3,
-  FarEnough:"where to look for far things"= .9,
-  Goal     :"learning  goals"             = "optimize",
-  K        :"bayes low frequency hack"    = 2,
-  M        :"bayes low frequency hack"    = 1,
-  P        :"distance coeffecient"        = 2,
-  Sample   :"#samples to find far things?"= 20,
-  Verbose  :"set verbose"                 = False,
-  Top      :"focus on this many"          = 20):
-
-  """(c) Tim Menzies <timm@ieee.org>, 2021, unlicense.org.
-Describing the difference between things is often 
-shorter than describing each thing, separately."""
-
+def keys( 
+  Bins     :"bins are of size n**Bins"     = .5,
+  Cols     :"columns to use for inference" = "x",
+  Data     :"where to read data"           = "../data/auto2.csv",
+  Epsilon  :"small = sd**Epsilon"          = .3,
+  FarEnough:"where to look for far things" = .9,
+  Goal     :"learning goals"               = "best",
+  K        :"bayes low frequency hack"     = 2,
+  M        :"bayes low frequency hack"     = 1,
+  P        :"distance calculation exponent"= 2,
+  Sample   :"#samples to find far things?" = 20,
+  Verbose  :"set verbose"                  = False,
+  Top      :"focus on this many"           = 20):
+  """
+(c) Tim Menzies <timm@ieee.org>, 2021, unlicense.org.
+Deltas between things is simpler than the things."""
+  #------ --------- --------- --------- --------- --------- ---------
   def optimize(b,r): return b**2/(b+r)
   def monitor(b,r) : return r**2/(b+r)
   def explore(b,r) : return 1/(b+r)
-  Goal = dict(optimize=optimize,monitor=monitor,
-               explore=explore)[Goal]
-
+  Goal= dict(best=optimize, rest=monitor, other=explore)[Goal]
+  #------ --------- --------- --------- --------- --------- ---------
   class Col(o):
     def __init__(i,at=0, txt="", inits=[]): 
-      i.n,i.at,i.txt = 0, at, txt
+      i.n, i.at, i.txt = 0, at, txt
       i.w = -1 if "-" in txt else 1
-      [i.add(x) for  x in inits]
+      [i.add(x) for x in inits]
     def add(i,x,n=1):
-      if x!="?": i.n += 1; x= i.add1(x,n)
+      if x != "?": i.n += 1; x= i.add1(x,n)
       return x
-    
+  #------ --------- --------- --------- --------- --------- ---------
   class Skip(Col):
     def __init__(i,**kw):  super().__init__(**kw)
     def add1(i,x,n=1)      : return x
-  
+  #------ --------- --------- --------- --------- --------- ---------
   class Sym(Col):
     def __init__(i,**kw): i.has={}; super().__init__(**kw)
-    def add1(i,x,n=1)      : inc(i.has,x,n); return  x 
-    def dist(i,x,y)        : return 0  if x==y else 1
+    def add1(i,x,n=1)   : inc(i.has,x,n); return  x 
+    def dist(i,x,y)     : return 0 if x==y else 1
     def ent(i): 
-      return sum(-v / i.n * math.log(v / i.n) for v in i.has.values())
+      return sum(-v/i.n * math.log(v/i.n) for v in i.has.values())
     def merge(i, j):
       k = Sym(at=i.at, txt=i.txt)
-      [k.add(x,n) for seen in [i.has, j.has] for x, n in seen.items()]
+      [k.add(x,n) for has in (i.has,j.has) for x, n in has.items()]
       return k
     def merged(i, j):
        k = i.merge(j)
@@ -58,7 +56,7 @@ shorter than describing each thing, separately."""
       for k in (i.has | j.has): 
         yield i.has.get(k,0), True, (i.at, (k,k))
         yield j.has.get(k,0), False,(j.at, (k,k))
-    
+  #------ --------- --------- --------- --------- --------- ---------
   class Num(Col):
     def __init__(i,**kw): 
       i._all,i.ok=[],False; super().__init__(**kw)
@@ -85,12 +83,11 @@ shorter than describing each thing, separately."""
       return abs(x-y)
     def bins(i, j):
       xy= [(z,True) for z in i._all]+[(z,False) for z in j._all]   
-      sd= (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
-      for ((lo,hi),sym) in bins(xy, epsilon = sd*Epsilon, 
-                                    enough  = len(xy)**Bins):
+      eps= Epsilon * (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
+      for ((lo,hi),sym) in bins(xy, epsilon=eps, enough=len(xy)**Bins):
         for klass, n in sym.has.items():
           yield n, klass, (i.at,(lo,hi))
-
+  #------ --------- --------- --------- --------- --------- ---------
   class Row(o):
     def __init__(i,lst,tab=None): i.tab, i.cells = tab, lst
     def dist(i,j):
@@ -103,7 +100,7 @@ shorter than describing each thing, separately."""
     def far(i,rows):
       tmp= [(dist(i,j),j) for _ in  range(Sample)]
       return per(sorted(tmp, key=forst), FarEnough)
-
+  #------ --------- --------- --------- --------- --------- ---------
   def bins(xy,epsilon=0,enough=30):
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
@@ -119,18 +116,20 @@ shorter than describing each thing, separately."""
       return merge(tmp) if len(tmp) < len(b4) else b4
     #--- --- --- --- ---
     xy   = sorted(xy, key=first)
-    bins = [o(x=Num(),y=Sym())]
+    bin  = o(x=Num(), y=Sym())
+    bins = [bin]
     for i,(x,y) in enumerate(xy):
-      if x != b4:
-        if last(bins).x.n >= enough:
+      if bin.x.n >= enough:
+        if x != b4:
           if i < len(xy) - enough:
-            if last(bins).x.wide(epsilon):
-              bins += [o(x=Num(),y=Sym())]
-      last(bins).x.add(x)
-      last(bins).y.add(y)
+            if bin.x.wide(epsilon):
+              bin  = o(x=Num(), y=Sym())
+              bins += [bin]
+      bin.x.add(x)
+      bin.y.add(y)
       b4 = x
     return merge([o(bin.x.span(), y=bin.y) for bin in bins])      
- 
+  #------ --------- --------- --------- --------- --------- ---------
   def contrasts(here, there, t):
     has = {(kl,(at,(lo,hi))): f
            for col1,col2 in zip(here.cols.x, there.cols.x)
@@ -143,7 +142,7 @@ shorter than describing each thing, separately."""
         f     = has.get((kl,(at,span)),0)  
         like *= (f + M*prior) / (hs[kl] + M)
       return like
-    def value(d): return (Goal(like(d,True),like(d,False)), len(d)), d
+    def value(d): return (Goal(like(d,True),like(d,False)),len(d)),d
     def top(sx) : 
       out, last, num = [], None, Num(sx1[0][0] for sx1 in sx)
       same = num.sd()*Cohen
@@ -158,25 +157,25 @@ shorter than describing each thing, separately."""
     solos= [value(dict(at=x)) for at,x in set([z for _,z in has])]
     for combo in subsets(top(solos)):
       for rule in combine(combo): pass
-      
-  #--- --- --- --- ---
+  #------ --------- --------- --------- --------- --------- ---------
   if Data:
     print(table(csv(Data),Row,Num,Sym,Skip).cols.all[1])
 
-#--------------------------------------------------
-# misc utils. things that don't use the config vars
-
-def first(a)    : return a[0]
-def last(a)     : return a[-1]
+##### misc utils. things that don't use the config vars
+#### dictionaries ---------------------------------------------------
 def inc(d,k,n=1): tmp= d[k]= n + d.get(k,0); return tmp
 def has(d,k)    : return d.get(k,0)
-def per(a,p=.5) : return a[ p*len(a)//1 ]
 
+#### lists ----------------------------------------------------------
+def first(a)    : return a[0]
+def last(a)     : return a[-1]
+def per(a,p=.5) : return a[ p*len(a)//1 ]
 def subsets(l):
   out = [[]]
   for x in l: out += [sub + [x] for sub in out]
   return out[1:] 
 
+#### objects --------------------------------------------------------
 class o(object):
   def __init__(i, **k)  : i.__dict__.update(**k)
   def __getitem__(i,k)  : return i.__dict__[k]
@@ -184,6 +183,7 @@ class o(object):
   def __repr__(i)       : return i.__class__.__name__ + str(
     {k:v for k,v in sorted(i.__dict__.items()) if k[0] != "_"})
 
+#### files ----------------------------------------------------------
 def csv(f=None, sep=","):
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
   if f:
@@ -194,6 +194,7 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
+#### tables ---------------------------------------------------------
 def table(src,row,num,sym,skip):
   t = o(rows= [],
         cols= o(all=[], names=[], x=[], y=[], klass=None))
@@ -222,9 +223,11 @@ def table(src,row,num,sym,skip):
 def clone(t,inits=[]):
   return table([[t.names]] + inits)
 
+#### command line options -------------------------------------------
 def cli(f):
-  p= argparse.ArgumentParser(prog= "./"+f.__name__+".py",
-      formatter_class=argparse.RawTextHelpFormatter, description=f.__doc__)
+  p= argparse.ArgumentParser(prog = "./"+f.__name__,
+                     description  =  f.__doc__,
+                     formatter_class = argparse.RawTextHelpFormatter)
   for (k,h),b4 in zip(list(f.__annotations__.items()),f.__defaults__):
     if b4==False:
       p.add_argument("-"+(k[0].lower()), dest=k, help=h, 
@@ -235,5 +238,6 @@ def cli(f):
                      default=b4, type=type(b4), metavar=k)
   f(**p.parse_args().__dict__)
 
+# ------ --------- --------- --------- --------- --------- ----------
 if __name__ == "__main__":
-  cli(think)
+  cli(keys)
