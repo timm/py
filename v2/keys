@@ -1,26 +1,25 @@
 #!/usr/bin/env python3.9
 # vim: ts=2 sw=2 sts=2 et :
 # autopep8: ignore E20,E401,E226,E302,E41
-import re, sys, argparse, itertools
+import re, sys, math, argparse, itertools
 from argparse import ArgumentParser as parse
 from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
-#######################################################
 
-def keys(BINS    : Float("bins are of size n**BINS") = .5,
-         COLS    : Str(  "columns to use for inference") = "x",
-         DATA    : Str(  "where to read data") = "../data/auto2.csv",
-         EPSILON : Float("small = sd**EPSILON") = .3,
-         FAR     : Float("where to look for far things") = .9,
-         GOAL    : Str(  "learning goals: best|rest|other") = "best",
-         K       : Int(  "bayes low class frequency hack") = 2,
-         M       : Int(  "bayes low range frequency hack") = 1,
-         P       : Int(  "distance calculation exponent") = 2,
-         SAMPLE  : Int(  "#samples to find far things?") = 20,
-         VERBOSE : Bool( "set verbose") = False,
-         TOP     : Int(  "focus on this many") = 20,
-         XAMPLE  : Str(  "Egs: '-x ls' lists all, '-x all' runs all") = ""
-         ):
+def keys(
+  BINS      :   Float("bins are of size n**BINS") = .5,
+  COLS      :   Str("columns to use for inference") = "x",
+  DATA      :   Str("where to read data") = "../data/auto2.csv",
+  EPSILON   :   Float("small = sd**EPSILON") = .3,
+  FAR       :   Float("where to look for far things") = .9,
+  GOAL      :   Str("learning goals: best|rest|other") = "best",
+  K         :   Int("bayes low class frequency hack") = 2,
+  M         :   Int("bayes low range frequency hack") = 1,
+  P         :   Int("distance calculation exponent") = 2,
+  SAMPLE    :   Int("#samples to find far things?") = 20,
+  VERBOSE   :   Bool("set verbose") = False,
+  TOP       :   Int("focus on this many") = 20,
+  XAMPLE    :   Str("egs: '-x ls' lists all, '-x all' runs all") = "" ):
   """
     ,-_|\     (c) Tim Menzies, 2021, unlicense.org.
    /     \    The delta between things is   
@@ -31,25 +30,22 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
           'rest' : lambda b, r: r**2/(b+r),
           'other': lambda b, r: 1/(b+r)
           }[GOAL]
-  # ------------------------------------------------------------------
 
+  # ------------------------------------------------------------------
   class Col(o):
+    "Storing columns in `Col`, `Skip`, `Sym`, `Num`."
     def __init__(i, at=0, txt="", inits=[]):
       i.n, i.at, i.txt = 0, at, txt
       i.w = -1 if "-" in txt else 1
       [i.add(x) for x in inits]
 
     def add(i, x, n=1):
-      if x != "?":
-        i.n += 1
-        x = i.add1(x, n)
+      if x != "?": i.n += 1; x = i.add1(x, n)
       return x
-  # ------------------------------------------------------------------
-
+  # ----------------
   class Skip(Col):
     def add1(i, x, n=1): return x
-  # ------------------------------------------------------------------
-
+  # ----------------
   class Sym(Col):
     def __init__(i, **kw): i.has = {}; super().__init__(**kw)
 
@@ -75,8 +71,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
       if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
         return k
-  # ------------------------------------------------------------------
-
+  # ----------------
   class Num(Col):
     def __init__(i, **kw):
       i._all, i.ok = [], False
@@ -84,14 +79,11 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
 
     def add1(i, x, n):
       x, i.ok = float(x), False
-      for _ in range(n):
-        i._all += [x]
+      for _ in range(n): i._all += [x]
       return x
 
     def all(i):
-      if not i.ok:
-        i.ok = True
-        i._all = sorted(i._all)
+      if not i.ok: i.ok = True; i._all = sorted(i._all)
       return i._all
 
     def bins(i, j):
@@ -102,28 +94,23 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
           yield n, klass, (i.at, (lo, hi))
 
     def dist(i, x, y):
-      if x == "?":
-        y = i.norm(y)
-        x = 1 if y < 0.5 else 0
-      elif y == "?":
-        x = i.norm(x)
-        y = 1 if x < 0.5 else 0
-      else:
-        x, y = i.norm(x), y.norm(y)
+      if   x == "?": y = i.norm(y); x = 1 if y < 0.5 else 0
+      elif y == "?": x = i.norm(x);y = 1 if x < 0.5 else 0
+      else         : x, y = i.norm(x), y.norm(y)
       return abs(x-y)
 
     def norm(i, x):
-      if x == "?":
-        return x
+      if x == "?": return x
       a = i.all()
       return max(0, min(1, (x-first(a))/(last(a)-first(a)+1E-32)))
 
-    def sd(i): return (per(i.all(), .9) - per(i.all(), .1))/2.56
-    def span(i): return (first(i.all()), last(i.all()))
+    def sd(i) : return (per(i.all(), .9) - per(i.all(), .1))/2.56
+    def span(i) : return (first(i.all()), last(i.all()))
     def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
-  ##----------------------------------------------------------------
 
+  #----------------------------------------------------------------
   class Row(o):
+    "Data is held in `Row`s which, in turn, are stored  in `Table`s"
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
 
     def dist(i, j):
@@ -131,14 +118,14 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       for col in i.tab.cols[COLS]:
         n += 1
         x, y = i.cells[at], j.cells[at]
-        d += 1 if x == "?" and y == "?" else col.dist(x, y) ^ P
-      return (d/n) ^ (1/P)
+        d += 1 if x == "?" and y == "?" else col.dist(x, y) ** P
+      return (d/n) ** (1/P)
 
     def far(i, rows):
       tmp = [(dist(i, j), j) for _ in range(SAMPLE)]
       return per(sorted(tmp, key=first), FAR)
-  # ------------------------------------------------------------------
 
+  # ----------------
   class Table(o):
     def __init__(i, inits=[]):
       i.rows = []
@@ -168,24 +155,40 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     def nump(i, x): return x[0].isupper()
     def skipp(i, x): return "?" in x
     def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
-  ##----------------------------------------------------------------
 
+  # ----------------
+  def stratify(src):
+    all, klass = None,{}
+    for n,row in enumerate(src):
+       if all:
+         kl   = row[all.cols.klass.at]
+         here = klass[kl] = klass.get(kl,None) or all.clone()
+         here.add(row)
+         all.add(row)
+       else:   
+         all = Table([row])
+    return o(all=all, klass=klass)
+  
+  #----------------------------------------------------------------
   def bins(xy, epsilon=0, enough=30):
+    "Use `bins` to divide numeric data into ranges."
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
       while j < n:
         a = b4[j]
         if j < n - 1:
           b = b4[j + 1]
-          if cy := a.y.merged(b.y):
-            a = o(x=(a.x[0], b.x[1]), y=cy)
+          print("\na",a[1])
+          print("b",b[1])
+          if cy := a[1].merged(b[1]):
+            print("c",cy)
+            a = ((a[0][0], b[0][1]), cy)
             j += 1
         tmp += [a]
         j += 1
       return merge(tmp) if len(tmp) < len(b4) else b4
 
     def divide(xy):
-      xy = sorted(xy, key=first)
       bin = o(x=Num(), y=Sym())
       bins = [bin]
       for i, (x, y) in enumerate(xy):
@@ -198,11 +201,12 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         b4 = x
       return bins
 
-    return merge(
-        divide([o(bin.x.span(), y=bin.y) for bin in bins]))
-  # ------------------------------------------------------------------
+    return merge([(bin.x.span(), bin.y) 
+                  for bin in divide(sorted(xy, key=first))])
 
+  # ----------------
   def contrasts(here, there, t):
+    "Report the ranges that are most different in two classes."
     def like(d, kl):
       out = prior = (hs[kl] + K) / (n + K*2)
       for at, span in d.items():
@@ -225,9 +229,10 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         ranges[k] = ranges.get(k, set()).add(d[k])
     for rule in top([val(d) for d in dict_product(ranges)]):
       print(rule)
-  ##------------------------------------------------------------------
 
+  #------------------------------------------------------------------
   class Eg:
+    "Unit tests."
     def ls():
       "list  all examples."
       print("\nexamples:")
@@ -235,43 +240,33 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         if k[0] != "_":
           print(f"  {k:<13} {f.__doc__}")
 
-    def data(file="../data/vote.csv", goal="democrat"):
+    def data(file="../data/vote.csv"):
       "simple load of data into  a table"
       t = Table(csv(file))
       assert(435 == len(t.rows))
       assert(195 == t.cols.all[1].has['y'])
 
-    def clone(file="../data/diabetes.csv", k="positive"):
-      "discretize test"
-      t = Table(csv(file))
-      kl = t.cols.klass.at
-      u, v = t.clone(), t.clone()
-      [(u if k == row.cells[kl] else v).add(row) for row in t.rows]
-      good, bad = u.cols.x[1], v.cols.x[1]
-      #print(good.all()[::25], len(good.all()), good.sd())
-      print(bad.all()[::25], len(bad.all()), bad.sd())
+    def nclasses(file="../data/diabetes.csv", kl="positive"):
+      ts = stratify(csv(file))
+      assert(2   == len(ts.klass))
+      assert(268 == len(ts.klass[kl].rows))
+      assert(768 == len(ts.all.rows))
+      
+    def bins(file="../data/diabetes.csv", 
+             k1= "positive", k2= "negative"):
+      ts = stratify(csv(file))
+      goods, bads = ts.klass[k1], ts.klass[k2]
+      for good,bad in zip(goods.cols.all, bads.cols.all):
+        print(f"\n{good.at}")
+        [print(f"\t{x}") for x in good.bins(bad)]
 
-    def bins(file="../data/diabetes.csv", k="positive"):
-      "discretize test"
-      t = Table(csv(file))
-      kl = t.cols.klass.at
-      u, v = t.clone(), t.clone()
-      print("========================")
-      for row in t.rows:
-        (u if k == row.cells[kl] else v).add(row)
-      good, bad = u.cols.x[1], v.cols.x[1]
-      for x in good.bins(bad):
-        print(good.at, x)
   # ------------------------------------------------------------------
   # main program for keys
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
-      if k[0] != "_":
-        print("\n"+k)
-        f()
+      if k[0] != "_": print("\n"+k); f()
   else:
-    if XAMPLE and XAMPLE in vars(Eg):
-      vars(Eg)[XAMPLE]()
+    if XAMPLE and XAMPLE in vars(Eg): vars(Eg)[XAMPLE]()
 
 #######################################################
 # things that don't use the config vars
@@ -285,23 +280,23 @@ def dict_product(d):
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))
 
-# --------------------------------------------------------------------
+# ------------------
 # lists
 def first(a): return a[0]
 def last(a): return a[-1]
 def per(a, p=.5): return a[int(p*len(a))]
 
-# --------------------------------------------------------------------
-# objects
+# ------------------
 class o(object):
+  "objects"
   def __init__(i, **k): i.__dict__.update(**k)
   def __getitem__(i, k): return i.__dict__[k]
   def __repr__(i): return i.__class__.__name__+str(public(i.__dict__))
   def __setitem__(i, k, v): i.__dict__[k] = v
 
-# --------------------------------------------------------------------
-# misc
+# ------------------
 def csv(f=None, sep=","):
+  "read csv files"
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
   if f:
     with open(f) as fp:
@@ -311,10 +306,13 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
+# ------------------
 def cli(f):
+  "Drive command line flags  from function annocations."
   p = parse(prog="./"+f.__name__, description=f.__doc__,
             formatter_class=textual)
-  for (k, h), b4 in zip(list(f.__annotations__.items()), f.__defaults__):
+  for (k, h),b4 in zip(
+                     list(f.__annotations__.items()),f.__defaults__):
     if b4 == False:
       p.add_argument("-"+(k[0].lower()), dest=k, help=h,
                      default=False, action="store_true")
@@ -324,7 +322,5 @@ def cli(f):
                      metavar=k)
   f(**p.parse_args().__dict__)
 
-
-#######################################################
-if __name__ == "__main__":
-  cli(keys)
+#---------------------------------------------------------------------
+if __name__ == "__main__": cli(keys)
