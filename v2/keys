@@ -278,12 +278,12 @@ def public(d): return {k: v for k, v in d.items() if k[0] != "_"}
 def dict_product(d):
   keys = d.keys()
   for p in itertools.product(*d.values()):
-    yield dict(zip(keys, p))
+    yield dict(zip(keys, p))  
 
 # ------------------
 # lists
 def first(a): return a[0]
-def last(a): return a[-1]
+def last(a): return a[-1]  ####
 def per(a, p=.5): return a[int(p*len(a))]
 
 # ------------------
