@@ -7,19 +7,19 @@ from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
 
 def keys(
-  BINS      :   Float("bins are of size n**BINS") = .5,
-  COLS      :   Str("columns to use for inference") = "x",
-  DATA      :   Str("where to read data") = "../data/auto2.csv",
-  EPSILON   :   Float("small = sd**EPSILON") = .3,
-  FAR       :   Float("where to look for far things") = .9,
-  GOAL      :   Str("learning goals: best|rest|other") = "best",
-  K         :   Int("bayes low class frequency hack") = 2,
-  M         :   Int("bayes low range frequency hack") = 1,
-  P         :   Int("distance calculation exponent") = 2,
-  SAMPLE    :   Int("#samples to find far things?") = 20,
-  VERBOSE   :   Bool("set verbose") = False,
-  TOP       :   Int("focus on this many") = 20,
-  XAMPLE    :   Str("egs: '-x ls' lists all, '-x all' runs all") = "" ):
+  BINS   : Float("bins are of size n**BINS") = .5,
+  COLS   : Str("columns to use for inference") = "x",
+  DATA   : Str("where to read data") = "../data/auto2.csv",
+  EPSILON: Float("small = sd**EPSILON") = .3,
+  FAR    : Float("where to look for far things") = .9,
+  GOAL   : Str("learning goals: best|rest|other") = "best",
+  K      : Int("bayes low class frequency hack") = 2,
+  M      : Int("bayes low range frequency hack") = 1,
+  P      : Int("distance calculation exponent") = 2,
+  SAMPLE : Int("#samples to find far things?") = 20,
+  VERBOSE: Bool("set verbose") = False,
+  TOP    : Int("focus on this many") = 20,
+  XAMPLE : Str("egs: '-x ls' lists all, '-x all' runs all") = "" ):
   """
     ,-_|\     (c) Tim Menzies, 2021, unlicense.org.
    /     \    The delta between things is   
@@ -28,12 +28,11 @@ def keys(
 
   GOAL = {'best' : lambda b, r: b**2/b+r,
           'rest' : lambda b, r: r**2/(b+r),
-          'other': lambda b, r: 1/(b+r)
-          }[GOAL]
+          'other': lambda b, r: 1/(b+r)    }[GOAL]
 
   # ------------------------------------------------------------------
+  # Storing columns in `Col`, `Skip`, `Sym`, `Num`.
   class Col(o):
-    "Storing columns in `Col`, `Skip`, `Sym`, `Num`."
     def __init__(i, at=0, txt="", inits=[]):
       i.n, i.at, i.txt = 0, at, txt
       i.w = -1 if "-" in txt else 1
@@ -89,8 +88,8 @@ def keys(
     def bins(i, j):
       xy = [(z, True) for z in i._all]+[(z, False) for z in j._all]
       eps = EPSILON * (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
-      for ((lo, hi), sym) in bins(xy, epsilon=eps, enough=len(xy)**BINS):
-        for klass, n in sym.has.items():
+      for ((lo, hi),s) in bins(xy,epsilon=eps,size=len(xy)**BINS):
+        for klass, n in s.has.items():
           yield n, klass, (i.at, (lo, hi))
 
     def dist(i, x, y):
@@ -106,11 +105,11 @@ def keys(
 
     def sd(i) : return (per(i.all(), .9) - per(i.all(), .1))/2.56
     def span(i) : return (first(i.all()), last(i.all()))
-    def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
+    def wide(i, n=0): return last(i.all()) - first(i.all()) >= n 
 
   #----------------------------------------------------------------
+  # Data is in `Row`s which, in turn, are stored  in `Table`s.
   class Row(o):
-    "Data is held in `Row`s which, in turn, are stored  in `Table`s"
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
 
     def dist(i, j):
@@ -170,8 +169,8 @@ def keys(
     return o(all=all, klass=klass)
   
   #----------------------------------------------------------------
-  def bins(xy, epsilon=0, enough=30):
-    "Use `bins` to divide numeric data into ranges."
+  # Use `bins` to divide numeric data into ranges.
+  def bins(xy, epsilon=0, size=30):
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
       while j < n:
@@ -192,8 +191,8 @@ def keys(
       bin = o(x=Num(), y=Sym())
       bins = [bin]
       for i, (x, y) in enumerate(xy):
-        if bin.x.n >= enough:
-          if x != b4 and i < len(xy)-enough and bin.x.wide(epsilon):
+        if bin.x.n >= size:
+          if x != b4 and i < len(xy)-size and bin.x.wide(epsilon):
             bin = o(x=Num(), y=Sym())
             bins += [bin]
         bin.x.add(x)
@@ -204,9 +203,9 @@ def keys(
     return merge([(bin.x.span(), bin.y) 
                   for bin in divide(sorted(xy, key=first))])
 
-  # ----------------
+  #----------------------------------------------------------------
+  # Report ranges that are most different in two classes.
   def contrasts(here, there, t):
-    "Report the ranges that are most different in two classes."
     def like(d, kl):
       out = prior = (hs[kl] + K) / (n + K*2)
       for at, span in d.items():
@@ -231,8 +230,8 @@ def keys(
       print(rule)
 
   #------------------------------------------------------------------
+  # Unit tests.
   class Eg:
-    "Unit tests."
     def ls():
       "list  all examples."
       print("\nexamples:")
@@ -268,35 +267,33 @@ def keys(
   else:
     if XAMPLE and XAMPLE in vars(Eg): vars(Eg)[XAMPLE]()
 
-#######################################################
+#############################################
 # things that don't use the config vars
 # dictionaries
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
-def public(d): return {k: v for k, v in d.items() if k[0] != "_"}
+def public(d): return {k:v for k, v in d.items() if k[0] != "_"}
 
 def dict_product(d):
   keys = d.keys()
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))  
 
-# ------------------
 # lists
 def first(a): return a[0]
 def last(a): return a[-1]  ####
 def per(a, p=.5): return a[int(p*len(a))]
 
-# ------------------
+# objects
 class o(object):
-  "objects"
   def __init__(i, **k): i.__dict__.update(**k)
   def __getitem__(i, k): return i.__dict__[k]
-  def __repr__(i): return i.__class__.__name__+str(public(i.__dict__))
+  def __repr__(i):
+    return i.__class__.__name__+str(public(i.__dict__))
   def __setitem__(i, k, v): i.__dict__[k] = v
 
-# ------------------
+# read csv files
 def csv(f=None, sep=","):
-  "read csv files"
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
   if f:
     with open(f) as fp:
@@ -306,9 +303,8 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
-# ------------------
+# Drive command line flags  from function annocations.
 def cli(f):
-  "Drive command line flags  from function annocations."
   p = parse(prog="./"+f.__name__, description=f.__doc__,
             formatter_class=textual)
   for (k, h),b4 in zip(
@@ -322,5 +318,7 @@ def cli(f):
                      metavar=k)
   f(**p.parse_args().__dict__)
 
-#---------------------------------------------------------------------
+# Start up.
 if __name__ == "__main__": cli(keys)
+
+# gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dAutoRotatePages=/None -sOutputFile=finished.pdf  file1.pdf file2.pdf
