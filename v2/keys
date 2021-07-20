@@ -1,12 +1,12 @@
 #!/usr/bin/env python3.9
 # vim: ts=2 sw=2 sts=2 et :
-# autopep8: ignore E20,E401,E226,E302,E41
+# autopep8: ignore E20,E401,E226,E301, E302,E41
 import re, sys, argparse, itertools
 from argparse import ArgumentParser as parse
 from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
-#######################################################
 
+#######################################################
 def keys(BINS    : Float("bins are of size n**BINS") = .5,
          COLS    : Str(  "columns to use for inference") = "x",
          DATA    : Str(  "where to read data") = "../data/auto2.csv",
@@ -31,8 +31,9 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
           'rest' : lambda b, r: r**2/(b+r),
           'other': lambda b, r: 1/(b+r)
           }[GOAL]
-  # ------------------------------------------------------------------
 
+  # ------------------------------------------------------------------
+  # Modeling columns with CoL, Skip, Sym, and Num
   class Col(o):
     def __init__(i, at=0, txt="", inits=[]):
       i.n, i.at, i.txt = 0, at, txt
@@ -40,16 +41,12 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       [i.add(x) for x in inits]
 
     def add(i, x, n=1):
-      if x != "?":
-        i.n += 1
-        x = i.add1(x, n)
+      if x != "?": i.n += 1; x = i.add1(x, n)
       return x
-  # ------------------------------------------------------------------
-
+  # ------------------------------
   class Skip(Col):
     def add1(i, x, n=1): return x
-  # ------------------------------------------------------------------
-
+  # ------------------------------
   class Sym(Col):
     def __init__(i, **kw): i.has = {}; super().__init__(**kw)
 
@@ -61,9 +58,8 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         yield j.has.get(k, 0), False, (j.at, (k, k))
 
     def dist(i, x, y): return 0 if x == y else 1
-
-    def ent(i):
-      return sum(-v/i.n * math.log(v/i.n) for v in i.has.values())
+    def ent(i): 
+      return sum(-v/i.n*math.log(v/i.n) for v in i.has.values())
 
     def merge(i, j):
       k = Sym(at=i.at, txt=i.txt)
@@ -75,8 +71,7 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
       if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
         return k
-  # ------------------------------------------------------------------
-
+  # ------------------------------
   class Num(Col):
     def __init__(i, **kw):
       i._all, i.ok = [], False
@@ -84,14 +79,11 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
 
     def add1(i, x, n):
       x, i.ok = float(x), False
-      for _ in range(n):
-        i._all += [x]
+      for _ in range(n): i._all += [x]
       return x
 
     def all(i):
-      if not i.ok:
-        i.ok = True
-        i._all = sorted(i._all)
+      if not i.ok: i.ok = True; i._all = sorted(i._all)
       return i._all
 
     def bins(i, j):
@@ -102,27 +94,22 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
           yield n, klass, (i.at, (lo, hi))
 
     def dist(i, x, y):
-      if x == "?":
-        y = i.norm(y)
-        x = 1 if y < 0.5 else 0
-      elif y == "?":
-        x = i.norm(x)
-        y = 1 if x < 0.5 else 0
-      else:
-        x, y = i.norm(x), y.norm(y)
+      if   x == "?": y = i.norm(y); x = 1 if y < 0.5 else 0
+      elif y == "?": x = i.norm(x); y = 1 if x < 0.5 else 0
+      else:          x,y = i.norm(x), y.norm(y)
       return abs(x-y)
 
     def norm(i, x):
-      if x == "?":
-        return x
+      if x == "?": return x
       a = i.all()
       return max(0, min(1, (x-first(a))/(last(a)-first(a)+1E-32)))
 
     def sd(i): return (per(i.all(), .9) - per(i.all(), .1))/2.56
     def span(i): return (first(i.all()), last(i.all()))
     def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
-  ##----------------------------------------------------------------
 
+  #----------------------------------------------------------------
+  # Modeling tables with Row and Table and (as defined above) Col
   class Row(o):
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
 
@@ -131,14 +118,13 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       for col in i.tab.cols[COLS]:
         n += 1
         x, y = i.cells[at], j.cells[at]
-        d += 1 if x == "?" and y == "?" else col.dist(x, y) ^ P
-      return (d/n) ^ (1/P)
+        d += 1 if x == "?" and y == "?" else col.dist(x, y)**P
+      return (d/n)**(1/P)
 
     def far(i, rows):
       tmp = [(dist(i, j), j) for _ in range(SAMPLE)]
-      return per(sorted(tmp, key=first), FAR)
-  # ------------------------------------------------------------------
-
+      return per(sorted(tmp, key=first), FAR) #
+  # -------------------------------
   class Table(o):
     def __init__(i, inits=[]):
       i.rows = []
@@ -168,8 +154,8 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
     def nump(i, x): return x[0].isupper()
     def skipp(i, x): return "?" in x
     def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
-  ##----------------------------------------------------------------
-
+  #----------------------------------------------------------------
+  # Discreitzation of numeric columns with merge and divide.
   def bins(xy, epsilon=0, enough=30):
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
@@ -199,9 +185,9 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
       return bins
 
     return merge(
-        divide([o(bin.x.span(), y=bin.y) for bin in bins]))
+        divide([o(bin.x.span(), y=bin.y) for bin in bins])) #
   # ------------------------------------------------------------------
-
+  # Learning the delta between two classes.
   def contrasts(here, there, t):
     def like(d, kl):
       out = prior = (hs[kl] + K) / (n + K*2)
@@ -225,19 +211,18 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
         ranges[k] = ranges.get(k, set()).add(d[k])
     for rule in top([val(d) for d in dict_product(ranges)]):
       print(rule)
-  ##------------------------------------------------------------------
-
+  #------------------------------------------------------------------
+  # Unit and system tests
   class Eg:
     def ls():
       "list  all examples."
       print("\nexamples:")
       for k, f in vars(Eg).items():
-        if k[0] != "_":
-          print(f"  {k:<13} {f.__doc__}")
+        if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
 
     def data(file="../data/vote.csv", goal="democrat"):
       "simple load of data into  a table"
-      t = Table(csv(file))
+      t = Table(csv(file)); print(1)
       assert(435 == len(t.rows))
       assert(195 == t.cols.all[1].has['y'])
 
@@ -266,15 +251,13 @@ def keys(BINS    : Float("bins are of size n**BINS") = .5,
   # main program for keys
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
-      if k[0] != "_":
-        print("\n"+k)
-        f()
+      if k[0] != "_": print("\n"+k); f()
   else:
     if XAMPLE and XAMPLE in vars(Eg):
       vars(Eg)[XAMPLE]()
 
 #######################################################
-# things that don't use the config vars
+# Utilities to handle dictionaries, lists, objects, and other.
 # dictionaries
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
@@ -284,13 +267,11 @@ def dict_product(d):
   keys = d.keys()
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))
-
 # --------------------------------------------------------------------
 # lists
 def first(a): return a[0]
 def last(a): return a[-1]
 def per(a, p=.5): return a[int(p*len(a))]
-
 # --------------------------------------------------------------------
 # objects
 class o(object):
@@ -298,7 +279,6 @@ class o(object):
   def __getitem__(i, k): return i.__dict__[k]
   def __repr__(i): return i.__class__.__name__+str(public(i.__dict__))
   def __setitem__(i, k, v): i.__dict__[k] = v
-
 # --------------------------------------------------------------------
 # misc
 def csv(f=None, sep=","):
@@ -324,7 +304,6 @@ def cli(f):
                      metavar=k)
   f(**p.parse_args().__dict__)
 
-
 #######################################################
-if __name__ == "__main__":
-  cli(keys)
+# Main program
+if __name__ == "__main__": cli(keys)
