@@ -29,10 +29,9 @@ def keys(
   GOAL = {'best' : lambda b, r: b**2/b+r,
           'rest' : lambda b, r: r**2/(b+r),
           'other': lambda b, r: 1/(b+r)    }[GOAL]
-
-  # ------------------------------------------------------------------
-  # Storing columns in `Col`, `Skip`, `Sym`, `Num`.
+  #----------------------------------------------------------------------------
   class Col(o):
+    "Store columns in `Col`, `Skip`, `Sym`, `Num`."
     def __init__(i, at=0, txt="", inits=[]):
       i.n, i.at, i.txt = 0, at, txt
       i.w = -1 if "-" in txt else 1
@@ -41,10 +40,10 @@ def keys(
     def add(i, x, n=1):
       if x != "?": i.n += 1; x = i.add1(x, n)
       return x
-  # ----------------
+  # -------------------------------------
   class Skip(Col):
     def add1(i, x, n=1): return x
-  # ----------------
+  # -------------------------------------
   class Sym(Col):
     def __init__(i, **kw): i.has = {}; super().__init__(**kw)
 
@@ -70,7 +69,7 @@ def keys(
       e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
       if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
         return k
-  # ----------------
+  # -------------------------------------
   class Num(Col):
     def __init__(i, **kw):
       i._all, i.ok = [], False
@@ -106,10 +105,9 @@ def keys(
     def sd(i) : return (per(i.all(), .9) - per(i.all(), .1))/2.56
     def span(i) : return (first(i.all()), last(i.all()))
     def wide(i, n=0): return last(i.all()) - first(i.all()) >= n 
-
-  #----------------------------------------------------------------
-  # Data is in `Row`s which, in turn, are stored  in `Table`s.
+  #----------------------------------------------------------------------------
   class Row(o):
+    "Data is in `Row`s which, in turn, are in `Table`s."
     def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
 
     def dist(i, j):
@@ -123,8 +121,7 @@ def keys(
     def far(i, rows):
       tmp = [(dist(i, j), j) for _ in range(SAMPLE)]
       return per(sorted(tmp, key=first), FAR)
-
-  # ----------------
+  # -------------------------------------
   class Table(o):
     def __init__(i, inits=[]):
       i.rows = []
@@ -155,7 +152,7 @@ def keys(
     def skipp(i, x): return "?" in x
     def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
 
-  # ----------------
+  # -------------------------------------
   def stratify(src):
     all, klass = None,{}
     for n,row in enumerate(src):
@@ -167,10 +164,9 @@ def keys(
        else:   
          all = Table([row])
     return o(all=all, klass=klass)
-  
-  #----------------------------------------------------------------
-  # Use `bins` to divide numeric data into ranges.
+  #----------------------------------------------------------------------------
   def bins(xy, epsilon=0, size=30):
+    "Use `bins` to divide numeric data into ranges."
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
       while j < n:
@@ -202,10 +198,9 @@ def keys(
 
     return merge([(bin.x.span(), bin.y) 
                   for bin in divide(sorted(xy, key=first))])
-
-  #----------------------------------------------------------------
-  # Report ranges that are most different in two classes.
+  #----------------------------------------------------------------------------
   def contrasts(here, there, t):
+    "Report ranges that are most different in two classes."
     def like(d, kl):
       out = prior = (hs[kl] + K) / (n + K*2)
       for at, span in d.items():
@@ -228,8 +223,7 @@ def keys(
         ranges[k] = ranges.get(k, set()).add(d[k])
     for rule in top([val(d) for d in dict_product(ranges)]):
       print(rule)
-
-  #------------------------------------------------------------------
+  #----------------------------------------------------------------------------
   # Unit tests.
   class Eg:
     def ls():
@@ -258,8 +252,7 @@ def keys(
       for good,bad in zip(goods.cols.all, bads.cols.all):
         print(f"\n{good.at}")
         [print(f"\t{x}") for x in good.bins(bad)]
-
-  # ------------------------------------------------------------------
+  #----------------------------------------------------------------------------
   # main program for keys
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
@@ -267,13 +260,13 @@ def keys(
   else:
     if XAMPLE and XAMPLE in vars(Eg): vars(Eg)[XAMPLE]()
 
-#############################################
+##############################
+#------------------------------------------------------------------------------
 # things that don't use the config vars
 # dictionaries
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
-def public(d): return {k:v for k, v in d.items() if k[0] != "_"}
-
+ 
 def dict_product(d):
   keys = d.keys()
   for p in itertools.product(*d.values()):
@@ -281,19 +274,19 @@ def dict_product(d):
 
 # lists
 def first(a): return a[0]
-def last(a): return a[-1]  ####
+def last(a): return a[-1]  #$\label{comment}$
 def per(a, p=.5): return a[int(p*len(a))]
 
-# objects
 class o(object):
+  "object"
   def __init__(i, **k): i.__dict__.update(**k)
   def __getitem__(i, k): return i.__dict__[k]
-  def __repr__(i):
-    return i.__class__.__name__+str(public(i.__dict__))
+  def __repr__(i):  return i.__class__.__name__+str(
+        {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
   def __setitem__(i, k, v): i.__dict__[k] = v
 
-# read csv files
 def csv(f=None, sep=","):
+  "read csv files"
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
   if f:
     with open(f) as fp:
@@ -303,22 +296,23 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
-# Drive command line flags  from function annocations.
 def cli(f):
+  "Drive command line flags  from function annocations."
   p = parse(prog="./"+f.__name__, description=f.__doc__,
             formatter_class=textual)
+  used = {}
   for (k, h),b4 in zip(
                      list(f.__annotations__.items()),f.__defaults__):
+    used[k[0]] = c = k[0] if k[0] in used else k[0].lower()
     if b4 == False:
-      p.add_argument("-"+(k[0].lower()), dest=k, help=h,
+      p.add_argument("-"+c, dest=k, help=h,
                      default=False, action="store_true")
     else:
-      p.add_argument("-"+(k[0].lower()), dest=k, default=b4,
+      p.add_argument("-"+c, dest=k, default=b4,
                      help=h+" ["+str(b4)+"]", type=type(b4),
                      metavar=k)
   f(**p.parse_args().__dict__)
-
+# -------------------------------------
 # Start up.
 if __name__ == "__main__": cli(keys)
-
-# gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dAutoRotatePages=/None -sOutputFile=finished.pdf  file1.pdf file2.pdf
+ 
