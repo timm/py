@@ -174,11 +174,10 @@ def keys(
         a = b4[j]
         if j < n - 1:
           b = b4[j + 1]
-          print("\na",a[1])
-          print("b",b[1])
-          if cy := a[1].merged(b[1]):
+          if cy := last(a).merged(last(b)):
             print("c",cy)
-            a = ((a[0][0], b[0][1]), cy)
+            lo, hi = first( a[0] ), last(b[0])
+            a = ((lo, hi), cy)
             j += 1
         tmp += [a]
         j += 1
@@ -195,10 +194,13 @@ def keys(
         bin.x.add(x)
         bin.y.add(y)
         b4 = x
+      map(lambda x: print(11,x.span()), bins)
       return bins
 
-    return merge([(bin.x.span(), bin.y) 
-                  for bin in divide(sorted(xy, key=first))])
+    xy = sorted(xy, key=first)
+    xy = divide(xy)
+    print([z.x.span() for z in xy])
+    return merge([(bin.x.span(), bin.y) for bin in xy])
   #----------------------------------------------------------------------------
   def contrasts(here, there, t):
     "Report ranges that are most different in two classes."
@@ -246,9 +248,10 @@ def keys(
     def nclasses(file="../data/diabetes.csv", kl="positive"):
       "read data with nclasses"
       ts = stratify(csv(file))
-      assert 2   == len(ts.klass)
-      assert 268 == len(ts.klass[kl].rows)
-      assert 768 == len(ts.all.rows)
+      assert 2       == len(ts.klass)
+      assert 268     == len(ts.klass[kl].rows)
+      assert 768     == len(ts.all.rows)
+      assert 3.90625 == ts.klass[kl].cols.all[0].sd()
       
     def bins(file="../data/diabetes.csv", 
              k1= "positive", k2= "negative"):
@@ -258,14 +261,18 @@ def keys(
       for good,bad in zip(goods.cols.all, bads.cols.all):
         print(f"\n{good.at}")
         [print(f"\t{x}") for x in good.bins(bad)]
+        return 1
  
   #----------------------------------------------------------------------------
   # main program for keys
+  Eg.bins()
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
       if k[0] != "_":  run(f)
   else:
-    if XAMPLE and XAMPLE in vars(Eg): run(vars(Eg)[XAMPLE])
+    if XAMPLE and XAMPLE in vars(Eg): 
+      f = vars(Eg)[XAMPLE]
+      f() if XAMPLE=="ls" else run(f)
 
 ##############################
 #------------------------------------------------------------------------------
@@ -273,19 +280,19 @@ def keys(
 # tests
 def run(fun):
   global fails
-  s= f"{fun.__name__:<12} : {fun.__doc__}"
+  s= f"{fun.__name__:<12}"
   try:  
     fun()
-    color(green="✔ ", gray=s)
+    color(green=("! " + s),white=fun.__doc__)
   except Exception as err: 
     fails += 1
-    color(red="✘ ", gray = str(err))
+    color(red="x " + s,white= str(err))
 
 # string stuff
 def color(end="\n", **kw):
   s, a, z = "", "\u001b[", ";1m"
   c = dict(black=30, red=31,  green=32, yellow=33, purple=34, 
-           pink=35,  blue=36, gray=37, reset="\033[0m")
+           pink=35,  blue=36, white=37, reset="\033[0m")
   for col,txt in kw.items(): s = s + a + str(c[col]) + z + txt + c["reset"]
   print(s, end=end)
 
@@ -330,11 +337,12 @@ def cli(f):
     k0 = k[0]
     used[k0] = c = k0 if k0 in used else k0.lower()
     if b4==False: 
-          p.add_argument("-"+c, dest=k, help=h, default=False, 
-                                action="store_true")
-    else: p.add_argument("-"+c, dest=k, default=b4,
-                                help=h+" ["+str(b4)+"]", type=type(b4),
-                                metavar=k)
+          p.add_argument("-"+c, dest=k, default=False, 
+                         help=h, 
+                         action="store_true")
+    else: p.add_argument("-"+c, dest=k, default=b4, 
+                         help=h + " [" + str(b4) + "]", 
+                         type=type(b4), metavar=k)
   f( **p.parse_args().__dict__ )
 
 # start up stuff
