@@ -39,7 +39,7 @@ def keys(
       [i.add(x) for x in inits]
 
     def add(i, x, n=1):
-      if x != "?": i.n += 1; x = i.add1(x, n)
+      if x != "?": i.n += n; x = i.add1(x, n)
       return x
   # -------------------------------------
   class Skip(Col):
@@ -67,8 +67,10 @@ def keys(
 
     def merged(i, j):
       k = i.merge(j)
-      e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
-      if e1 + e2 < 0.01 or e * .95 < n1 / n * e1 + n2 / n * e2:
+      e1,n1, e2,n2, e,n = i.ent(), i.n, j.ent(),j.n, k.ent(),k.n
+      tmp = n1/n*e1 + n2/n*e2
+      #print(e1,e2,e,tmp)
+      if e1 + e2 < 0.01 or e * .95 < tmp:
         return k
   # -------------------------------------
   class Num(Col):
@@ -172,11 +174,17 @@ def keys(
       j, tmp, n = 0, [], len(b4)
       while j < n:
         a = b4[j]
+        (_,ay) = a
         if j < n - 1:
           b = b4[j + 1]
-          if cy := last(a).merged(last(b)):
-            print("c",cy)
-            lo, hi = first( a[0] ), last(b[0])
+          (_,by) = b
+          if cy := ay.merged(by):
+            #print("a",ay.has, ay.n, ay.ent())
+            #print("b",by.has, by.n,  by.ent())
+            #print("c",cy.has, cy.n, cy.ent())
+            ((lo, _),_) = a
+            ((_, hi),_) = b
+            #print("lo",lo,"hi",hi)
             a = ((lo, hi), cy)
             j += 1
         tmp += [a]
@@ -194,13 +202,10 @@ def keys(
         bin.x.add(x)
         bin.y.add(y)
         b4 = x
-      map(lambda x: print(11,x.span()), bins)
       return bins
 
     xy = sorted(xy, key=first)
-    xy = divide(xy)
-    print([z.x.span() for z in xy])
-    return merge([(bin.x.span(), bin.y) for bin in xy])
+    return merge([(bin.x.span(), bin.y) for bin in divide(xy)])
   #----------------------------------------------------------------------------
   def contrasts(here, there, t):
     "Report ranges that are most different in two classes."
@@ -260,8 +265,7 @@ def keys(
       goods, bads = ts.klass[k1], ts.klass[k2]
       for good,bad in zip(goods.cols.all, bads.cols.all):
         print(f"\n{good.at}")
-        [print(f"\t{x}") for x in good.bins(bad)]
-        return 1
+        [print(x) for x in good.bins(bad)]
  
   #----------------------------------------------------------------------------
   # main program for keys
@@ -280,13 +284,13 @@ def keys(
 # tests
 def run(fun):
   global fails
-  s= f"{fun.__name__:<12}"
+  s= f" {fun.__name__:<12}"
   try:  
     fun()
-    color(green=("! " + s),white=fun.__doc__)
+    color(green=(chr(10003)+ s),white=fun.__doc__)
   except Exception as err: 
     fails += 1
-    color(red="x " + s,white= str(err))
+    color(red=(chr(10007)+ s),white= str(err))
 
 # string stuff
 def color(end="\n", **kw):
