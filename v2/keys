@@ -5,6 +5,7 @@ import re, sys, math, argparse, itertools
 from argparse import ArgumentParser as parse
 from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
+fails=0
 
 def keys(
   BINS   : Float("bins are of size n**BINS") = .5,
@@ -209,7 +210,7 @@ def keys(
       return out
 
     def val(d): return GOAL(like(d, True), like(d, False)), d
-    def top(a): return sorted(a, reversed=True, key=first)[:TOP]
+    def top(a): return sorted(a,reversed=True,key=first)[:TOP]
 
     has = {(kl, (at, (lo, hi))): f
            for col1, col2 in zip(here.cols.x, there.cols.x)
@@ -230,40 +231,65 @@ def keys(
       "list  all examples."
       print("\nexamples:")
       for k, f in vars(Eg).items():
-        if k[0] != "_":
-          print(f"  {k:<13} {f.__doc__}")
+        if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
+
+    def _fail():
+      "testing failure"
+      assert False, "failing" 
 
     def data(file="../data/vote.csv"):
       "simple load of data into  a table"
       t = Table(csv(file))
-      assert(435 == len(t.rows))
-      assert(195 == t.cols.all[1].has['y'])
+      assert 435 == len(t.rows) 
+      assert 195 == t.cols.all[1].has['y'] 
 
     def nclasses(file="../data/diabetes.csv", kl="positive"):
+      "read data with nclasses"
       ts = stratify(csv(file))
-      assert(2   == len(ts.klass))
-      assert(268 == len(ts.klass[kl].rows))
-      assert(768 == len(ts.all.rows))
+      assert 2   == len(ts.klass)
+      assert 268 == len(ts.klass[kl].rows)
+      assert 768 == len(ts.all.rows)
       
     def bins(file="../data/diabetes.csv", 
              k1= "positive", k2= "negative"):
+      "discretize some data"
       ts = stratify(csv(file))
       goods, bads = ts.klass[k1], ts.klass[k2]
       for good,bad in zip(goods.cols.all, bads.cols.all):
         print(f"\n{good.at}")
         [print(f"\t{x}") for x in good.bins(bad)]
+ 
   #----------------------------------------------------------------------------
   # main program for keys
   if XAMPLE == "all":
     for k, f in vars(Eg).items():
-      if k[0] != "_": print("\n"+k); f()
+      if k[0] != "_":  run(f)
   else:
-    if XAMPLE and XAMPLE in vars(Eg): vars(Eg)[XAMPLE]()
+    if XAMPLE and XAMPLE in vars(Eg): run(vars(Eg)[XAMPLE])
 
 ##############################
 #------------------------------------------------------------------------------
 # things that don't use the config vars
-# dictionaries
+# tests
+def run(fun):
+  global fails
+  s= f"{fun.__name__:<12} : {fun.__doc__}"
+  try:  
+    fun()
+    color(green="✔ ", gray=s)
+  except Exception as err: 
+    fails += 1
+    color(red="✘ ", gray = str(err))
+
+# string stuff
+def color(end="\n", **kw):
+  s, a, z = "", "\u001b[", ";1m"
+  c = dict(black=30, red=31,  green=32, yellow=33, purple=34, 
+           pink=35,  blue=36, gray=37, reset="\033[0m")
+  for col,txt in kw.items(): s = s + a + str(c[col]) + z + txt + c["reset"]
+  print(s, end=end)
+
+# dictionary stuff
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
  
@@ -272,21 +298,21 @@ def dict_product(d):
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))  
 
-# lists
+# list stuff
 def first(a): return a[0]
 def last(a): return a[-1]  #$\label{comment}$
 def per(a, p=.5): return a[int(p*len(a))]
 
+# object stuff
 class o(object):
-  "object"
   def __init__(i, **k): i.__dict__.update(**k)
   def __getitem__(i, k): return i.__dict__[k]
   def __repr__(i):  return i.__class__.__name__+str(
         {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
   def __setitem__(i, k, v): i.__dict__[k] = v
 
+# file stuff
 def csv(f=None, sep=","):
-  "read csv files"
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
   if f:
     with open(f) as fp:
@@ -296,23 +322,22 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
+# command-line stuff
 def cli(f):
-  "Drive command line flags  from function annocations."
-  p = parse(prog="./"+f.__name__, description=f.__doc__,
-            formatter_class=textual)
-  used = {}
-  for (k, h),b4 in zip(
-                     list(f.__annotations__.items()),f.__defaults__):
-    used[k[0]] = c = k[0] if k[0] in used else k[0].lower()
-    if b4 == False:
-      p.add_argument("-"+c, dest=k, help=h,
-                     default=False, action="store_true")
-    else:
-      p.add_argument("-"+c, dest=k, default=b4,
-                     help=h+" ["+str(b4)+"]", type=type(b4),
-                     metavar=k)
-  f(**p.parse_args().__dict__)
-# -------------------------------------
-# Start up.
-if __name__ == "__main__": cli(keys)
- 
+  used, p = {}, parse(prog="./"+f.__name__, description=f.__doc__,
+                      formatter_class=textual)
+  for (k, h),b4 in zip(list(f.__annotations__.items()),f.__defaults__):
+    k0 = k[0]
+    used[k0] = c = k0 if k0 in used else k0.lower()
+    if b4==False: 
+          p.add_argument("-"+c, dest=k, help=h, default=False, 
+                                action="store_true")
+    else: p.add_argument("-"+c, dest=k, default=b4,
+                                help=h+" ["+str(b4)+"]", type=type(b4),
+                                metavar=k)
+  f( **p.parse_args().__dict__ )
+
+# start up stuff
+if __name__ == "__main__": 
+  cli(keys)
+  sys.exit(fails)
