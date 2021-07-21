@@ -5,8 +5,8 @@ import re, sys, math, argparse, itertools
 from argparse import ArgumentParser as parse
 from argparse import RawTextHelpFormatter as textual
 Float = Str = Int = Bool = lambda *l: l[0]
-fails=0
 
+#111111111111111111111111111111111111111111111111111111111111
 def keys(
   BINS   : Float("bins are of size n**BINS") = .5,
   COLS   : Str("columns to use for inference") = "x",
@@ -36,6 +36,7 @@ def keys(
     def __init__(i, at=0, txt="", inits=[]):
       i.n, i.at, i.txt = 0, at, txt
       i.w = -1 if "-" in txt else 1
+      i.klass=False
       [i.add(x) for x in inits]
 
     def add(i, x, n=1):
@@ -90,9 +91,8 @@ def keys(
     def bins(i, j):
       xy = [(z, True) for z in i._all]+[(z, False) for z in j._all]
       eps = EPSILON * (i.n*i.sd() + j.n*j.sd()) / (i.n + j.n)
-      for ((lo, hi),s) in bins(xy,epsilon=eps,size=len(xy)**BINS):
-        for klass, n in s.has.items():
-          yield n, klass, (i.at, (lo, hi))
+      for ((lo, hi),_) in bins(xy,epsilon=eps,size=len(xy)**BINS):
+        yield  i.at, (lo, hi)
 
     def dist(i, x, y):
       if   x == "?": y = i.norm(y); x = 1 if y < 0.5 else 0
@@ -148,6 +148,7 @@ def keys(
         if not i.skipp(x):
           i.cols["y" if i.yp(x) else "x"] += [new]
           if i.klassp(x):
+            new.klass=True
             i.cols.klass = new
 
     def klassp(i, x): return "!" in x
@@ -173,18 +174,10 @@ def keys(
     def merge(b4):
       j, tmp, n = 0, [], len(b4)
       while j < n:
-        a = b4[j]
-        (_,ay) = a
+        ((lo,_),ay) = a = b4[j]
         if j < n - 1:
-          b = b4[j + 1]
-          (_,by) = b
+          ((_,hi),by)  = b4[j + 1]
           if cy := ay.merged(by):
-            #print("a",ay.has, ay.n, ay.ent())
-            #print("b",by.has, by.n,  by.ent())
-            #print("c",cy.has, cy.n, cy.ent())
-            ((lo, _),_) = a
-            ((_, hi),_) = b
-            #print("lo",lo,"hi",hi)
             a = ((lo, hi), cy)
             j += 1
         tmp += [a]
@@ -264,9 +257,9 @@ def keys(
       ts = stratify(csv(file))
       goods, bads = ts.klass[k1], ts.klass[k2]
       for good,bad in zip(goods.cols.all, bads.cols.all):
-        print(f"\n{good.at}")
-        [print(x) for x in good.bins(bad)]
- 
+        bins = list(good.bins(bad))
+        if len(bins) > 1 and not good.klass:
+          print(good.txt,bins)
   #----------------------------------------------------------------------------
   # main program for keys
   Eg.bins()
@@ -278,28 +271,18 @@ def keys(
       f = vars(Eg)[XAMPLE]
       f() if XAMPLE=="ls" else run(f)
 
-##############################
-#------------------------------------------------------------------------------
+#222222222222222222222222222222222222222222222222222222222222
 # things that don't use the config vars
-# tests
-def run(fun):
-  global fails
-  s= f" {fun.__name__:<12}"
-  try:  
-    fun()
-    color(green=(chr(10003)+ s),white=fun.__doc__)
-  except Exception as err: 
-    fails += 1
-    color(red=(chr(10007)+ s),white= str(err))
-
+# -------------------------------------
 # string stuff
 def color(end="\n", **kw):
   s, a, z = "", "\u001b[", ";1m"
-  c = dict(black=30, red=31,  green=32, yellow=33, purple=34, 
-           pink=35,  blue=36, white=37, reset="\033[0m")
-  for col,txt in kw.items(): s = s + a + str(c[col]) + z + txt + c["reset"]
+  c = dict(black=30, red=31,  green=32, yellow=33, 
+           purple=34, pink=35,  blue=36, white=37)
+  for col,txt in kw.items(): s = s+a + str(c[col]) +z+txt+"\033[0m"
   print(s, end=end)
 
+# -------------------------------------
 # dictionary stuff
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
@@ -309,11 +292,13 @@ def dict_product(d):
   for p in itertools.product(*d.values()):
     yield dict(zip(keys, p))  
 
+# -------------------------------------
 # list stuff
 def first(a): return a[0]
 def last(a): return a[-1]  #$\label{comment}$
 def per(a, p=.5): return a[int(p*len(a))]
 
+# -------------------------------------
 # object stuff
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
@@ -322,6 +307,7 @@ class o(object):
         {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
   def __setitem__(i, k, v): i.__dict__[k] = v
 
+# -------------------------------------
 # file stuff
 def csv(f=None, sep=","):
   def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
@@ -333,6 +319,7 @@ def csv(f=None, sep=","):
     for s in sys.stdin:
       if s := prep(s): yield s.split(sep)
 
+# -------------------------------------
 # command-line stuff
 def cli(f):
   used, p = {}, parse(prog="./"+f.__name__, description=f.__doc__,
@@ -349,6 +336,20 @@ def cli(f):
                          type=type(b4), metavar=k)
   f( **p.parse_args().__dict__ )
 
+# -------------------------------------
+# tests
+fails=0
+def run(fun):
+  global fails
+  s= f" {fun.__name__:<12}"
+  try:  
+    fun()
+    color(green=(chr(10003)+ s),white=fun.__doc__)
+  except Exception as err: 
+    fails += 1
+    color(red=(chr(10007)+ s),white= str(err))
+
+# -------------------------------------
 # start up stuff
 if __name__ == "__main__": 
   cli(keys)
