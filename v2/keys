@@ -7,22 +7,24 @@
         v 
 """
 import re, sys, math, copy, argparse, random, itertools
-Float= Str= Int= Bool= lambda x,**kw: (x, list(kw.items())[0])
 
-THE=[Float('bins are of size n**BINS',      BINS    = .5)
-    ,Str('columns to use for inference',    COLS    = 'x')
-    ,Str('where to read data',              DATA    = '../data/auto2.csv')
-    ,Float('where to look for far things',  FAR     = .9)
-    ,Str('learning goals: best|rest|other', GOAL    = 'best')
-    ,Float('small = sd**iota',              IOTA    = .3)
-    ,Int('bayes low class frequency hack',  K       = 2)
-    ,Int('bayes low range frequency hack',  M       = 1)
-    ,Int('distance calculation exponent',   P       = 2)
-    ,Int('#samples to find far things?',    SAMPLES = 20)
-    ,Int('seed for random number generator',SEED    = 10013)
-    ,Bool('set verbose',                    VERBOSE = False)
-    ,Int('focus on this many',              TOP     = 20)
-    ,Str("egs: '-x ls' lists all, '-x all' runs all", XAMPLE = "")
+def config():
+ float= str= int= bool= lambda x,**kw: (x, list(kw.items())[0])
+ return [
+     float('bins are of size n**BINS',      BINS    = .5)
+    ,str('columns to use for inference',    COLS    = 'x')
+    ,str('where to read data',              DATA    = '../data/auto2.csv')
+    ,float('where to look for far things',  FAR     = .9)
+    ,str('learning goals: best|rest|other', GOAL    = 'best')
+    ,float('small = sd**iota',              IOTA    = .3)
+    ,int('bayes low class frequency hack',  K       = 2)
+    ,int('bayes low range frequency hack',  M       = 1)
+    ,int('distance calculation exponent',   P       = 2)
+    ,int('#samples to find far things?',    SAMPLES = 20)
+    ,int('seed for random number generator',SEED    = 10013)
+    ,bool('set verbose',                    VERBOSE = False)
+    ,int('focus on this many',              TOP     = 20)
+    ,str("egs: '-x ls' lists all, '-x all' runs all", XAMPLE = "")
     ]
 
 class o(object):
@@ -53,7 +55,7 @@ class Sym(Col):
 
   def add1(i, x, n=1): inc(i.has, x, n); return x
 
-  def bins(i, j):
+  def bins(i, j, _):
     for k in (i.has | j.has):
       yield i.has.get(k, 0), True, (i.at, (k, k))
       yield j.has.get(k, 0), False, (j.at, (k, k))
@@ -223,7 +225,7 @@ def contrasts(here, there, the):
 
   has = {(kl, (at, (lo, hi))): f
          for col1, col2 in zip(here.cols.x, there.cols.x)
-         for f, kl, (at, (lo, hi)) in col1.bins(col2)}
+         for f, kl, (at, (lo, hi)) in col1.bins(col2, the)}
   n = len(here.rows, there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
   solos = [val(dict(at=x)) for at, x in set([z for _, z in has])]
@@ -236,13 +238,13 @@ def contrasts(here, there, the):
 
 # Unit tests -------------------------------------------------------------------
 class Eg:
-  def ls(_):
+  def ls(the):
     "list  all examples."
     print("\nexamples:")
     for k, f in vars(Eg).items():
       if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
 
-  def _fail(_):
+  def _fail(the):
     "testing failure"
     assert False, "failing" 
 
@@ -320,25 +322,28 @@ def cli(use, txt, options):
   return o(**p.parse_args().__dict__)
 
 # Main program ------------------------------------------------------------------
-def main(the,fails=0):
-  def run(fun, the):
+def main(the):
+  def run(fun, fails, the):
     s= f" {fun.__name__:<12}"
     try:  
-      random.seed(the.SEED)
       fun(copy.deepcopy(the))
+      random.seed(the.SEED)
       color(green= (chr(10003)+ s), white=fun.__doc__)
     except Exception as err: 
       fails = fails + 1
       color(red=   (chr(10007)+ s), white= str(err))
+    return fails
   #---------------------------
+  fails=0
   if the.XAMPLE == "all":
     for k, f in vars(Eg).items():
-      if k[0] != "_":  run(f,the)
+      if k[0] != "_" and k!="ls" :  fails=run(f,fails, the)
   else:
     if the.XAMPLE and the.XAMPLE in vars(Eg): 
       f = vars(Eg)[the.XAMPLE]
-      f(the) if the.XAMPLE=="ls" else run(f,the)
+      if the.XAMPLE=="ls": f(the)
+      else               : fails=run(f,fails,the)
   sys.exit(fails)
 
 if __name__ == "__main__": 
-  main( cli("./keys", __doc__, THE) )
+  main( cli("./keys", __doc__, config()) )
