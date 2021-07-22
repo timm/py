@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.9
 # vim: ts=2 sw=2 sts=2 et :
 """
-    ,-_|\     (c) Tim Menzies, 2021, unlicense.org
+    ,-_|\     Contrast set learner( c) Tim Menzies, 2021, unlicense.org
    /     \    The delta between things is  
    \_,-._*    simpler than the things.
         v 
@@ -32,7 +32,7 @@ class o(object):
   def __repr__(i):          return i.__class__.__name__ + str(
     {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
 
-# Columns _________________________________________________________
+# Columns _______________________________________
 class Col(o):
   "Store columns in `Col`, `Skip`, `Sym`, `Num`."
   def __init__(i, at=0, txt="", inits=[]):
@@ -43,10 +43,10 @@ class Col(o):
   def add(i, x, n=1):
     if x != "?": i.n += n; x = i.add1(x, n)
     return x
-# _________________________________
+# _______________
 class Skip(Col):
   def add1(i, x, n=1): return x
-# _________________________________
+# _______________
 class Sym(Col):
   def __init__(i, **kw): 
     i.has, i.mode, i.most = {}, None, 0
@@ -80,7 +80,7 @@ class Sym(Col):
       return k
   
   def mid(i): return i.mode
-# _________________________________
+# _______________
 class Num(Col):
   def __init__(i, **kw):
     i._all, i.ok = [], False
@@ -118,7 +118,7 @@ class Num(Col):
   def span(i)    : return (first(i.all()), last(i.all()))
   def wide(i,n=0): return last(i.all()) - first(i.all()) >= n 
 
-# Row and Rows ______________________________________________________
+# Row and Rows ____________________________________
 class Row(o):
   def __init__(i, lst, rows=None): i.rows, i.cells = rows, lst
 
@@ -145,7 +145,7 @@ class Row(o):
     return per(sorted(tmp, key=first), the.FAR)
 
   def ys(i): return [i.cells[col.at] for col in i.rows.cols.y]
-# _________________________________
+# _______________
 class Rows(o):
   def __init__(i, inits=[]):
     i.rows = []
@@ -169,8 +169,8 @@ class Rows(o):
 
   def data(i, a):
     a = a.cells if type(a) == Row else a
-    a = [col.add(a[col.at]) for col in i.cols.all]
-    i.rows += [Row(a, rows=i)]
+    i.rows += [Row([col.add(a[col.at]) for col in i.cols.all], 
+                   rows=i)]
 
   def header(i, a):
     i.cols.names = a
@@ -189,7 +189,7 @@ class Rows(o):
   def ys(i): return [col.mid() for col in i.cols.y]
   def ysd(i): return [col.sd() for col in i.cols.y]
   def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
-# _________________________________
+# _______________
 def stratify(src):
   all, klass = None,{}
   for n,row in enumerate(src):
@@ -202,7 +202,7 @@ def stratify(src):
        all = Rows([row])
   return o(all=all, klass=klass)
 
-# Discretizations ___________________________________________________
+# Discretizations _________________________________
 # Use `bins` to divide numeric data into ranges.
 def bins(xy, iota=0, size=30):
   def merge(b4):
@@ -234,7 +234,7 @@ def bins(xy, iota=0, size=30):
   xy = sorted(xy, key=first)
   return merge([(bin.x.span(), bin.y) for bin in divide(xy)])
 
-# Learn class deltas _______________________________________________
+# Learn class deltas _____________________________
 def contrasts(here, there, the):
   goal= {'best' : lambda b, r: b**2/b+r,
          'rest' : lambda b, r: r**2/(b+r),
@@ -263,7 +263,7 @@ def contrasts(here, there, the):
   for rule in top([val(d) for d in dict_product(ranges)]):
     print(rule)
 
-# Misc utils ________________________________________________________ 
+# Misc utils ______________________________________ 
 # string stuff 
 def color(end="\n", **kw):
   s, a, z = "", "\u001b[", ";1m"
@@ -310,8 +310,9 @@ def csv(f=None, sep=","):
 
 # command-line stuff
 def cli(use, txt, config):
+  fmt= argparse.RawTextHelpFormatter
   used, p = {}, argparse.ArgumentParser(prog=use, description=txt, 
-                    formatter_class=argparse.RawTextHelpFormatter)
+                                        formatter_class=fmt)
   for k, (_, b4, h) in config.items():
     k0 = k[0]
     used[k0] = c = k0 if k0 in used else k0.lower()
@@ -324,7 +325,7 @@ def cli(use, txt, config):
                          type=type(b4), metavar=k)
   return o( **p.parse_args().__dict__ ) 
 
-# Unit tests ________________________________________________________ 
+# Unit tests ______________________________________ 
 class Eg:
   def ls(the):
     "list  all examples."
@@ -369,7 +370,7 @@ def bins1(goods, bads, the):
       print(f"\n{good.txt}")
       for bin in bins: print("\t",bin)
 
-# Main program ______________________________________________________ 
+# Main program ____________________________________ 
 def main(the):
   def run(fun, fails, the):
     s= f" {fun.__name__:<12}"
@@ -384,7 +385,7 @@ def main(the):
       fails = fails + 1
       color(red=   (chr(10007)+ s), white= str(err))
     return fails
-  # _________________________________
+  # _______________
   fails=0
   if the.XAMPLE == "all":
     for k, f in vars(Eg).items():
