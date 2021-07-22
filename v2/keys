@@ -1,31 +1,29 @@
 #!/usr/bin/env python3.9
 # vim: ts=2 sw=2 sts=2 et :
 """
-    ,-_|\     (c) Tim Menzies, 2021, unlicense.org.
-   /     \    The delta between things is   
+    ,-_|\     (c) Tim Menzies, 2021, unlicense.org
+   /     \    The delta between things is  
    \_,-._*    simpler than the things.
         v 
 """
 import re, sys, math, copy, argparse, random, itertools
 
-def config():
- float= str= int= bool= lambda x,**kw: (x, list(kw.items())[0])
- return [
-     float('bins are of size n**BINS',      BINS    = .5)
-    ,str('columns to use for inference',    COLS    = 'x')
-    ,str('where to read data',              DATA    = '../data/auto2.csv')
-    ,float('where to look for far things',  FAR     = .9)
-    ,str('learning goals: best|rest|other', GOAL    = 'best')
-    ,float('small = sd**iota',              IOTA    = .3)
-    ,int('bayes low class frequency hack',  K       = 2)
-    ,int('bayes low range frequency hack',  M       = 1)
-    ,int('distance calculation exponent',   P       = 2)
-    ,int('#samples to find far things?',    SAMPLES = 20)
-    ,int('seed for random number generator',SEED    = 10013)
-    ,bool('set verbose',                    VERBOSE = False)
-    ,int('focus on this many',              TOP     = 20)
-    ,str("egs: '-x ls' lists all, '-x all' runs all", XAMPLE = "")
-    ]
+def config(): return dict(
+  BINS    = (float, .5,     'bins are of size n**BINS'),
+  COLS    = (str,   'x',    'columns to use for inference'),
+  DATA    = (str,   '../data/auto2.csv', 'where to read data'),
+  FAR     = (float, .9,     'where to look for far things'),
+  GOAL    = (str,   'best', 'learning goals: best|rest|other'),
+  IOTA    = (float, .3,     'small = sd**iota'),
+  K       = (int,    2,     'bayes low class frequency hack'),
+  M       = (int,    1,     'bayes low range frequency hack'),
+  P       = (int,    2,     'distance calculation exponent'),
+  SAMPLES = (int,    20,    '#samples to find far things?'),
+  SEED    = (int,    10013, 'seed for random numbers'),
+  VERBOSE = (bool,   False, 'set verbose'),
+  TOP     = (int,    20,    'focus on this many'),
+  WILD    = (int,    False, 'run tests cases, no protection'),
+  XAMPLE  = (str, "", "egs: '-x ls' lists all, '-x all' runs all"))
 
 class o(object):
   def __init__(i, **k):     i.__dict__.update(**k)
@@ -34,7 +32,7 @@ class o(object):
   def __repr__(i):          return i.__class__.__name__ + str(
     {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
 
-# Columns --------------------------------------------------------------------
+# Columns _________________________________________________________
 class Col(o):
   "Store columns in `Col`, `Skip`, `Sym`, `Num`."
   def __init__(i, at=0, txt="", inits=[]):
@@ -46,19 +44,23 @@ class Col(o):
   def add(i, x, n=1):
     if x != "?": i.n += n; x = i.add1(x, n)
     return x
-# ---------------------------------
+# _________________________________
 class Skip(Col):
   def add1(i, x, n=1): return x
-# ---------------------------------
+# _________________________________
 class Sym(Col):
-  def __init__(i, **kw): i.has = {}; super().__init__(**kw)
+  def __init__(i, **kw): 
+    i.has, i.mode, i.most = {}, None, 0
+    super().__init__(**kw)
 
-  def add1(i, x, n=1): inc(i.has, x, n); return x
+  def add1(i, x, n=1): 
+    new = inc(i.has, x, n)
+    if new > i.most: i.most, i.mode = new, x
+    return x
 
   def bins(i, j, _):
     for k in (i.has | j.has):
-      yield i.has.get(k, 0), True, (i.at, (k, k))
-      yield j.has.get(k, 0), False, (j.at, (k, k))
+      yield i.at, (k, k)
 
   def dist(i, x, y): return 0 if x == y else 1
 
@@ -77,7 +79,9 @@ class Sym(Col):
     #print(e1,e2,e,tmp)
     if e1 + e2 < 0.01 or e * .95 < tmp:
       return k
-# ---------------------------------
+  
+  def mid(i): return i.mode
+# _________________________________
 class Num(Col):
   def __init__(i, **kw):
     i._all, i.ok = [], False
@@ -104,23 +108,34 @@ class Num(Col):
     else         : x, y = i.norm(x), y.norm(y)
     return abs(x-y)
 
+  def mid(i): return per(i.all(), p=.5)
+
   def norm(i, x):
     if x == "?": return x
     a = i.all()
     return max(0, min(1, (x-first(a))/(last(a)-first(a)+1E-32)))
 
-  def sd(i)        : return (per(i.all(), .9) - per(i.all(), .1))/2.56
-  def span(i)      : return (first(i.all()), last(i.all()))
-  def wide(i, n=0) : return last(i.all()) - first(i.all()) >= n 
+  def sd(i)      : return (per(i.all(), .9) - per(i.all(), .1))/2.56
+  def span(i)    : return (first(i.all()), last(i.all()))
+  def wide(i,n=0): return last(i.all()) - first(i.all()) >= n 
 
-# Row and Rows -------------------------------------------------------------------
+# Row and Rows ______________________________________________________
 class Row(o):
-  "Data is in `Row`s which, in turn, are in `Rows`s."
-  def __init__(i, lst, tab=None): i.tab, i.cells = tab, lst
+  def __init__(i, lst, rows=None): i.rows, i.cells = rows, lst
+
+  def __lt__(i, j):
+    goals = i.rows.cols.y
+    s1, s2, n = 0, 0, len(goals)
+    for col in goals:
+      a   = col.norm(i.cells[col.at])
+      b   = col.norm(j.cells[col.at])
+      s1 -= math.e**(col.w * (a - b) / n)
+      s2 -= math.e**(col.w * (b - a) / n)
+    return s1 / n < s2 / n
 
   def dist(i, j, the):
     d = n = 1E-32
-    for col in i.tab.cols[the.COLS]:
+    for col in i.rows.cols[the.COLS]:
       n += 1
       x, y = i.cells[at], j.cells[at]
       d += 1 if x=="?" and y=="?" else col.dist(x, y) ** the.P
@@ -130,7 +145,8 @@ class Row(o):
     tmp = [(dist(i, j), j) for _ in range(the.SAMPLE)]
     return per(sorted(tmp, key=first), the.FAR)
 
-# -------------------------------------
+  def ys(i): return [i.cells[col.at] for col in i.rows.cols.y]
+# _________________________________
 class Rows(o):
   def __init__(i, inits=[]):
     i.rows = []
@@ -138,12 +154,24 @@ class Rows(o):
     [i.add(x) for x in inits]
 
   def add(i, a): i.data(a) if i.cols.names else i.header(a)
+
+  def best(i,the):
+    i.rows.sort()
+    ds = [the.IOTA*y.sd() for y in i.cols.y]
+    best, rest = i.clone(), i.clone()
+    for n,row in enumerate(i.rows):
+      bestp = False
+      for n1,n2,d in zip(i.rows[0].ys(), row.ys(), ds):
+        bestp |= abs(n1-n2) <= d
+      (best if bestp else rest).add(row) 
+    return best, rest
+
   def clone(i, inits=[]): return Rows([i.cols.names] + inits)
 
   def data(i, a):
     a = a.cells if type(a) == Row else a
     a = [col.add(a[col.at]) for col in i.cols.all]
-    i.rows += [Row(a, tab=i)]
+    i.rows += [Row(a, rows=i)]
 
   def header(i, a):
     i.cols.names = a
@@ -160,9 +188,10 @@ class Rows(o):
   def klassp(i, x): return "!" in x
   def nump(i, x): return x[0].isupper()
   def skipp(i, x): return "?" in x
+  def ys(i): return [col.mid() for col in i.cols.y]
+  def ysd(i): return [col.sd() for col in i.cols.y]
   def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
-
-# -------------------------------------
+# _________________________________
 def stratify(src):
   all, klass = None,{}
   for n,row in enumerate(src):
@@ -175,7 +204,7 @@ def stratify(src):
        all = Rows([row])
   return o(all=all, klass=klass)
 
-# Discretization -------------------------------------------------------------------
+# Discretizations ___________________________________________________
 # Use `bins` to divide numeric data into ranges.
 def bins(xy, iota=0, size=30):
   def merge(b4):
@@ -207,7 +236,7 @@ def bins(xy, iota=0, size=30):
   xy = sorted(xy, key=first)
   return merge([(bin.x.span(), bin.y) for bin in divide(xy)])
 
-# Learn class deltas ---------------------------------------------------------------
+# Learn class deltas _______________________________________________
 def contrasts(here, there, the):
   goal= {'best' : lambda b, r: b**2/b+r,
          'rest' : lambda b, r: r**2/(b+r),
@@ -236,43 +265,7 @@ def contrasts(here, there, the):
   for rule in top([val(d) for d in dict_product(ranges)]):
     print(rule)
 
-# Unit tests -------------------------------------------------------------------
-class Eg:
-  def ls(the):
-    "list  all examples."
-    print("\nexamples:")
-    for k, f in vars(Eg).items():
-      if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
-
-  def _fail(the):
-    "testing failure"
-    assert False, "failing" 
-
-  def data(the,file="../data/vote.csv"):
-    "simple load of data into  a table"
-    t = Rows(csv(file))
-    assert 435 == len(t.rows) 
-    assert 195 == t.cols.all[1].has['y'] 
-
-  def nclasses(the,file="../data/diabetes.csv", kl="positive"):
-    "read data with nclasses"
-    ts = stratify(csv(file))
-    assert 2       == len(ts.klass)
-    assert 268     == len(ts.klass[kl].rows)
-    assert 768     == len(ts.all.rows)
-    assert 3.90625 == ts.klass[kl].cols.all[0].sd()
-    
-  def bins(the, file="../data/diabetes.csv", 
-                k1= "positive", k2= "negative"):
-    "discretize some data"
-    ts = stratify(csv(file))
-    goods, bads = ts.klass[k1], ts.klass[k2]
-    for good,bad in zip(goods.cols.all, bads.cols.all):
-      bins = list(good.bins(bad, the))
-      if len(bins) > 1 and not good.klass:
-        print(good.txt,bins)
-
-# Misc utils ------------------------------------------------------------------
+# Misc utils ________________________________________________________ 
 # string stuff 
 def color(end="\n", **kw):
   s, a, z = "", "\u001b[", ";1m"
@@ -281,9 +274,21 @@ def color(end="\n", **kw):
   for col,txt in kw.items(): s = s+a + str(c[col]) +z+txt+"\033[0m"
   print(s, end=end)
 
+def mline(m): m+= [["-"*len(str(x)) for x in m[-1]]]
+
+def printm(matrix):
+  s = [[str(e) for e in row] for row in matrix]
+  lens = [max(map(len, col)) for col in zip(*s)]
+  fmt = ' | '.join('{{:>{}}}'.format(x) for x in lens)
+  for row in [fmt.format(*row) for row in s]: print(row)
+
+# maths stuff 
+def r3(a): return [round(x,3) for x in a]
+
 # dictionary stuff 
 def has(d, k): return d.get(k, 0)
 def inc(d, k, n=1): tmp = d[k] = n + d.get(k, 0); return tmp
+
 def dict_product(d):
   keys = d.keys()
   for p in itertools.product(*d.values()):
@@ -306,10 +311,10 @@ def csv(f=None, sep=","):
       if s := prep(s): yield s.split(sep)
 
 # command-line stuff
-def cli(use, txt, options):
+def cli(use, txt, config):
   used, p = {}, argparse.ArgumentParser(prog=use, description=txt, 
-                          formatter_class=argparse.RawTextHelpFormatter)
-  for (h, (k, b4)) in options:
+                    formatter_class=argparse.RawTextHelpFormatter)
+  for k, (_, b4, h) in config.items():
     k0 = k[0]
     used[k0] = c = k0 if k0 in used else k0.lower()
     if b4==False: 
@@ -319,12 +324,60 @@ def cli(use, txt, options):
     else: p.add_argument("-"+c, dest=k, default=b4, 
                          help=h + " [" + str(b4) + "]", 
                          type=type(b4), metavar=k)
-  return o(**p.parse_args().__dict__)
+  return o( **p.parse_args().__dict__ ) 
 
-# Main program ------------------------------------------------------------------
+# Unit tests ________________________________________________________ 
+class Eg:
+  def ls(the):
+    "list  all examples."
+    print("\nexamples:")
+    for k, f in vars(Eg).items():
+      if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
+
+  def _fail(the):
+    "testing failure"
+    assert False, "failing" 
+
+  def data(the,file="../data/vote.csv"):
+    "simple load of data into  a table"
+    r = Rows(csv(file))
+    assert 435 == len(r.rows) 
+    assert 195 == r.cols.all[1].has['y'] 
+
+  def nclasses(the,file="../data/diabetes.csv", kl="positive"):
+    "read data with nclasses"
+    rs = stratify(csv(file))
+    assert 2       == len(rs.klass)
+    assert 268     == len(rs.klass[kl].rows)
+    assert 768     == len(rs.all.rows)
+    assert 3.90625 == rs.klass[kl].cols.all[0].sd()
+    
+  def bins(the, file="../data/diabetes.csv", 
+                k1= "positive", k2= "negative"):
+    "discretize some data"
+    rs = stratify(csv(file))
+    bins1(rs.klass[k1], rs.klass[k2], the)
+
+  def bestrest(the, file="../data/auto93.csv"): 
+    "discretize some multi-goal data"
+    r = Rows(csv(file))
+    goods, bads = r.best(the) 
+    bins1(goods, bads, the)
+
+def bins1(goods, bads, the):
+  for good,bad in zip(goods.cols.x, bads.cols.x):
+    bins = list(good.bins(bad, the))
+    if len(bins) > 1:
+      print(f"\n{good.txt}")
+      for bin in bins: print("\t",bin)
+
+# Main program ______________________________________________________ 
 def main(the):
   def run(fun, fails, the):
     s= f" {fun.__name__:<12}"
+    if the.WILD:
+      print("raw")
+      fun(copy.deepcopy(the)); sys.exit()
     try:  
       fun(copy.deepcopy(the))
       random.seed(the.SEED)
@@ -333,7 +386,7 @@ def main(the):
       fails = fails + 1
       color(red=   (chr(10007)+ s), white= str(err))
     return fails
-  #---------------------------
+  # _________________________________
   fails=0
   if the.XAMPLE == "all":
     for k, f in vars(Eg).items():
