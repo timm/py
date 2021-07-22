@@ -26,16 +26,16 @@ def config(): return dict(
   XAMPLE  = (str, "", "egs: '-x ls' lists all, '-x all' runs all"))
 
 class o(object):
-  def __init__(i, **k):     i.__dict__.update(**k)
-  def __setitem__(i, k, v): i.__dict__[k] = v
-  def __getitem__(i, k):    return i.__dict__[k]
-  def __repr__(i):          return i.__class__.__name__ + str(
-    {k:v for k, v in i.__dict__.items() if k[0] != "_"})  
+  def ___init___(i, **k):     i.___dict___.update(**k)
+  def ___setitem___(i, k, v): i.___dict___[k] = v
+  def ___getitem___(i, k):    return i.___dict___[k]
+  def ___repr___(i):          return i.___class___.___name___ + str(
+    {k:v for k, v in i.___dict___.items() if k[0] != "_"})  
 
-# Columns _______________________________________
+# Columns _______________________________________________
 class Col(o):
   "Store columns in `Col`, `Skip`, `Sym`, `Num`."
-  def __init__(i, at=0, txt="", inits=[]):
+  def ___init___(i, at=0, txt="", inits=[]):
     i.n, i.at, i.txt = 0, at, txt
     i.w = -1 if "-" in txt else 1
     [i.add(x) for x in inits]
@@ -43,14 +43,14 @@ class Col(o):
   def add(i, x, n=1):
     if x != "?": i.n += n; x = i.add1(x, n)
     return x
-# _______________
+# __________________
 class Skip(Col):
   def add1(i, x, n=1): return x
-# _______________
+# __________________
 class Sym(Col):
-  def __init__(i, **kw): 
+  def ___init___(i, **kw): 
     i.has, i.mode, i.most = {}, None, 0
-    super().__init__(**kw)
+    super().___init___(**kw)
 
   def add1(i, x, n=1): 
     new = inc(i.has, x, n)
@@ -80,11 +80,11 @@ class Sym(Col):
       return k
   
   def mid(i): return i.mode
-# _______________
+# __________________
 class Num(Col):
-  def __init__(i, **kw):
+  def ___init___(i, **kw):
     i._all, i.ok = [], False
-    super().__init__(**kw)
+    super().___init___(**kw)
 
   def add1(i, x, n):
     x, i.ok = float(x), False
@@ -118,11 +118,11 @@ class Num(Col):
   def span(i)    : return (first(i.all()), last(i.all()))
   def wide(i,n=0): return last(i.all()) - first(i.all()) >= n 
 
-# Row and Rows ____________________________________
+# Row and Rows __________________________________________
 class Row(o):
-  def __init__(i, lst, rows=None): i.rows, i.cells = rows, lst
+  def ___init___(i, lst, rows=None): i.rows, i.cells = rows, lst
 
-  def __lt__(i, j):
+  def ___lt___(i, j):
     goals = i.rows.cols.y
     s1, s2, n = 0, 0, len(goals)
     for col in goals:
@@ -145,9 +145,9 @@ class Row(o):
     return per(sorted(tmp, key=first), the.FAR)
 
   def ys(i): return [i.cells[col.at] for col in i.rows.cols.y]
-# _______________
+# __________________
 class Rows(o):
-  def __init__(i, inits=[]):
+  def ___init___(i, inits=[]):
     i.rows = []
     i.cols = o(all=[], names=[], x=[], y=[], klass=None)
     [i.add(x) for x in inits]
@@ -189,7 +189,7 @@ class Rows(o):
   def ys(i): return [col.mid() for col in i.cols.y]
   def ysd(i): return [col.sd() for col in i.cols.y]
   def yp(i, x): return "-" in x or "+" in x or i.klassp(x)
-# _______________
+# __________________
 def stratify(src):
   all, klass = None,{}
   for n,row in enumerate(src):
@@ -202,7 +202,7 @@ def stratify(src):
        all = Rows([row])
   return o(all=all, klass=klass)
 
-# Discretizations _________________________________
+# Discretizations ________________________________________
 # Use `bins` to divide numeric data into ranges.
 def bins(xy, iota=0, size=30):
   def merge(b4):
@@ -234,7 +234,7 @@ def bins(xy, iota=0, size=30):
   xy = sorted(xy, key=first)
   return merge([(bin.x.span(), bin.y) for bin in divide(xy)])
 
-# Learn class deltas _____________________________
+# Learn class deltas ___________________________________
 def contrasts(here, there, the):
   goal= {'best' : lambda b, r: b**2/b+r,
          'rest' : lambda b, r: r**2/(b+r),
@@ -263,7 +263,7 @@ def contrasts(here, there, the):
   for rule in top([val(d) for d in dict_product(ranges)]):
     print(rule)
 
-# Misc utils ______________________________________ 
+# Misc utils ______________________________________________ 
 # string stuff 
 def color(end="\n", **kw):
   s, a, z = "", "\u001b[", ";1m"
@@ -323,15 +323,15 @@ def cli(use, txt, config):
     else: p.add_argument("-"+c, dest=k, default=b4, 
                          help=h + " [" + str(b4) + "]", 
                          type=type(b4), metavar=k)
-  return o( **p.parse_args().__dict__ ) 
+  return o( **p.parse_args().___dict___ ) 
 
-# Unit tests ______________________________________ 
+# Unit tests ______________________________________________ 
 class Eg:
   def ls(the):
     "list  all examples."
     print("\nexamples:")
     for k, f in vars(Eg).items():
-      if k[0] != "_": print(f"  {k:<13} {f.__doc__}")
+      if k[0] != "_": print(f"  {k:<13} {f.___doc___}")
 
   def _fail(the):
     "testing failure"
@@ -370,22 +370,22 @@ def bins1(goods, bads, the):
       print(f"\n{good.txt}")
       for bin in bins: print("\t",bin)
 
-# Main program ____________________________________ 
+# Main program ____________________________________________ 
 def main(the):
   def run(fun, fails, the):
-    s= f" {fun.__name__:<12}"
+    s= f" {fun.___name___:<12}"
     if the.WILD:
       print("raw")
       fun(copy.deepcopy(the)); sys.exit()
     try:  
       fun(copy.deepcopy(the))
       random.seed(the.SEED)
-      color(green= (chr(10003)+ s), white=fun.__doc__)
+      color(green= (chr(10003)+ s), white=fun.___doc___)
     except Exception as err: 
       fails = fails + 1
       color(red=   (chr(10007)+ s), white= str(err))
     return fails
-  # _______________
+  # __________________
   fails=0
   if the.XAMPLE == "all":
     for k, f in vars(Eg).items():
@@ -397,5 +397,5 @@ def main(the):
       else               : fails=run(f,fails,the)
   sys.exit(fails)
 
-if __name__ == "__main__": 
-  main( cli("./keys", __doc__, config()) )
+if ___name___ == "___main___": 
+  main( cli("./keys", ___doc___, config()) )
