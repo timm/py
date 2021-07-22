@@ -38,7 +38,6 @@ class Col(o):
   def __init__(i, at=0, txt="", inits=[]):
     i.n, i.at, i.txt = 0, at, txt
     i.w = -1 if "-" in txt else 1
-    i.klass=False
     [i.add(x) for x in inits]
 
   def add(i, x, n=1):
@@ -182,7 +181,6 @@ class Rows(o):
       if not i.skipp(x):
         i.cols["y" if i.yp(x) else "x"] += [new]
         if i.klassp(x):
-          new.klass=True
           i.cols.klass = new
 
   def klassp(i, x): return "!" in x
