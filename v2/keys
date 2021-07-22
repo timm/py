@@ -22,7 +22,7 @@ def config(): return dict(
   SEED    = (int,    10013, 'seed for random numbers'),
   VERBOSE = (bool,   False, 'set verbose'),
   TOP     = (int,    20,    'focus on this many'),
-  WILD    = (int,    False, 'run tests cases, no protection'),
+  WILD    = (int,    False, 'run example, no protection'),
   XAMPLE  = (str, "", "egs: '-x ls' lists all, '-x all' runs all"))
 
 class o(object):
@@ -221,11 +221,11 @@ def bins(xy, iota=0, size=30):
     return merge(tmp) if len(tmp) < len(b4) else b4
 
   def divide(xy):
-    bin = o(x=Num(), y=Sym())
+    bin  = o(x=Num(), y=Sym())
     bins = [bin]
     for i, (x, y) in enumerate(xy):
-      if bin.x.n >= size:
-        if x != b4 and i < len(xy)-size and bin.x.wide(iota):
+      if bin.x.n >= size and x != b4:
+        if i < len(xy)-size and bin.x.wide(iota):
           bin = o(x=Num(), y=Sym())
           bins += [bin]
       bin.x.add(x)
@@ -254,7 +254,7 @@ def contrasts(here, there, the):
 
   has = {(kl, (at, (lo, hi))): f
          for col1, col2 in zip(here.cols.x, there.cols.x)
-         for f, kl, (at, (lo, hi)) in col1.bins(col2, the)}
+         for at, (lo, hi) in col1.bins(col2, the)}
   n = len(here.rows, there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
   solos = [val(dict(at=x)) for at, x in set([z for _, z in has])]
@@ -390,7 +390,7 @@ def main(the):
   fails=0
   if the.XAMPLE == "all":
     for k, f in vars(Eg).items():
-      if k[0] != "_" and k!="ls" :  fails=run(f,fails, the)
+      if k[0] != "_" and k!="ls": fails = run(f,fails, the)
   else:
     if the.XAMPLE and the.XAMPLE in vars(Eg): 
       f = vars(Eg)[the.XAMPLE]
