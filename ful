@@ -43,7 +43,7 @@ else
   alias vi="vim -u $Ful/etc/dotvimrc "
   alias vims="vim +PluginInstall +qall"         
   alias repl="rlwrap sbcl --noinform " 
-  alias nscript="enscript -3Gr -Epython --color --line-numbers -fHelvetica7 -o - keys| pstopdf -o keys.pdf"
+  alias nscript="enscript -3Gr -Epython --color --line-numbers -fHelvetica6 -o - keys| pstopdf -o keys.pdf"
   alias keys2pdf="a2ps -rC3g keys  --pretty-print=python -f 5 -o - | pstopdf -o keys.pdf"
 
   
