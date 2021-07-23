@@ -256,22 +256,23 @@ def contrasts(here, there, the):
 
   def like(d, kl):
     out = prior = (hs[kl] + the.K) / (n + the.K*2)
-    for at, span in d.items():
-      f = has.get((kl, (at, span)), 0)
+    print(d)
+    for (at, (lo,hi)),v in d.items():
+      f = has.get((kl, (at, (lo,hi))), 0)
       out *= (f + the.M*prior) / (hs[kl] + the.M)
     return out
 
-  def val(d): return goal(like(d, True), like(d, False)), d
+  def val(d): return (goal(like(d, True), like(d, False)), d)
   def top(a): return sorted(a, reverse=True, key=first)[:the.TOP]
 
   has = {(klass, (at, (lo, hi))): f
          for col1, col2 in zip(here.cols.x, there.cols.x)
          for klass, f, at, (lo, hi) in col1.bins(col2, the)}
-  return print(list(has.items())[0])
   n = len(here.rows) + len(there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
   solos = [val({at: x}) for (_, (at, x))
            in set([z for _, z in has])]
+  return [print(x) for x in solos]
   ranges = {}
   for _, d in top(solos):
     for k in d:
