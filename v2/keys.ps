@@ -1,0 +1,1901 @@
+%!PS-Adobe-3.0
+%%Title: keys
+%%For: TIm Menzies
+%%Creator: a2ps version 4.14
+%%CreationDate: Fri Jul 23 00:12:03 2021
+%%BoundingBox: 24 24 571 818
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 2
+%%PageOrder: Ascend
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontMatrix get 3 get 1000 mul
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      % <vector> <key> <val>
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def % -
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Get the underline position and thickness if they're defined.
+    % Use 1 if they are not defined.
+    currentdict /FontInfo 2 copy known
+    { get
+      /UnderlinePosition 2 copy % <FontInfo> /UP <FontInfo> /UP
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+
+      /UnderlineThickness 2 copy % <FontInfo> /UT <FontInfo> /UT
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+      pop % -
+    }{ pop pop
+    } ifelse
+
+    currentdict
+  end 
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 595 def
+/sw 842 def
+/llx 24 def
+/urx 818 def
+/ury 571 def
+/lly 24 def
+/#copies 1 def
+/th 15.000000 def
+/fnfs 11 def
+/bfs 5.337155 def
+/cw 3.202293 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 81.400000 mul
+def
+/ph
+   505.428611 th add
+def
+/pmw urx llx sub pw 3 mul sub 2 div def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+  dup pmw add pw add
+  dup pmw add pw add
+] def
+/y [
+  pmh ph add 0 mul ph add
+  dup
+  dup
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1-3) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 2.241605 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#!/usr/bin/env python3.9) c n
+(# vim: ts=2 sw=2 sts=2 et :) N
+(# autopep8 --exclude 'E20,E401,E226,E301,E302,E41') N
+(""") p n
+(    ,-_|\\     Contrast set learning) str n
+(   /     \\    \(c\) Tim Menzies, 2021, unlicense.org) N
+(   \\_,-._*    Cluster, then reports, just the ) N
+(        v     deltas between similar clusters.) N
+(""") p n
+(import) K
+( re, sys, math, copy, argparse, random, itertools) p n
+() N
+(def) K
+( config\(\): ) p
+(return) K
+( dict\() p n
+(    BINS=\(   float, .5,     ') S
+(bins are of size n**BINS) str
+('\),) p n
+(    COLS=\(   str,   ') S
+(x) str
+(',    ') p
+(columns to use for inference) str
+('\),) p n
+(    DATA=\(   str,   ') S
+(../data/auto2.csv) str
+(', ') p
+(where to read data) str
+('\),) p n
+(    FAR=\(    float, .9,     ') S
+(where to look for far things) str
+('\),) p n
+(    GOAL=\(   str,   ') S
+(best) str
+(', ') p
+(learning goals: best|rest|other) str
+('\),) p n
+(    IOTA=\(   float, .3,     ') S
+(small = sd**iota) str
+('\),) p n
+(    K=\(      int,   2,      ') S
+(bayes low class frequency hack) str
+('\),) p n
+(    M=\(      int,   1,       ') S
+(bayes low range frequency hack) str
+('\),) p n
+(    P=\(      int,   2,      ') S
+(distance calculation exponent) str
+('\),) p n
+(    SAMPLES=\(int,   20,     ') S
+(#samples to find far things?) str
+('\),) p n
+(    SEED=\(   int,   10013,  ') S
+(seed for random numbers) str
+('\),) p n
+(    VERBOSE=\(bool,  False,  ') S
+(set verbose) str
+('\),) p n
+(    TOP=\(    int,   10,     ') S
+(focus on this many) str
+('\),) p n
+(    WILD=\(   int,   False,  ') S
+(run example, no protection) str
+('\),) p n
+(    XAMPLE=\( str,   "",     ") S
+('-x ls' lists all, '-x all' runs all) str
+("\)\)) p n
+() N
+(class) K
+( o\(object\):) p n
+(  ) S
+(def) K
+( __init__\(i, **k\): i.__dict__.update\(**k\)) p n
+(  ) S
+(def) K
+( __setitem__\(i, k, v\): i.__dict__[k] = v) p n
+(  ) S
+(def) K
+( __getitem__\(i, k\): ) p
+(return) K
+( i.__dict__[k]) p n
+(  ) S
+(def) K
+( __repr__\(i\): ) p
+(return) K
+( i.__class__.__name__ + str\() p n
+(      {k: v ) S
+(for) K
+( k, v ) p
+(in) K
+( i.__dict__.items\(\) ) p
+(if) K
+( k[0] != ") p
+(_) str
+("}\)) p n
+() N
+(# Columns _______________________________________________) c n
+(class) K
+( Col\(o\):) p n
+(  ") S
+(Store columns in `Col`, `Skip`, `Sym`, `Num`.) str
+(") p n
+(  ) S
+(def) K
+( __init__\(i, at=0, txt="", inits=[]\):) p n
+(    i.n, i.at, i.txt = 0, at, txt) N
+(    i.w = -1 ) S
+(if) K
+( ") p
+(-) str
+(" ) p
+(in) K
+( txt ) p
+(else) K
+( 1) p n
+(    [i.add\(x\) ) S
+(for) K
+( x ) p
+(in) K
+( inits]) p n
+() N
+(  ) S
+(def) K
+( add\(i, x, n=1\):) p n
+(    ) S
+(if) K
+( x != ") p
+(?) str
+(":) p n
+(      i.n += n) N
+(      x = i.add1\(x, n\)) N
+(    ) S
+(return) K
+( x) p n
+(# __________________) c n
+(class) K
+( Skip\(Col\):) p n
+(  ) S
+(def) K
+( add1\(i, x, n=1\): ) p
+(return) K
+( x) p n
+(# __________________) c n
+(class) K
+( Sym\(Col\):) p n
+(  ) S
+(def) K
+( __init__\(i, **kw\):) p n
+(    i.has, i.mode, i.most = {}, None, 0) N
+(    super\(\).__init__\(**kw\)) N
+() N
+(  ) S
+(def) K
+( add1\(i, x, n=1\):) p n
+(    new = inc\(i.has, x, n\)) N
+(    ) S
+(if) K
+( new > i.most:) p n
+(      i.most, i.mode = new, x) N
+(    ) S
+(return) K
+( x) p n
+() N
+(  ) S
+(def) K
+( bins\(i, j, _\):) p n
+(    ) S
+(for) K
+( k ) p
+(in) K
+( \(i.has | j.has\):) p n
+(      yield True, i.has.get\(k, 0\), i.at, \(k, k\)) N
+(      yield False, j.has.get\(k, 0\), j.at, \(k, k\)) N
+() N
+(  ) S
+(def) K
+( dist\(i, x, y\): ) p
+(return) K
+( 0 ) p
+(if) K
+( x == y ) p
+(else) K
+( 1) p n
+() N
+(  ) S
+(def) K
+( ent\(i\):) p n
+(    ) S
+(return) K
+( sum\(-v/i.n * math.log\(v/i.n\) ) p
+(for) K
+( v ) p
+(in) K
+( i.has.values\(\)\)) p n
+() N
+(  ) S
+(def) K
+( merge\(i, j\):) p n
+(    k = Sym\(at=i.at, txt=i.txt\)) N
+(    [k.add\(x, n\) ) S
+(for) K
+( has ) p
+(in) K
+( \(i.has, j.has\) ) p
+(for) K
+( x, n ) p
+(in) K
+( has.items\(\)]) p n
+(    ) S
+(return) K
+( k) p n
+() N
+(  ) S
+(def) K
+( merged\(i, j\):) p n
+(    k = i.merge\(j\)) N
+(    e1, n1, e2, n2, e, n = i.ent\(\), i.n, j.ent\(\), j.n, k.ent\(\), k.n) N
+(    tmp = n1/n*e1 + n2/n*e2) N
+(    ) S
+(if) K
+( e1 + e2 < 0.01 ) p
+(or) K
+( e * .95 < tmp:) p n
+(      ) S
+(return) K
+( k) p n
+() N
+(  ) S
+(def) K
+( mid\(i\): ) p
+(return) K
+( i.mode) p n
+(# __________________) c n
+(class) K
+( Num\(Col\):) p n
+(  ) S
+(def) K
+( __init__\(i, **kw\):) p n
+(    i._all, i.ok = [], False) N
+(    super\(\).__init__\(**kw\)) N
+() N
+(  ) S
+(def) K
+( add1\(i, x, n\):) p n
+(    x, i.ok = float\(x\), False) N
+(keys) (Page 1/5) (Jul 23, 21 0:07) title
+border
+/v 1 store
+/x0 x v get 2.241605 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    ) p
+(for) K
+( _ ) p
+(in) K
+( range\(n\):) p n
+(      i._all += [x]) N
+(    ) S
+(return) K
+( x) p n
+() N
+(  ) S
+(def) K
+( all\(i\):) p n
+(    ) S
+(if) K
+( ) p
+(not) K
+( i.ok:) p n
+(      i.ok = True) N
+(      i._all = sorted\(i._all\)) N
+(    ) S
+(return) K
+( i._all) p n
+() N
+(  ) S
+(def) K
+( bins\(i, j, the\):) p n
+(    xy = [\(z, True\) ) S
+(for) K
+( z ) p
+(in) K
+( i._all]+[\(z, False\) ) p
+(for) K
+( z ) p
+(in) K
+( j._all]) p n
+(    iota = the.IOTA * \(i.n*i.sd\(\) + j.n*j.sd\(\)\) / \(i.n + j.n\)) N
+(    ) S
+(for) K
+( \(\(lo, hi\), sym\) ) p
+(in) K
+( bins\(xy, iota=iota, size=len\(xy\)**the.BINS\):) p n
+(      yield True, sym.has.get\(True, 0\), i.at, \(lo, hi\)) N
+(      yield False, sym.has.get\(False, 0\), j.at, \(lo, hi\)) N
+() N
+(  ) S
+(def) K
+( dist\(i, x, y\):) p n
+(    ) S
+(if) K
+( x == ") p
+(?) str
+(":) p n
+(      y = i.norm\(y\)) N
+(      x = 1 ) S
+(if) K
+( y < 0.5 ) p
+(else) K
+( 0) p n
+(    ) S
+(elif) K
+( y == ") p
+(?) str
+(":) p n
+(      x = i.norm\(x\)) N
+(      y = 1 ) S
+(if) K
+( x < 0.5 ) p
+(else) K
+( 0) p n
+(    ) S
+(else) K
+( :) p n
+(      x, y = i.norm\(x\), y.norm\(y\)) N
+(    ) S
+(return) K
+( abs\(x-y\)) p n
+() N
+(  ) S
+(def) K
+( mid\(i\): ) p
+(return) K
+( per\(i.all\(\), p=.5\)) p n
+() N
+(  ) S
+(def) K
+( norm\(i, x\):) p n
+(    ) S
+(if) K
+( x == ") p
+(?) str
+(":) p n
+(      ) S
+(return) K
+( x) p n
+(    a = i.all\(\)) N
+(    ) S
+(return) K
+( max\(0, min\(1, \(x-first\(a\)\)/\(last\(a\)-first\(a\)+1E-32\)\)\)) p n
+() N
+(  ) S
+(def) K
+( sd\(i\)      : ) p
+(return) K
+( \(per\(i.all\(\), .9\) - per\(i.all\(\), .1\)\)/2.56) p n
+(  ) S
+(def) K
+( span\(i\)    : ) p
+(return) K
+( \(first\(i.all\(\)\), last\(i.all\(\)\)\)) p n
+(  ) S
+(def) K
+( wide\(i, n=0\): ) p
+(return) K
+( last\(i.all\(\)\) - first\(i.all\(\)\) >= n) p n
+() N
+(# Row and Rows __________________________________________) c n
+(class) K
+( Row\(o\):) p n
+(  ) S
+(def) K
+( __init__\(i, lst, rows=None\): i.rows, i.cells = rows, lst) p n
+() N
+(  ) S
+(def) K
+( __lt__\(i, j\):) p n
+(    goals = i.rows.cols.y) N
+(    s1, s2, n = 0, 0, len\(goals\)) N
+(    ) S
+(for) K
+( col ) p
+(in) K
+( goals:) p n
+(      a = col.norm\( i.cells[col.at] \)) N
+(      b = col.norm\( j.cells[col.at] \)) N
+(      s1 -= math.e**\( col.w * \(a - b\) / n \)) N
+(      s2 -= math.e**\( col.w * \(b - a\) / n \)) N
+(    ) S
+(return) K
+( s1 / n < s2 / n) p n
+() N
+(  ) S
+(def) K
+( dist\(i, j, the\):) p n
+(    d = n = 1E-32) N
+(    ) S
+(for) K
+( col ) p
+(in) K
+( i.rows.cols[the.COLS]:) p n
+(      n += 1) N
+(      x, y = i.cells[at], j.cells[at]) N
+(      d += 1 ) S
+(if) K
+( x == ") p
+(?) str
+(" ) p
+(and) K
+( y == ") p
+(?) str
+(" ) p
+(else) K
+( col.dist\(x, y\) ** the.P) p n
+(    ) S
+(return) K
+( \(d/n\) ** \(1/the.P\)) p n
+() N
+(  ) S
+(def) K
+( far\(i, rows, the\):) p n
+(    tmp = [\(dist\(i, j\), j\) ) S
+(for) K
+( _ ) p
+(in) K
+( range\(the.SAMPLE\)]) p n
+(    ) S
+(return) K
+( per\(sorted\(tmp, key=first\), the.FAR\)) p n
+() N
+(  ) S
+(def) K
+( ys\(i\): ) p
+(return) K
+( [i.cells[col.at] ) p
+(for) K
+( col ) p
+(in) K
+( i.rows.cols.y]) p n
+(# __________________) c n
+(class) K
+( Rows\(o\):) p n
+(  ) S
+(def) K
+( __init__\(i, inits=[]\):) p n
+(    i.rows = []) N
+(    i.cols = o\(all=[], names=[], x=[], y=[], klass=None\)) N
+(    [i.add\(x\) ) S
+(for) K
+( x ) p
+(in) K
+( inits]) p n
+() N
+(  ) S
+(def) K
+( add\(i, a\): i.data\(a\) ) p
+(if) K
+( i.cols.names ) p
+(else) K
+( i.header\(a\)) p n
+() N
+(  ) S
+(def) K
+( best\(i, the\):) p n
+(    i.rows.sort\(\)) N
+(    ds = [the.IOTA*y.sd\(\) ) S
+(for) K
+( y ) p
+(in) K
+( i.cols.y]) p n
+(    best, rest = i.clone\(\), i.clone\(\)) N
+(    ) S
+(for) K
+( n, row ) p
+(in) K
+( enumerate\(i.rows\):) p n
+(      bestp = False) N
+(      ) S
+(for) K
+( n1, n2, d ) p
+(in) K
+( zip\(i.rows[0].ys\(\), row.ys\(\), ds\):) p n
+(        bestp |= abs\(n1-n2\) <= d) N
+(      \(best ) S
+(if) K
+( bestp ) p
+(else) K
+( rest\).add\(row\)) p n
+(    ) S
+(return) K
+( best, rest) p n
+() N
+(  ) S
+(def) K
+( clone\(i, inits=[]\): ) p
+(return) K
+( Rows\([i.cols.names] + inits\)) p n
+() N
+(  ) S
+(def) K
+( data\(i, a\):) p n
+(    a = a.cells ) S
+(if) K
+( type\(a\) == Row ) p
+(else) K
+( a) p n
+(    i.rows += [Row\([col.add\(a[col.at]\) ) S
+(for) K
+( col ) p
+(in) K
+( i.cols.all],) p n
+(                   rows=i\)]) N
+() N
+(keys) (Page 2/5) (Jul 23, 21 0:07) title
+border
+/v 2 store
+/x0 x v get 2.241605 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  ) p
+(def) K
+( header\(i, a\):) p n
+(    i.cols.names = a) N
+(    ) S
+(for) K
+( at, x ) p
+(in) K
+( enumerate\(a\):) p n
+(      new = Skip ) S
+(if) K
+( i.skipp\(x\) ) p
+(else) K
+( \(Num ) p
+(if) K
+( i.nump\(x\) ) p
+(else) K
+( Sym\)) p n
+(      new = new\(at=at, txt=x\)) N
+(      i.cols.all += [new]) N
+(      ) S
+(if) K
+( ) p
+(not) K
+( i.skipp\(x\):) p n
+(        i.cols[") S
+(y) str
+(" ) p
+(if) K
+( i.yp\(x\) ) p
+(else) K
+( ") p
+(x) str
+("] += [new]) p n
+(        ) S
+(if) K
+( i.klassp\(x\):) p n
+(          i.cols.klass = new) N
+() N
+(  ) S
+(def) K
+( klassp\(i, x\): ) p
+(return) K
+( ") p
+(!) str
+(" ) p
+(in) K
+( x) p n
+(  ) S
+(def) K
+( nump\(i, x\): ) p
+(return) K
+( x[0].isupper\(\)) p n
+(  ) S
+(def) K
+( skipp\(i, x\): ) p
+(return) K
+( ") p
+(?) str
+(" ) p
+(in) K
+( x) p n
+(  ) S
+(def) K
+( yp\(i, x\): ) p
+(return) K
+( ") p
+(-) str
+(" ) p
+(in) K
+( x ) p
+(or) K
+( ") p
+(+) str
+(" ) p
+(in) K
+( x ) p
+(or) K
+( i.klassp\(x\)) p n
+(  ) S
+(def) K
+( ys\(i\): ) p
+(return) K
+( [col.mid\(\) ) p
+(for) K
+( col ) p
+(in) K
+( i.cols.y]) p n
+(  ) S
+(def) K
+( ysd\(i\): ) p
+(return) K
+( [col.sd\(\) ) p
+(for) K
+( col ) p
+(in) K
+( i.cols.y]) p n
+(# __________________) c n
+(def) K
+( stratify\(src\):) p n
+(  all, klass = None, {}) N
+(  ) S
+(for) K
+( n, row ) p
+(in) K
+( enumerate\(src\):) p n
+(    ) S
+(if) K
+( all:) p n
+(      kl = row[all.cols.klass.at]) N
+(      here = klass[kl] = klass.get\(kl, None\) ) S
+(or) K
+( all.clone\(\)) p n
+(      here.add\(row\)) N
+(      all.add\(row\)) N
+(    ) S
+(else) K
+(:) p n
+(      all = Rows\([row]\)) N
+(  ) S
+(return) K
+( o\(all=all, klass=klass\)) p n
+() N
+(# Discretizations ________________________________________) c n
+(# Use `bins` to divide numeric data into ranges.) N
+(def) K
+( bins\(xy, iota=0, size=30\):) p n
+(  ) S
+(def) K
+( merge\(b4\):) p n
+(    j, tmp, n = 0, [], len\(b4\)) N
+(    ) S
+(while) K
+( j < n:) p n
+(      \(\(lo, _\), ay\) = a = b4[j]) N
+(      ) S
+(if) K
+( j < n - 1:) p n
+(        \(\(_, hi\), by\) = b4[j + 1]) N
+(        ) S
+(if) K
+( cy := ay.merged\(by\):) p n
+(          a = \(\(lo, hi\), cy\)) N
+(          j += 1) N
+(      tmp += [a]) N
+(      j += 1) N
+(    ) S
+(return) K
+( merge\(tmp\) ) p
+(if) K
+( len\(tmp\) < len\(b4\) ) p
+(else) K
+( b4) p n
+() N
+(  ) S
+(def) K
+( divide\(xy\):) p n
+(    bin = o\(x=Num\(\), y=Sym\(\)\)) N
+(    bins = [bin]) N
+(    ) S
+(for) K
+( i, \(x, y\) ) p
+(in) K
+( enumerate\(xy\):) p n
+(      ) S
+(if) K
+( bin.x.n >= size ) p
+(and) K
+( x != b4:) p n
+(        ) S
+(if) K
+( i < len\(xy\)-size ) p
+(and) K
+( bin.x.wide\(iota\):) p n
+(          bin = o\(x=Num\(\), y=Sym\(\)\)) N
+(          bins += [bin]) N
+(      bin.x.add\(x\)) N
+(      bin.y.add\(y\)) N
+(      b4 = x) N
+(    ) S
+(return) K
+( bins) p n
+() N
+(  xy = sorted\(xy, key=first\)) N
+(  ) S
+(return) K
+( merge\([\(bin.x.span\(\), bin.y\) ) p
+(for) K
+( bin ) p
+(in) K
+( divide\(xy\)]\)) p n
+() N
+(# Learn class deltas ___________________________________) c n
+(def) K
+( contrasts\(here, there, the\):) p n
+(  goal = {') S
+(best) str
+(' : ) p
+(lambda) K
+( b, r: b**2/\(b+r\),) p n
+(          ') S
+(rest) str
+(' : ) p
+(lambda) K
+( b, r: r**2/\(b+r\),) p n
+(          ') S
+(other) str
+(': ) p
+(lambda) K
+( b, r: 1/\(b+r\)    }[the.GOAL]) p n
+() N
+(  ) S
+(def) K
+( like\(d, kl\):) p n
+(    out = prior = \(hs[kl] + the.K\) / \(n + the.K*2\)) N
+(    ) S
+(for) K
+( at, span ) p
+(in) K
+( d.items\(\):) p n
+(      f = has.get\(\(kl, at, span\), 0\)) N
+(      out *= \(f + the.M*prior\) / \(hs[kl] + the.M\)) N
+(    ) S
+(return) K
+( out) p n
+() N
+(  ) S
+(def) K
+( val\(d\): ) p
+(return) K
+( \(goal\(like\(d, True\), like\(d, False\)\), d\)) p n
+(  ) S
+(def) K
+( top\(a\): ) p
+(return) K
+( sorted\(a, reverse=True, key=first\)[:the.TOP]) p n
+() N
+(  has = {\(klass, at, \(lo, hi\)\): f) N
+(         ) S
+(for) K
+( col1, col2 ) p
+(in) K
+( zip\(here.cols.x, there.cols.x\)) p n
+(         ) S
+(for) K
+( klass, f, at, \(lo, hi\) ) p
+(in) K
+( col1.bins\(col2, the\)}) p n
+(  n = len\(here.rows\) + len\(there.rows\)) N
+(  hs = {True: len\(here.rows\), False: len\(there.rows\)}) N
+(  uniques = set\([\(at, span\) ) S
+(for) K
+( \(_, at, span\) ) p
+(in) K
+( has]\)) p n
+(  solos = [val\({at: span}\) ) S
+(for) K
+( \(   at, span\) ) p
+(in) K
+( uniques]) p n
+(  ) S
+(for) K
+( x ) p
+(in) K
+( top\(solos\):) p n
+(    ) S
+(print) K
+(\(x\)) p n
+(  ) S
+(return) K
+( 1) p n
+(  ranges = {}) N
+(  ) S
+(for) K
+( _, d ) p
+(in) K
+( top\(solos\):) p n
+(    ) S
+(for) K
+( k ) p
+(in) K
+( d:) p n
+(      ranges[k] = ranges.get\(k, set\(\)\).add\(d[k]\)) N
+(  ) S
+(return) K
+( ) p
+(print) K
+(\(ranges\)) p n
+(  ) S
+(for) K
+( rule ) p
+(in) K
+( top\([val\(d\) ) p
+(for) K
+( d ) p
+(in) K
+( dict_product\(ranges\)]\):) p n
+(keys) (Page 3/5) (Jul 23, 21 0:07) title
+border
+grestore
+(Printed by TIm Menzies) rhead
+(keys) (1/2) (Friday July 23, 2021) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (4-5) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 2.241605 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    ) p
+(print) K
+(\(rule\)) p n
+() N
+(# Misc utils ______________________________________________) c n
+(# string stuff) N
+(def) K
+( color\(end=") p
+(\\n) str
+(", **kw\):) p n
+(  s, a, z = "", ") S
+(\\u001b[) str
+(", ") p
+(;1m) str
+(") p n
+(  c = dict\(black=30, red=31, green=32, yellow=33,) N
+(           purple=34, pink=35, blue=36, white=37\)) N
+(  ) S
+(for) K
+( col, txt ) p
+(in) K
+( kw.items\(\):) p n
+(    s = s+a + str\(c[col]\) + z+txt+") S
+(\\033[0m) str
+(") p n
+(  ) S
+(print) K
+(\(s, end=end\)) p n
+() N
+(def) K
+( mline\(m\): m += [[") p
+(-) str
+("*len\(str\(x\)\) ) p
+(for) K
+( x ) p
+(in) K
+( m[-1]]]) p n
+() N
+(def) K
+( printm\(matrix\):) p n
+(  s = [[str\(e\) ) S
+(for) K
+( e ) p
+(in) K
+( row] ) p
+(for) K
+( row ) p
+(in) K
+( matrix]) p n
+(  lens = [max\(map\(len, col\)\) ) S
+(for) K
+( col ) p
+(in) K
+( zip\(*s\)]) p n
+(  fmt = ') S
+( | ) str
+('.join\(') p
+({{:>{}}}) str
+('.format\(x\) ) p
+(for) K
+( x ) p
+(in) K
+( lens\)) p n
+(  ) S
+(for) K
+( row ) p
+(in) K
+( [fmt.format\(*row\) ) p
+(for) K
+( row ) p
+(in) K
+( s]:) p n
+(    ) S
+(print) K
+(\(row\)) p n
+() N
+(# maths stuff) c n
+(def) K
+( r3\(a\): ) p
+(return) K
+( [round\(x, 3\) ) p
+(for) K
+( x ) p
+(in) K
+( a]) p n
+() N
+(# dictionary stuff) c n
+(def) K
+( has\(d, k\): ) p
+(return) K
+( d.get\(k, 0\)) p n
+(def) K
+( inc\(d, k, n=1\): tmp = d[k] = n + d.get\(k, 0\); ) p
+(return) K
+( tmp) p n
+() N
+(def) K
+( dict_product\(d\):) p n
+(  keys = d.keys\(\)) N
+(  ) S
+(for) K
+( p ) p
+(in) K
+( itertools.product\(*d.values\(\)\):) p n
+(    yield dict\(zip\(keys, p\)\)) N
+() N
+(# list stuff) c n
+(def) K
+( first\(a\): ) p
+(return) K
+( a[0]) p n
+(def) K
+( last\(a\): ) p
+(return) K
+( a[-1]  ) p
+(# $\\label{comment}$) c n
+(def) K
+( per\(a, p=.5\): ) p
+(return) K
+( a[int\(p*len\(a\)\)]) p n
+() N
+(# file stuff) c n
+(def) K
+( csv\(f=None, sep=") p
+(,) str
+("\):) p n
+(  ) S
+(def) K
+( prep\(s\): ) p
+(return) K
+( re.sub\(r') p
+(\([\\n\\t\\r ]|#.*\)) str
+(', '', s\)) p n
+(  ) S
+(if) K
+( f:) p n
+(    with open\(f\) as fp:) N
+(      ) S
+(for) K
+( s ) p
+(in) K
+( fp:) p n
+(        ) S
+(if) K
+( s := prep\(s\):) p n
+(          yield s.split\(sep\)) N
+(  ) S
+(else) K
+(:) p n
+(    ) S
+(for) K
+( s ) p
+(in) K
+( sys.stdin:) p n
+(      ) S
+(if) K
+( s := prep\(s\):) p n
+(        yield s.split\(sep\)) N
+() N
+(# command-line stuff) c n
+(def) K
+( cli\(use, txt, config\):) p n
+(  fmt = argparse.RawTextHelpFormatter) N
+(  used, p = {}, argparse.ArgumentParser\(prog=use, description=txt,) N
+(                                        formatter_class=fmt\)) N
+(  ) S
+(for) K
+( k, \(_, b4, h\) ) p
+(in) K
+( config.items\(\):) p n
+(    k0 = k[0]) N
+(    used[k0] = c = k0 ) S
+(if) K
+( k0 ) p
+(in) K
+( used ) p
+(else) K
+( k0.lower\(\)) p n
+(    ) S
+(if) K
+( b4 == False:) p n
+(      p.add_argument\(") S
+(-) str
+("+c, dest=k, default=False,) p n
+(                     help=h,) N
+(                     action=") S
+(store_true) str
+("\)) p n
+(    ) S
+(else) K
+(:) p n
+(      p.add_argument\(") S
+(-) str
+("+c, dest=k, default=b4,) p n
+(                     help=h + ") S
+( [) str
+(" + str\(b4\) + ") p
+(]) str
+(",) p n
+(                     type=type\(b4\), metavar=k\)) N
+(  ) S
+(return) K
+( o\( **p.parse_args\(\).__dict__ \)) p n
+() N
+(# Unit tests ______________________________________________) c n
+(class) K
+( Eg:) p n
+(  ) S
+(def) K
+( ls\(the\):) p n
+(    ") S
+(list  all examples.) str
+(") p n
+(    ) S
+(print) K
+(\(") p
+(\\nexamples:) str
+("\)) p n
+(    ) S
+(for) K
+( k, f ) p
+(in) K
+( vars\(Eg\).items\(\):) p n
+(      ) S
+(if) K
+( k[0] != ") p
+(_) str
+(":) p n
+(        ) S
+(print) K
+(\(f") p
+(  {k:<13} {f.___doc___}) str
+("\)) p n
+() N
+(  ) S
+(def) K
+( _fail\(the\):) p n
+(    ") S
+(testing failure) str
+(") p n
+(    assert False, ") S
+(failing) str
+(") p n
+() N
+(  ) S
+(def) K
+( data\(the, file=") p
+(../data/vote.csv) str
+("\):) p n
+(    ") S
+(simple load of data into  a table) str
+(") p n
+(    r = Rows\(csv\(file\)\)) N
+(    assert 435 == len\(r.rows\)) N
+(    assert 195 == r.cols.all[1].has[') S
+(y) str
+(']) p n
+() N
+(  ) S
+(def) K
+( nclasses\(the, file=") p
+(../data/diabetes.csv) str
+(", kl=") p
+(positive) str
+("\):) p n
+(    ") S
+(read data with nclasses) str
+(") p n
+(    rs = stratify\(csv\(file\)\)) N
+(    assert 2 == len\(rs.klass\)) N
+(    assert 268 == len\(rs.klass[kl].rows\)) N
+(    assert 768 == len\(rs.all.rows\)) N
+(keys) (Page 4/5) (Jul 23, 21 0:07) title
+border
+/v 1 store
+/x0 x v get 2.241605 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    assert 3.90625 == rs.klass[kl].cols.all[0].sd\(\)) p n
+() N
+(  ) S
+(def) K
+( bins\(the, file=") p
+(../data/diabetes.csv) str
+(",) p n
+(           k1=") S
+(positive) str
+(", k2=") p
+(negative) str
+("\):) p n
+(    ") S
+(discretize some data) str
+(") p n
+(    rs = stratify\(csv\(file\)\)) N
+(    bins1\(rs.klass[k1], rs.klass[k2], the\)) N
+() N
+(  ) S
+(def) K
+( bestrest\(the, file=") p
+(../data/auto93.csv) str
+("\):) p n
+(    ") S
+(discretize some multi-goal data) str
+(") p n
+(    r = Rows\(csv\(file\)\)) N
+(    goods, bads = r.best\(the\)) N
+(    bins1\(goods, bads, the\)) N
+() N
+(  ) S
+(def) K
+( contrast\(the, file=") p
+(../data/auto93.csv) str
+("\):) p n
+(    ") S
+(discretize some multi-goal data) str
+(") p n
+(    r = Rows\(csv\(file\)\)) N
+(    goods, bads = r.best\(the\)) N
+(    contrasts\(goods, bads, the\)) N
+() N
+(def) K
+( bins1\(goods, bads, the\):) p n
+(  ) S
+(for) K
+( good, bad ) p
+(in) K
+( zip\(goods.cols.x, bads.cols.x\):) p n
+(    bins = sorted\(good.bins\(bad, the\)\)) N
+(    ) S
+(if) K
+( len\(bins\) > 1:) p n
+(      ) S
+(print) K
+(\(f") p
+(\\n{good.txt}) str
+("\)) p n
+(      ) S
+(for) K
+( bin ) p
+(in) K
+( bins:) p n
+(        ) S
+(print) K
+(\(") p
+(\\t) str
+(", bin\)) p n
+() N
+(# Main program ____________________________________________) c n
+(def) K
+( main\(the\):) p n
+(  ) S
+(def) K
+( run\(fun, fails, the\):) p n
+(    s = f") S
+( {fun.__name__:<12}) str
+(") p n
+(    ) S
+(if) K
+( the.WILD:) p n
+(      ) S
+(print) K
+(\(") p
+(wild) str
+("\)) p n
+(      fun\(copy.deepcopy\(the\)\)) N
+(      sys.exit\(\)) N
+(    ) S
+(try) K
+(:) p n
+(      fun\(copy.deepcopy\(the\)\)) N
+(      random.seed\(the.SEED\)) N
+(      color\(green=\(chr\(10003\) + s\), white=fun.__doc__\)) N
+(    ) S
+(except) K
+( Exception as err:) p n
+(      fails = fails + 1) N
+(      color\(red=\(chr\(10007\) + s\), white=str\(err\)\)) N
+(    ) S
+(return) K
+( fails) p n
+(  ) S
+(# __________________) c n
+(  fails = 0) p n
+(  ) S
+(if) K
+( the.XAMPLE == ") p
+(all) str
+(":) p n
+(    ) S
+(for) K
+( k, f ) p
+(in) K
+( vars\(Eg\).items\(\):) p n
+(      ) S
+(if) K
+( k[0] != ") p
+(_) str
+(" ) p
+(and) K
+( k != ") p
+(ls) str
+(":) p n
+(        fails = run\(f, fails, the\)) N
+(  ) S
+(else) K
+(:) p n
+(    ) S
+(if) K
+( the.XAMPLE ) p
+(and) K
+( the.XAMPLE ) p
+(in) K
+( vars\(Eg\):) p n
+(      f = vars\(Eg\)[the.XAMPLE]) N
+(      ) S
+(if) K
+( the.XAMPLE == ") p
+(ls) str
+(":) p n
+(        f\(the\)) N
+(      ) S
+(else) K
+( :) p n
+(        fails = run\(f, fails, the\)) N
+(  sys.exit\(fails\)) N
+() N
+() N
+(if) K
+( __name__ == ") p
+(__main__) str
+(":) p n
+(  main\(cli\(") S
+(./keys) str
+(", __doc__, config\(\)\)\)) p n
+(keys) (Page 5/5) (Jul 23, 21 0:07) title
+border
+grestore
+(Printed by TIm Menzies) rhead
+(keys) (2/2) (Friday July 23, 2021) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF
