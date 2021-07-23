@@ -2,1054 +2,1095 @@
 %‚„œ”
 2 0 obj
 <<
-/Length 32323
+/Length 27792
 >>
 stream
+0 G
+0 J 0 j 0.1 w 10 M []0 d
+/GS1 gs
+1 i 
+571 288.667 m
+60 288.667 l
+571 553.333 m
+60 553.333 l
+S
+0.95 g
+42 818 18 -794 re
+f
+0.7 g
+24 96 36 -72 re
+f
 BT
 /TT2 1 Tf
-0 10 -10 0 35.6667 29 Tm
+0 12 -12 0 40 38.666 Tm
 0 g
-/GS1 gs
 0 Tc
 0 Tw
-[(keys)-4500(Thu Jul 22 17:14:18 2021)-4500(1)]TJ
+(07/22/21)Tj
+-0.0552 -1.0667 TD
+(19:27:10)Tj
+ET
+0.7 g
+24 818 36 -72 re
+f
+BT
 /TT4 1 Tf
-0 7 -7 0 49 45.568 Tm
-(5:)Tj
+0 28.8 -28.8 0 52.8 773.9915 Tm
+1 g
+(1)Tj
 /TT6 1 Tf
+0 14 -14 0 55.5 408.1689 Tm
+0 g
+(keys)Tj
+/TT8 1 Tf
+0 7 -7 0 70 45.568 Tm
+(1:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 1.667 0 TD
 (#!/usr/bin/env python3.9)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 -1.667 -1.1429 TD
-(6:)Tj
-/TT6 1 Tf
+(2:)Tj
+/TT10 1 Tf
 1.667 0 TD
 (# vim: ts=2 sw=2 sts=2 et :)Tj
-/TT4 1 Tf
--1.667 -1.1429 TD
-(7:)Tj
 /TT8 1 Tf
+-1.667 -1.1429 TD
+(3:)Tj
+/TT10 1 Tf
+1.667 0 TD
+(# autopep8 --exclude íE20,E401,E226,E301,E302,E41í)Tj
+/TT8 1 Tf
+-1.667 -1.1429 TD
+(4:)Tj
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 1.667 0 TD
 (""")Tj
+/TT8 1 Tf
+-1.667 -1.1429 TD
+(5:)Tj
 /TT4 1 Tf
+1.667 0 TD
+(    ,-_|\\     Contrast set learning)Tj
+/TT8 1 Tf
+-1.667 -1.1429 TD
+(6:)Tj
+/TT4 1 Tf
+1.667 0 TD
+(   /     \\    \(c\) Tim Menzies, 2021, unlicense.org)Tj
+/TT8 1 Tf
+-1.667 -1.1429 TD
+(7:)Tj
+/TT4 1 Tf
+1.667 0 TD
+(   \\_,-._*    Cluster, then report deltas between similiar )Tj
+/TT8 1 Tf
 -1.667 -1.1429 TD
 (8:)Tj
-/TT8 1 Tf
-1.667 0 TD
-(    ,-_|\\     Contrast set learner\( c\) Tim Menzies, 2021, unlicense.org)Tj
 /TT4 1 Tf
+1.667 0 TD
+(        v     clusters \(which will be few\).)Tj
+/TT8 1 Tf
 -1.667 -1.1429 TD
 (9:)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 1.667 0 TD
-(   /     \\    The delta between things is  )Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(10:)Tj
-/TT8 1 Tf
-2.223 0 TD
-(   \\_,-._*    simpler than the things.)Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(11:)Tj
-/TT8 1 Tf
-2.223 0 TD
-(        v )Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(12:)Tj
-/TT8 1 Tf
-2.223 0 TD
 (""")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -2.223 -1.1429 TD
-(13:)Tj
-/TT8 1 Tf
+(10:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (import)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.111 0 TD
 ( re, sys, math, copy, argparse, random, itertools)Tj
 -5.334 -1.1429 TD
-(14:)Tj
+(11:)Tj
 T*
-(15:)Tj
-/TT8 1 Tf
+(12:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (config)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3 0 TD
 (\(\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.222 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( dict\()Tj
 -11.112 -1.1429 TD
-[(16:)-832.9(  BINS    = \(float, .5,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-12.368 0 TD
-(íbins are of size n**BINSí)Tj
+[(13:)-832.9(    BINS=\(float, .5, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+10.422 0 TD
+(íbins are of size n**BINSí)Tj
+/TT8 1 Tf
 0 g
 11.837 0 TD
 (\),)Tj
--24.205 -1.1429 TD
-[(17:)-832.9(  COLS    = \(str,   )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-10.032 0 TD
-(íxí)Tj
+-22.259 -1.1429 TD
+[(14:)-832.9(    COLS=\(str, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+8.642 0 TD
+(íxí)Tj
+/TT8 1 Tf
 0 g
 1.112 0 TD
-(,    )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-1.39 0 TD
-(ícolumns to use for inferenceí)Tj
+(, )Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+0.556 0 TD
+(ícolumns to use for inferenceí)Tj
+/TT8 1 Tf
 0 g
 14.226 0 TD
 (\),)Tj
--26.76 -1.1429 TD
-[(18:)-832.9(  DATA    = \(str,   )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-9.976 0 TD
-(í../data/auto2.csví)Tj
+-24.536 -1.1429 TD
+[(15:)-832.9(    DATA=\(str, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+8.586 0 TD
+(í../data/auto2.csví)Tj
+/TT8 1 Tf
 0 g
 8.337 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 (íwhere to read dataí)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 9.392 0 TD
 (\),)Tj
--28.261 -1.1429 TD
-[(19:)-832.9(  FAR     = \(float, .9,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-12.312 0 TD
-(íwhere to look for far thingsí)Tj
+-26.871 -1.1429 TD
+[(16:)-832.9(    FAR=\(float, .9, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+10.088 0 TD
+(íwhere to look for far thingsí)Tj
+/TT8 1 Tf
 0 g
 13.447 0 TD
 (\),)Tj
--25.759 -1.1429 TD
-[(20:)-832.9(  GOAL    = \(str,   )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-10.088 0 TD
-(íbestí)Tj
+-23.535 -1.1429 TD
+[(17:)-832.9(    GOAL=\(str, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+8.698 0 TD
+(íbestí)Tj
+/TT8 1 Tf
 0 g
 2.612 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 (ílearning goals: best|rest|otherí)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 14.897 0 TD
 (\),)Tj
--28.153 -1.1429 TD
-[(21:)-832.9(  IOTA    = \(float, .3,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-12.368 0 TD
-(ísmall = sd**iotaí)Tj
+-26.763 -1.1429 TD
+[(18:)-832.9(    IOTA=\(float, .3, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+10.422 0 TD
+(ísmall = sd**iotaí)Tj
+/TT8 1 Tf
 0 g
 7.976 0 TD
 (\),)Tj
--20.344 -1.1429 TD
-[(22:)-832.9(  K       = \(int,    2,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-11.257 0 TD
-(íbayes low class frequency hackí)Tj
+-18.398 -1.1429 TD
+[(19:)-832.9(    K=\(int, 2, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+7.643 0 TD
+(íbayes low class frequency hackí)Tj
+/TT8 1 Tf
 0 g
 15.73 0 TD
 (\),)Tj
--26.987 -1.1429 TD
-[(23:)-832.9(  M       = \(int,    1,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-11.423 0 TD
-(íbayes low range frequency hackí)Tj
+-23.373 -1.1429 TD
+[(20:)-832.9(    M=\(int, 1, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+7.809 0 TD
+(íbayes low range frequency hackí)Tj
+/TT8 1 Tf
 0 g
 15.951 0 TD
 (\),)Tj
--27.374 -1.1429 TD
-[(24:)-832.9(  P       = \(int,    2,     )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-11.257 0 TD
-(ídistance calculation exponentí)Tj
+-23.76 -1.1429 TD
+[(21:)-832.9(    P=\(int, 2, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+7.643 0 TD
+(ídistance calculation exponentí)Tj
+/TT8 1 Tf
 0 g
 14.838 0 TD
 (\),)Tj
--26.095 -1.1429 TD
-[(25:)-832.9(  SAMPLES = \(int,    20,    )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-13.924 0 TD
-(í#samples to find far things?í)Tj
+-22.481 -1.1429 TD
+[(22:)-832.9(    SAMPLES=\(int, 20, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+12.256 0 TD
+(í#samples to find far things?í)Tj
+/TT8 1 Tf
 0 g
 13.892 0 TD
 (\),)Tj
--27.816 -1.1429 TD
-[(26:)-832.9(  SEED    = \(int,    10013, )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-13.591 0 TD
-(íseed for random numbersí)Tj
+-26.148 -1.1429 TD
+[(23:)-832.9(    SEED=\(int, 10013, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+11.923 0 TD
+(íseed for random numbersí)Tj
+/TT8 1 Tf
 0 g
 12.892 0 TD
 (\),)Tj
--26.483 -1.1429 TD
-[(27:)-832.9(  VERBOSE = \(bool,   False, )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-15.09 0 TD
-(íset verboseí)Tj
+-24.815 -1.1429 TD
+[(24:)-832.9(    VERBOSE=\(bool, False, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+14.534 0 TD
+(íset verboseí)Tj
+/TT8 1 Tf
 0 g
 6.114 0 TD
 (\),)Tj
--21.204 -1.1429 TD
-[(28:)-832.9(  TOP     = \(int,    20,    )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-12.368 0 TD
-(ífocus on this manyí)Tj
+-20.648 -1.1429 TD
+[(25:)-832.9(    TOP=\(int, 20, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+9.588 0 TD
+(ífocus on this manyí)Tj
+/TT8 1 Tf
 0 g
 9.669 0 TD
 (\),)Tj
--22.037 -1.1429 TD
-[(29:)-832.9(  WILD    = \(int,    False, )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-13.033 0 TD
-(írun example, no protectioní)Tj
+-19.257 -1.1429 TD
+[(26:)-832.9(    WILD=\(int, False, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+11.365 0 TD
+(írun example, no protectioní)Tj
+/TT8 1 Tf
 0 g
 13.392 0 TD
 (\),)Tj
--26.425 -1.1429 TD
-[(30:)-832.9(  XAMPLE  = \(str, )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-10.254 0 TD
-("")Tj
+-24.757 -1.1429 TD
+[(27:)-832.9(    XAMPLE=\(str, )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+9.976 0 TD
+("")Tj
+/TT8 1 Tf
 0 g
 0.948 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 ("egs: í-x lsí lists all, í-x allí runs all")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 16.734 0 TD
 (\)\))Tj
--28.492 -1.1429 TD
-(31:)Tj
+-28.214 -1.1429 TD
+(28:)Tj
 T*
-(32:)Tj
-/TT8 1 Tf
+(29:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( o\(object\):)Tj
 -4.725 -1.1429 TD
+[(30:)-832.9(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(__init__)Tj
+/TT8 1 Tf
+0 g
+3.724 0 TD
+(\(i, **k\): i.__dict__.update\(**k\))Tj
+-8.281 -1.1429 TD
+[(31:)-832.9(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(__setitem__)Tj
+/TT8 1 Tf
+0 g
+5.725 0 TD
+(\(i, k, v\): i.__dict__[k] = v)Tj
+-10.282 -1.1429 TD
+[(32:)-832.9(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(__getitem__)Tj
+/TT8 1 Tf
+0 g
+5.78 0 TD
+(\(i, k\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.5 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( i.__dict__[k])Tj
+-15.726 -1.1429 TD
 [(33:)-832.9(  )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
-0 g
-4.836 0 TD
-(\(i, **k\):     i.___dict___.update\(**k\))Tj
--9.393 -1.1429 TD
-[(34:)-832.9(  )]TJ
+(__repr__)Tj
 /TT8 1 Tf
+0 g
+4.169 0 TD
+(\(i\): )Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(___setitem___)Tj
-/TT4 1 Tf
-0 g
-6.837 0 TD
-(\(i, k, v\): i.___dict___[k] = v)Tj
--11.394 -1.1428 TD
-[(35:)-832.9(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(___getitem___)Tj
-/TT4 1 Tf
-0 g
-6.892 0 TD
-(\(i, k\):    )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.334 0 TD
+1.444 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
-( i.___dict___[k])Tj
--17.672 -1.1429 TD
-[(36:)-832.9(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
+( i.__class__.__name__ + str\()Tj
+-13.059 -1.1429 TD
+[(34:)-832.9(      {k: v )]TJ
 /TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(___repr___)Tj
-/TT4 1 Tf
-0 g
-5.281 0 TD
-(\(i\):          )Tj
-/TT8 1 Tf
 0.627 0.125 0.941 rg
-3.946 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( i.___class___.___name___ + str\()Tj
--16.673 -1.1429 TD
-[(37:)-832.9(    {k:v )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-5.225 0 TD
+6.059 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( k, v )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( i.___dict___.items\(\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-9.281 0 TD
-(if)Tj
+( i.__dict__.items\(\) )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+8.169 0 TD
+(if)Tj
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( k[0] != )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.308 0 TD
 ("_")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.504 0 TD
-(}\)  )Tj
--24.263 -1.1429 TD
-(38:)Tj
+(}\))Tj
+-23.985 -1.1429 TD
+(35:)Tj
 T*
-(39:)Tj
-/TT6 1 Tf
+(36:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.223 0 TD
 (# Columns _______________________________________________)Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(40:)Tj
 /TT8 1 Tf
+-2.223 -1.1429 TD
+(37:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Col\(o\):)Tj
 -4.725 -1.1429 TD
-[(41:)-832.9(  )]TJ
-/TT8 1 Tf
+[(38:)-832.9(  )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 2.779 0 TD
 ("Store columns in ëColë, ëSkipë, ëSymë, ëNumë.")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -2.779 -1.1429 TD
-[(42:)-832.9(  )]TJ
-/TT8 1 Tf
+[(39:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
-0 g
-4.836 0 TD
-(\(i, at=0, txt=)Tj
+(__init__)Tj
 /TT8 1 Tf
+0 g
+3.724 0 TD
+(\(i, at=0, txt=)Tj
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 5.281 0 TD
 ("")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.948 0 TD
 (, inits=[]\):)Tj
--15.622 -1.1428 TD
-[(43:)-832.9(    i.n, i.at, i.txt = 0, at, txt)]TJ
+-14.51 -1.1429 TD
+[(40:)-832.9(    i.n, i.at, i.txt = 0, at, txt)]TJ
 T*
-[(44:)-832.9(    i.w = -1 )]TJ
-/TT8 1 Tf
+[(41:)-832.9(    i.w = -1 )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.864 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.278 0 TD
 ("-")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.281 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.278 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( txt )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.612 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( 1)Tj
 -13.759 -1.1429 TD
-[(45:)-832.9(    [i.add\(x\) )]TJ
-/TT8 1 Tf
+[(42:)-832.9(    [i.add\(x\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.225 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( inits])Tj
 -10.503 -1.1429 TD
-(46:)Tj
+(43:)Tj
 T*
-[(47:)-832.9(  )]TJ
-/TT8 1 Tf
+[(44:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (add)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i, x, n=1\):)Tj
 -6.335 -1.1429 TD
-[(48:)-832.9(    )]TJ
-/TT8 1 Tf
+[(45:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( x != )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 2.196 0 TD
 ("?")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.559 0 TD
-(: i.n += n; x = i.add1\(x, n\))Tj
+(:)Tj
 -7.701 -1.1429 TD
-[(49:)-832.9(    )]TJ
-/TT8 1 Tf
+[(46:)-832.9(      i.n += n)]TJ
+T*
+[(47:)-832.9(      x = i.add1\(x, n\))]TJ
+T*
+[(48:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( x)Tj
 -6.224 -1.1429 TD
-(50:)Tj
-/TT6 1 Tf
+(49:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.223 0 TD
 (# __________________)Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(51:)Tj
 /TT8 1 Tf
+-2.223 -1.1429 TD
+(50:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Skip\(Col\):)Tj
 -4.725 -1.1429 TD
-[(52:)-832.9(  )]TJ
-/TT8 1 Tf
+[(51:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (add1)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.334 0 TD
 (\(i, x, n=1\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.752 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( x)Tj
 -14.532 -1.1429 TD
-(53:)Tj
-/TT6 1 Tf
+(52:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.223 0 TD
 (# __________________)Tj
-/TT4 1 Tf
--2.223 -1.1429 TD
-(54:)Tj
 /TT8 1 Tf
+-2.223 -1.1429 TD
+(53:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Sym\(Col\):)Tj
 -4.725 -1.1429 TD
-[(55:)-832.9(  )]TJ
-/TT8 1 Tf
+[(54:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
-0 g
-4.836 0 TD
-(\(i, **kw\): )Tj
--9.393 -1.1429 TD
-[(56:)-832.9(    i.has, i.mode, i.most = {}, None, 0)]TJ
-T*
-[(57:)-832.9(    super\(\).___init___\(**kw\))]TJ
-T*
-(58:)Tj
-T*
-[(59:)-832.9(  )]TJ
+(__init__)Tj
 /TT8 1 Tf
+0 g
+3.724 0 TD
+(\(i, **kw\):)Tj
+-8.281 -1.1429 TD
+[(55:)-832.9(    i.has, i.mode, i.most = {}, None, 0)]TJ
+T*
+[(56:)-832.9(    super\(\).__init__\(**kw\))]TJ
+T*
+(57:)Tj
+T*
+[(58:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (add1)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.334 0 TD
-(\(i, x, n=1\): )Tj
+(\(i, x, n=1\):)Tj
 -6.891 -1.1429 TD
-[(60:)-832.9(    new = inc\(i.has, x, n\))]TJ
+[(59:)-832.9(    new = inc\(i.has, x, n\))]TJ
 T*
-[(61:)-832.9(    )]TJ
-/TT8 1 Tf
+[(60:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( new > i.most: i.most, i.mode = new, x)Tj
+( new > i.most:)Tj
 -3.946 -1.1429 TD
+[(61:)-832.9(      i.most, i.mode = new, x)]TJ
+T*
 [(62:)-832.9(    )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( x)Tj
 -6.224 -1.1429 TD
 (63:)Tj
-T*
+37.8096 70.8571 TD
 [(64:)-832.9(  )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (bins)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
 (\(i, j, _\):)Tj
 -6.613 -1.1429 TD
 [(65:)-832.9(    )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( k )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( \(i.has | j.has\):)Tj
 -6.613 -1.1429 TD
 [(66:)-832.9(      )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (yield)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.279 0 TD
-( i.at, \(k, k\))Tj
+( True, i.has.get\(k,0\), i.at, \(k, k\))Tj
 -6.17 -1.1429 TD
-(67:)Tj
-T*
-[(68:)-832.9(  )]TJ
+[(67:)-832.9(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(yield)Tj
 /TT8 1 Tf
+0 g
+2.279 0 TD
+( False, j.has.get\(k,0\), j.at, \(k, k\))Tj
+-6.17 -1.1429 TD
+(68:)Tj
+T*
+[(69:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (dist)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i, x, y\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.556 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( 0 )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( x == y )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.28 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( 1)Tj
 -19.729 -1.1429 TD
-(69:)Tj
+(70:)Tj
 T*
-[(70:)-832.9(  )]TJ
-/TT8 1 Tf
+[(71:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (ent)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 (\(i\):)Tj
-31.7526 74.2857 TD
-[(71:)-832.9(    )]TJ
-/TT8 1 Tf
+-6.057 -1.1429 TD
+[(72:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( sum\(-v/i.n * math.log\(v/i.n\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 12.225 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( v )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( i.has.values\(\)\))Tj
 -21.727 -1.1429 TD
-(72:)Tj
+(73:)Tj
 T*
-[(73:)-832.9(  )]TJ
-/TT8 1 Tf
+[(74:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (merge)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.001 0 TD
 (\(i, j\):)Tj
 -7.558 -1.1429 TD
-[(74:)-832.9(    k = Sym\(at=i.at, txt=i.txt\))]TJ
+[(75:)-832.9(    k = Sym\(at=i.at, txt=i.txt\))]TJ
 T*
-[(75:)-832.9(    [k.add\(x, n\) )]TJ
-/TT8 1 Tf
+[(76:)-832.9(    [k.add\(x, n\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 8.615 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( has )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.168 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( \(i.has, j.has\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.002 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x, n )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.168 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( has.items\(\)])Tj
 -23.397 -1.1429 TD
-[(76:)-832.9(    )]TJ
-/TT8 1 Tf
+[(77:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( k)Tj
 -6.224 -1.1429 TD
-(77:)Tj
+(78:)Tj
 T*
-[(78:)-832.9(  )]TJ
-/TT8 1 Tf
+[(79:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (merged)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.612 0 TD
 (\(i, j\):)Tj
 -8.169 -1.1429 TD
-[(79:)-832.9(    k = i.merge\(j\))]TJ
+[(80:)-832.9(    k = i.merge\(j\))]TJ
 T*
-[(80:)-832.9(    e1,n1, e2,n2, e,n = i.ent\(\), i.n, j.ent\(\),j.n, k.ent\(\),k.n)]TJ
+[(81:)-832.9(    e1, n1, e2, n2, e, n = i.ent\(\), i.n, j.ent\(\), j.n, k.ent\(\), k.n)]TJ
 T*
-[(81:)-832.9(    tmp = n1/n*e1 + n2/n*e2)]TJ
+[(82:)-832.9(    tmp = n1/n*e1 + n2/n*e2)]TJ
 T*
-[(82:)-832.9(    )]TJ
-/TT6 1 Tf
-0.698 0.133 0.133 rg
-3.335 0 TD
-(#print\(e1,e2,e,tmp\))Tj
+[(83:)-832.9(    )]TJ
 /TT4 1 Tf
--3.335 -1.1429 TD
-(83:)Tj
-0 g
-2.223 0 TD
-(    )Tj
-/TT8 1 Tf
 0.627 0.125 0.941 rg
-1.112 0 TD
+3.335 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( e1 + e2 < 0.01 )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.006 0 TD
 (or)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1 0 TD
 ( e * .95 < tmp:)Tj
 -11.952 -1.1429 TD
 [(84:)-832.9(      )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( k)Tj
 -6.78 -1.1429 TD
-[(85:)-832.9(  )]TJ
+(85:)Tj
 T*
 [(86:)-832.9(  )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (mid)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.444 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( i.mode)Tj
 -10.668 -1.1429 TD
 (87:)Tj
-/TT6 1 Tf
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.223 0 TD
 (# __________________)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 -2.223 -1.1429 TD
 (88:)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Num\(Col\):)Tj
 -4.725 -1.1429 TD
 [(89:)-832.9(  )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
+(__init__)Tj
+/TT8 1 Tf
 0 g
-4.836 0 TD
+3.724 0 TD
 (\(i, **kw\):)Tj
--9.393 -1.1429 TD
+-8.281 -1.1429 TD
 [(90:)-832.9(    i._all, i.ok = [], False)]TJ
 T*
-[(91:)-832.9(    super\(\).___init___\(**kw\))]TJ
+[(91:)-832.9(    super\(\).__init__\(**kw\))]TJ
 T*
 (92:)Tj
 T*
 [(93:)-832.9(  )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (add1)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.334 0 TD
 (\(i, x, n\):)Tj
@@ -1057,1491 +1098,1060 @@ T*
 [(94:)-832.9(    x, i.ok = float\(x\), False)]TJ
 T*
 [(95:)-832.9(    )]TJ
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( _ )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( range\(n\): i._all += [x])Tj
+( range\(n\):)Tj
 -6.669 -1.1429 TD
-[(96:)-832.9(    )]TJ
-/TT8 1 Tf
+[(96:)-832.9(      i._all += [x])]TJ
+T*
+[(97:)-832.9(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( x)Tj
 -6.224 -1.1429 TD
-(97:)Tj
+(98:)Tj
 T*
-[(98:)-832.9(  )]TJ
-/TT8 1 Tf
+[(99:)-832.9(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (all)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.112 0 TD
 (\(i\):)Tj
--5.669 -1.1429 TD
-[(99:)-832.9(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(if)Tj
+-6.225 -1.1429 TD
+[(100:)-832.7(    )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(if)Tj
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.278 0 TD
 (not)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.555 0 TD
-( i.ok: i.ok = True; i._all = sorted\(i._all\))Tj
+( i.ok:)Tj
 -6.335 -1.1429 TD
-[(100:)-832.7(    )]TJ
-/TT8 1 Tf
+[(101:)-832.7(      i.ok = True)]TJ
+T*
+[(102:)-832.7(      i._all = sorted\(i._all\))]TJ
+T*
+[(103:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( i._all)Tj
--6.78 -1.1428 TD
-(101:)Tj
+-6.78 -1.1429 TD
+(104:)Tj
 T*
-[(102:)-832.7(  )]TJ
-/TT8 1 Tf
+[(105:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (bins)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
 (\(i, j, the\):)Tj
 -7.169 -1.1429 TD
-[(103:)-832.7(    xy = [\(z, True\) )]TJ
-/TT8 1 Tf
+[(106:)-832.7(    xy = [\(z, True\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 10.365 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( z )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( i._all]+[\(z, False\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.919 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( z )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( j._all])Tj
 -24.84 -1.1429 TD
-[(104:)-832.7(    iota = the.IOTA * \(i.n*i.sd\(\) + j.n*j.sd\(\)\) / \(i.n + j.n\))]TJ
+[(107:)-832.7(    iota = the.IOTA * \(i.n*i.sd\(\) + j.n*j.sd\(\)\) / \(i.n + j.n\))]TJ
 T*
-[(105:)-832.7(    )]TJ
-/TT8 1 Tf
+[(108:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
-( \(\(lo, hi\),_\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.834 0 TD
-(in)Tj
+( \(\(lo, hi\), sym\) )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+6.389 0 TD
+(in)Tj
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( bins\(xy,iota=iota, size=len\(xy\)**the.BINS\):)Tj
--10.947 -1.1429 TD
-[(106:)-832.7(      )]TJ
-/TT8 1 Tf
+( bins\(xy, iota=iota, size=len\(xy\)**the.BINS\):)Tj
+-12.502 -1.1429 TD
+[(109:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (yield)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.279 0 TD
-(  i.at, \(lo, hi\))Tj
+( True, sym.has.get\(True,0\), i.at, \(lo, hi\))Tj
 -6.726 -1.1429 TD
-(107:)Tj
-T*
-[(108:)-832.7(  )]TJ
+[(110:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(yield)Tj
 /TT8 1 Tf
+0 g
+2.279 0 TD
+( False, sym.has.get\(False,0\), j.at, \(lo, hi\))Tj
+-6.726 -1.1429 TD
+(111:)Tj
+T*
+[(112:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (dist)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i, x, y\):)Tj
--6.891 -1.1428 TD
-[(109:)-832.7(    )]TJ
-/TT8 1 Tf
+-6.891 -1.1429 TD
+[(113:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-(   x == )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-3.058 0 TD
-("?")Tj
+( x == )Tj
 /TT4 1 Tf
-0 g
-1.559 0 TD
-(: y = i.norm\(y\); x = 1 )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-9.17 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( y < 0.5 )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.586 0 TD
-(else)Tj
-/TT4 1 Tf
-0 g
-1.946 0 TD
-( 0)Tj
--24.432 -1.1429 TD
-[(110:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(elif)Tj
-/TT4 1 Tf
-0 g
-1.445 0 TD
-( y == )Tj
-/TT8 1 Tf
 0.737 0.561 0.561 rg
 2.502 0 TD
 ("?")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.559 0 TD
-(: x = i.norm\(x\);y = 1 )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-8.892 0 TD
-(if)Tj
+(:)Tj
+-8.563 -1.1429 TD
+[(114:)-832.7(      y = i.norm\(y\))]TJ
+T*
+[(115:)-832.7(      x = 1 )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+6.921 0 TD
+(if)Tj
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( x < 0.5 )Tj
-/TT8 1 Tf
+( y < 0.5 )Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.586 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( 0)Tj
--24.432 -1.1429 TD
-[(111:)-832.7(    )]TJ
+-13.064 -1.1429 TD
+[(116:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(elif)Tj
 /TT8 1 Tf
+0 g
+1.445 0 TD
+( y == )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+2.502 0 TD
+("?")Tj
+/TT8 1 Tf
+0 g
+1.559 0 TD
+(:)Tj
+-9.397 -1.1429 TD
+[(117:)-832.7(      x = i.norm\(x\))]TJ
+T*
+[(118:)-832.7(      y = 1 )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+6.921 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( x < 0.5 )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.586 0 TD
+(else)Tj
+/TT8 1 Tf
+0 g
+1.946 0 TD
+( 0)Tj
+-13.064 -1.1429 TD
+[(119:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
-(         : x, y = i.norm\(x\), y.norm\(y\))Tj
+( :)Tj
 -5.837 -1.1429 TD
-[(112:)-832.7(    )]TJ
-/TT8 1 Tf
+[(120:)-832.7(      x, y = i.norm\(x\), y.norm\(y\))]TJ
+T*
+[(121:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( abs\(x-y\))Tj
 -6.78 -1.1429 TD
-(113:)Tj
+(122:)Tj
 T*
-[(114:)-832.7(  )]TJ
-/TT8 1 Tf
+[(123:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (mid)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.444 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( per\(i.all\(\), p=.5\))Tj
 -11.224 -1.1429 TD
-(115:)Tj
+(124:)Tj
 T*
-[(116:)-832.7(  )]TJ
-/TT8 1 Tf
+[(125:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (norm)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.5 0 TD
 (\(i, x\):)Tj
 -7.613 -1.1429 TD
-[(117:)-832.7(    )]TJ
-/TT8 1 Tf
+[(126:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( x == )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 2.502 0 TD
 ("?")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.559 0 TD
-(: )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.556 0 TD
-(return)Tj
+(:)Tj
+29.2464 70.8571 TD
+[(127:)-832.7(      )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(return)Tj
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( x)Tj
--12.008 -1.1429 TD
-[(118:)-832.7(    a = i.all\(\))]TJ
+-7.336 -1.1429 TD
+[(128:)-832.7(    a = i.all\(\))]TJ
 T*
-[(119:)-832.7(    )]TJ
-/TT8 1 Tf
+[(129:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( max\(0, min\(1, \(x-first\(a\)\)/\(last\(a\)-first\(a\)+1E-32\)\)\))Tj
 -6.78 -1.1429 TD
-(120:)Tj
+(130:)Tj
 T*
-[(121:)-832.7(  )]TJ
-/TT8 1 Tf
+[(131:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (sd)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.167 0 TD
 (\(i\)      : )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.112 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( \(per\(i.all\(\), .9\) - per\(i.all\(\), .1\)\)/2.56)Tj
 -12.281 -1.1429 TD
-[(122:)-832.7(  )]TJ
-/TT8 1 Tf
+[(132:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (span)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.334 0 TD
 (\(i\)    : )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.556 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( \(first\(i.all\(\)\), last\(i.all\(\)\)\))Tj
 -12.892 -1.1429 TD
-[(123:)-832.7(  )]TJ
-/TT8 1 Tf
+[(133:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (wide)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.223 0 TD
-(\(i,n=0\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.418 0 TD
-(return)Tj
+(\(i, n=0\): )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.696 0 TD
+(return)Tj
+/TT8 1 Tf
 0 g
 2.889 0 TD
-( last\(i.all\(\)\) - first\(i.all\(\)\) >= n )Tj
--13.643 -1.1429 TD
-(124:)Tj
+( last\(i.all\(\)\) - first\(i.all\(\)\) >= n)Tj
+-13.921 -1.1429 TD
+(134:)Tj
 T*
-(125:)Tj
-/TT6 1 Tf
+(135:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# Row and Rows __________________________________________)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(126:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(136:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Row\(o\):)Tj
 -5.281 -1.1429 TD
-[(127:)-832.7(  )]TJ
-/TT8 1 Tf
+[(137:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
+(__init__)Tj
+/TT8 1 Tf
 0 g
-4.836 0 TD
+3.724 0 TD
 (\(i, lst, rows=None\): i.rows, i.cells = rows, lst)Tj
--9.949 -1.1429 TD
-(128:)Tj
+-8.837 -1.1429 TD
+(138:)Tj
 T*
-[(129:)-832.7(  )]TJ
-/TT8 1 Tf
+[(139:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___lt___)Tj
-/TT4 1 Tf
-0 g
-3.947 0 TD
-(\(i, j\):)Tj
--9.06 -1.1429 TD
-[(130:)-832.7(    goals = i.rows.cols.y)]TJ
-T*
-[(131:)-832.7(    s1, s2, n = 0, 0, len\(goals\))]TJ
-T*
-[(132:)-832.7(    )]TJ
+(__lt__)Tj
 /TT8 1 Tf
+0 g
+2.835 0 TD
+(\(i, j\):)Tj
+-7.948 -1.1429 TD
+[(140:)-832.7(    goals = i.rows.cols.y)]TJ
+T*
+[(141:)-832.7(    s1, s2, n = 0, 0, len\(goals\))]TJ
+T*
+[(142:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.834 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( goals:)Tj
 -7.947 -1.1429 TD
-[(133:)-832.7(      a   = col.norm\(i.cells[col.at]\))]TJ
+[(143:)-832.7(      a = col.norm\(i.cells[col.at]\))]TJ
 T*
-[(134:)-832.7(      b   = col.norm\(j.cells[col.at]\))]TJ
+[(144:)-832.7(      b = col.norm\(j.cells[col.at]\))]TJ
 T*
-[(135:)-832.7(      s1 -= math.e**\(col.w * \(a - b\) / n\))]TJ
+[(145:)-832.7(      s1 -= math.e**\(col.w * \(a - b\) / n\))]TJ
 T*
-[(136:)-832.7(      s2 -= math.e**\(col.w * \(b - a\) / n\))]TJ
-37.8094 74.2857 TD
-[(137:)-832.7(    )]TJ
-/TT8 1 Tf
+[(146:)-832.7(      s2 -= math.e**\(col.w * \(b - a\) / n\))]TJ
+T*
+[(147:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( s1 / n < s2 / n)Tj
 -6.78 -1.1429 TD
-(138:)Tj
+(148:)Tj
 T*
-[(139:)-832.7(  )]TJ
-/TT8 1 Tf
+[(149:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (dist)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i, j, the\):)Tj
 -6.891 -1.1429 TD
-[(140:)-832.7(    d = n = 1E-32)]TJ
+[(150:)-832.7(    d = n = 1E-32)]TJ
 T*
-[(141:)-832.7(    )]TJ
-/TT8 1 Tf
+[(151:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.834 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( i.rows.cols[the.COLS]:)Tj
 -7.947 -1.1429 TD
-[(142:)-832.7(      n += 1)]TJ
+[(152:)-832.7(      n += 1)]TJ
 T*
-[(143:)-832.7(      x, y = i.cells[at], j.cells[at])]TJ
+[(153:)-832.7(      x, y = i.cells[at], j.cells[at])]TJ
 T*
-[(144:)-832.7(      d += 1 )]TJ
-/TT8 1 Tf
+[(154:)-832.7(      d += 1 )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.561 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( x==)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-1.946 0 TD
-("?")Tj
+( x == )Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+2.502 0 TD
+("?")Tj
+/TT8 1 Tf
 0 g
 1.559 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.278 0 TD
 (and)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
-( y==)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-1.946 0 TD
-("?")Tj
+( y == )Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+2.502 0 TD
+("?")Tj
+/TT8 1 Tf
 0 g
 1.559 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.278 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( col.dist\(x, y\) ** the.P)Tj
--19.462 -1.1429 TD
-[(145:)-832.7(    )]TJ
-/TT8 1 Tf
+-20.574 -1.1429 TD
+[(155:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( \(d/n\) ** \(1/the.P\))Tj
 -6.78 -1.1429 TD
-(146:)Tj
+(156:)Tj
 T*
-[(147:)-832.7(  )]TJ
-/TT8 1 Tf
+[(157:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (far)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.278 0 TD
 (\(i, rows, the\):)Tj
 -6.391 -1.1429 TD
-[(148:)-832.7(    tmp = [\(dist\(i, j\), j\) )]TJ
-/TT8 1 Tf
+[(158:)-832.7(    tmp = [\(dist\(i, j\), j\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 11.92 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( _ )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( range\(the.SAMPLE\)])Tj
 -15.254 -1.1429 TD
-[(149:)-832.7(    )]TJ
-/TT8 1 Tf
+[(159:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( per\(sorted\(tmp, key=first\), the.FAR\))Tj
 -6.78 -1.1429 TD
-(150:)Tj
+(160:)Tj
 T*
-[(151:)-832.7(  )]TJ
-/TT8 1 Tf
+[(161:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (ys)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.112 0 TD
 (\(i\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.444 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( [i.cells[col.at] )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.28 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.834 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( i.rows.cols.y])Tj
 -20.894 -1.1429 TD
-(152:)Tj
-/TT6 1 Tf
+(162:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# __________________)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(153:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(163:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Rows\(o\):)Tj
 -5.281 -1.1429 TD
-[(154:)-832.7(  )]TJ
-/TT8 1 Tf
+[(164:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
-(___init___)Tj
-/TT4 1 Tf
-0 g
-4.836 0 TD
-(\(i, inits=[]\):)Tj
--9.949 -1.1429 TD
-[(155:)-832.7(    i.rows = [])]TJ
-T*
-[(156:)-832.7(    i.cols = o\(all=[], names=[], x=[], y=[], klass=None\))]TJ
-T*
-[(157:)-832.7(    [i.add\(x\) )]TJ
+(__init__)Tj
 /TT8 1 Tf
+0 g
+3.724 0 TD
+(\(i, inits=[]\):)Tj
+-8.837 -1.1429 TD
+[(165:)-832.7(    i.rows = [])]TJ
+T*
+[(166:)-832.7(    i.cols = o\(all=[], names=[], x=[], y=[], klass=None\))]TJ
+T*
+[(167:)-832.7(    [i.add\(x\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.781 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( inits])Tj
 -11.059 -1.1429 TD
-(158:)Tj
+(168:)Tj
 T*
-[(159:)-832.7(  )]TJ
-/TT8 1 Tf
+[(169:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (add)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 (\(i, a\): i.data\(a\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.502 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( i.cols.names )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.113 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( i.header\(a\))Tj
 -22.063 -1.1429 TD
-(160:)Tj
+(170:)Tj
 T*
-[(161:)-832.7(  )]TJ
-/TT8 1 Tf
+[(171:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (best)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
-(\(i,the\):)Tj
+(\(i, the\):)Tj
 -7.169 -1.1429 TD
-[(162:)-832.7(    i.rows.sort\(\))]TJ
+[(172:)-832.7(    i.rows.sort\(\))]TJ
 T*
-[(163:)-832.7(    ds = [the.IOTA*y.sd\(\) )]TJ
-/TT8 1 Tf
+[(173:)-832.7(    ds = [the.IOTA*y.sd\(\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 13.534 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( y )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( i.cols.y])Tj
 -16.812 -1.1429 TD
-[(164:)-832.7(    best, rest = i.clone\(\), i.clone\(\))]TJ
+[(174:)-832.7(    best, rest = i.clone\(\), i.clone\(\))]TJ
 T*
-[(165:)-832.7(    )]TJ
-/TT8 1 Tf
+[(175:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
-( n,row )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.001 0 TD
-(in)Tj
+( n, row )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.279 0 TD
+(in)Tj
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( enumerate\(i.rows\):)Tj
--9.114 -1.1429 TD
-[(166:)-832.7(      bestp = False)]TJ
+-9.392 -1.1429 TD
+[(176:)-832.7(      bestp = False)]TJ
 T*
-[(167:)-832.7(      )]TJ
-/TT8 1 Tf
+[(177:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
-( n1,n2,d )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.892 0 TD
-(in)Tj
+( n1, n2, d )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+4.448 0 TD
+(in)Tj
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( zip\(i.rows[0].ys\(\), row.ys\(\), ds\):)Tj
--10.561 -1.1429 TD
-[(168:)-832.7(        bestp |= abs\(n1-n2\) <= d)]TJ
+-11.117 -1.1429 TD
+[(178:)-832.7(        bestp |= abs\(n1-n2\) <= d)]TJ
 T*
-[(169:)-832.7(      \(best )]TJ
-/TT8 1 Tf
+[(179:)-832.7(      \(best )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 6.948 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( bestp )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.002 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
-( rest\).add\(row\) )Tj
+( rest\).add\(row\))Tj
 -12.507 -1.1429 TD
-[(170:)-832.7(    )]TJ
-/TT8 1 Tf
+[(180:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( best, rest)Tj
 -6.78 -1.1429 TD
-(171:)Tj
+(181:)Tj
 T*
-[(172:)-832.7(  )]TJ
-/TT8 1 Tf
+[(182:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (clone)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.612 0 TD
 (\(i, inits=[]\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.918 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( Rows\([i.cols.names] + inits\))Tj
 -15.532 -1.1429 TD
-(173:)Tj
+(183:)Tj
 T*
-[(174:)-832.7(  )]TJ
-/TT8 1 Tf
+[(184:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (data)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
 (\(i, a\):)Tj
--7.169 -1.1428 TD
-[(175:)-832.7(    a = a.cells )]TJ
-/TT8 1 Tf
+-7.169 -1.1429 TD
+[(185:)-832.7(    a = a.cells )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 8.699 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( type\(a\) == Row )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.392 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( a)Tj
 -18.648 -1.1429 TD
-[(176:)-832.7(    i.rows += [Row\([col.add\(a[col.at]\) )]TJ
-/TT8 1 Tf
+[(186:)-832.7(    i.rows += [Row\([col.add\(a[col.at]\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 18.785 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.834 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( i.cols.all], )Tj
+( i.cols.all],)Tj
 -22.841 -1.1429 TD
-[(177:)-832.7(                   rows=i\)])]TJ
+[(187:)-832.7(                   rows=i\)])]TJ
 T*
-(178:)Tj
+(188:)Tj
 T*
-[(179:)-832.7(  )]TJ
-/TT8 1 Tf
+[(189:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (header)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.279 0 TD
 (\(i, a\):)Tj
--8.392 -1.1429 TD
-[(180:)-832.7(    i.cols.names = a)]TJ
-T*
-[(181:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( at, x )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.446 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( enumerate\(a\):)Tj
--8.559 -1.1429 TD
-[(182:)-832.7(      new = Skip )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-9.644 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( i.skipp\(x\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.556 0 TD
-(else)Tj
-/TT4 1 Tf
-0 g
-1.946 0 TD
-( \(Num )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( i.nump\(x\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.723 0 TD
-(else)Tj
-/TT4 1 Tf
-0 g
-1.946 0 TD
-( Sym\))Tj
--27.037 -1.1429 TD
-[(183:)-832.7(      new = new\(at=at, txt=x\))]TJ
-T*
-[(184:)-832.7(      i.cols.all += [new])]TJ
-T*
-[(185:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(not)Tj
-/TT4 1 Tf
-0 g
-1.555 0 TD
-( i.skipp\(x\):)Tj
--6.891 -1.1429 TD
-[(186:)-832.7(        i.cols[)]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-7.559 0 TD
-("y")Tj
-/TT4 1 Tf
-0 g
-1.504 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( i.yp\(x\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.278 0 TD
-(else)Tj
-/TT4 1 Tf
-0 g
-1.946 0 TD
-( )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.278 0 TD
-("x")Tj
-/TT4 1 Tf
-0 g
-1.504 0 TD
-(] += [new])Tj
--16.958 -1.1429 TD
-[(187:)-832.7(        )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-5.003 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( i.klassp\(x\):)Tj
--5.614 -1.1429 TD
-[(188:)-832.7(          i.cols.klass = new)]TJ
-T*
-(189:)Tj
-T*
-[(190:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(klassp)Tj
-/TT4 1 Tf
-0 g
-3.113 0 TD
-(\(i, x\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.5 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.278 0 TD
-("!")Tj
-/TT4 1 Tf
-0 g
-1.281 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( x)Tj
--16.341 -1.1429 TD
-[(191:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(nump)Tj
-/TT4 1 Tf
-0 g
-2.722 0 TD
-(\(i, x\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.5 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( x[0].isupper\(\))Tj
--13.224 -1.1429 TD
-[(192:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(skipp)Tj
-/TT4 1 Tf
-0 g
-2.612 0 TD
-(\(i, x\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.5 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.278 0 TD
-("?")Tj
-/TT4 1 Tf
-0 g
-1.559 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( x)Tj
--16.118 -1.1429 TD
-[(193:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(ys)Tj
-/TT4 1 Tf
-0 g
-1.112 0 TD
-(\(i\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.444 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( [col.mid\(\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.667 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( col )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.834 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( i.cols.y])Tj
--19.281 -1.1429 TD
-[(194:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(ysd)Tj
-/TT4 1 Tf
-0 g
-1.723 0 TD
-(\(i\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.444 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( [col.sd\(\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.112 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( col )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.834 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( i.cols.y])Tj
--19.337 -1.1429 TD
-[(195:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(yp)Tj
-/TT4 1 Tf
-0 g
-1.167 0 TD
-(\(i, x\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.5 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.278 0 TD
-("-")Tj
-/TT4 1 Tf
-0 g
-1.281 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( x )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.056 0 TD
-(or)Tj
-/TT4 1 Tf
-0 g
-1 0 TD
-( )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.278 0 TD
-("+")Tj
-/TT4 1 Tf
-0 g
-1.532 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( x )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.056 0 TD
-(or)Tj
-/TT4 1 Tf
-0 g
-1 0 TD
-( i.klassp\(x\))Tj
--21.484 -1.1429 TD
-(196:)Tj
-/TT6 1 Tf
-0.698 0.133 0.133 rg
-2.779 0 TD
-(# __________________)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(197:)Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(stratify)Tj
-/TT4 1 Tf
-0 g
-3.334 0 TD
-(\(src\):)Tj
--7.891 -1.1429 TD
-[(198:)-832.7(  all, klass = None,{})]TJ
-T*
-[(199:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( n,row )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.001 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( enumerate\(src\):)Tj
--8.558 -1.1429 TD
-[(200:)-832.7(     )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.169 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( all:)Tj
--4.78 -1.1429 TD
-[(201:)-832.7(       kl   = row[all.cols.klass.at])]TJ
-T*
-[(202:)-832.7(       here = klass[kl] = klass.get\(kl,None\) )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-20.842 0 TD
-(or)Tj
-/TT4 1 Tf
-0 g
-1 0 TD
-( all.clone\(\))Tj
 ET
 endstream
 endobj
@@ -2553,2311 +2163,2405 @@ endobj
 /TT4 5 0 R
 /TT6 6 0 R
 /TT8 7 0 R
+/TT10 8 0 R
 >>
 /ExtGState <<
-/GS1 8 0 R
+/GS1 9 0 R
 >>
 >>
 endobj
-11 0 obj
+12 0 obj
 <<
-/Length 29965
+/Length 30422
 >>
 stream
+0 G
+0 J 0 j 0.1 w 10 M []0 d
+/GS1 gs
+1 i 
+571 288.667 m
+60 288.667 l
+571 553.333 m
+60 553.333 l
+S
+0.95 g
+42 818 18 -794 re
+f
+0.7 g
+24 96 36 -72 re
+f
 BT
 /TT2 1 Tf
-0 10 -10 0 35.6667 29 Tm
+0 12 -12 0 40 38.666 Tm
 0 g
-/GS1 gs
 0 Tc
 0 Tw
-[(keys)-4500(Thu Jul 22 17:14:18 2021)-4500(2)]TJ
+(07/22/21)Tj
+-0.0552 -1.0667 TD
+(19:27:10)Tj
+ET
+0.7 g
+24 818 36 -72 re
+f
+BT
 /TT4 1 Tf
-0 7 -7 0 49 37.784 Tm
-[(203:)-832.7(       here.add\(row\))]TJ
-0 -1.1429 TD
-[(204:)-832.7(       all.add\(row\))]TJ
-T*
-[(205:)-832.7(     )]TJ
+0 28.8 -28.8 0 52.8 773.9915 Tm
+1 g
+(2)Tj
+/TT6 1 Tf
+0 14 -14 0 55.5 408.1689 Tm
+0 g
+(keys)Tj
 /TT8 1 Tf
-0.627 0.125 0.941 rg
-4.169 0 TD
-(else)Tj
+0 7 -7 0 70 37.784 Tm
+[(190:)-832.7(    i.cols.names = a)]TJ
+0 -1.1429 TD
+[(191:)-832.7(    )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( at, x )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.446 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( enumerate\(a\):)Tj
+-8.559 -1.1429 TD
+[(192:)-832.7(      new = Skip )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+9.644 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( i.skipp\(x\) )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.556 0 TD
+(else)Tj
+/TT8 1 Tf
 0 g
 1.946 0 TD
-(:   )Tj
--6.115 -1.1429 TD
-[(206:)-832.7(       all = Rows\([row]\))]TJ
-T*
-[(207:)-832.7(  )]TJ
+( \(Num )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3 0 TD
+(if)Tj
 /TT8 1 Tf
+0 g
+0.611 0 TD
+( i.nump\(x\) )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.723 0 TD
+(else)Tj
+/TT8 1 Tf
+0 g
+1.946 0 TD
+( Sym\))Tj
+-27.037 -1.1429 TD
+[(193:)-832.7(      new = new\(at=at, txt=x\))]TJ
+T*
+[(194:)-832.7(      i.cols.all += [new])]TJ
+T*
+[(195:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(not)Tj
+/TT8 1 Tf
+0 g
+1.555 0 TD
+( i.skipp\(x\):)Tj
+-6.891 -1.1429 TD
+[(196:)-832.7(        i.cols[)]TJ
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+7.559 0 TD
+("y")Tj
+/TT8 1 Tf
+0 g
+1.504 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( i.yp\(x\) )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.278 0 TD
+(else)Tj
+/TT8 1 Tf
+0 g
+1.946 0 TD
+( )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.278 0 TD
+("x")Tj
+/TT8 1 Tf
+0 g
+1.504 0 TD
+(] += [new])Tj
+-16.958 -1.1429 TD
+[(197:)-832.7(        )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+5.003 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( i.klassp\(x\):)Tj
+-5.614 -1.1429 TD
+[(198:)-832.7(          i.cols.klass = new)]TJ
+T*
+(199:)Tj
+T*
+[(200:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(klassp)Tj
+/TT8 1 Tf
+0 g
+3.113 0 TD
+(\(i, x\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.5 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.278 0 TD
+("!")Tj
+/TT8 1 Tf
+0 g
+1.281 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( x)Tj
+-16.341 -1.1429 TD
+[(201:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(nump)Tj
+/TT8 1 Tf
+0 g
+2.722 0 TD
+(\(i, x\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.5 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( x[0].isupper\(\))Tj
+-13.224 -1.1429 TD
+[(202:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(skipp)Tj
+/TT8 1 Tf
+0 g
+2.612 0 TD
+(\(i, x\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.5 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.278 0 TD
+("?")Tj
+/TT8 1 Tf
+0 g
+1.559 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( x)Tj
+-16.118 -1.1429 TD
+[(203:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(yp)Tj
+/TT8 1 Tf
+0 g
+1.167 0 TD
+(\(i, x\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.5 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.278 0 TD
+("-")Tj
+/TT8 1 Tf
+0 g
+1.281 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( x )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.056 0 TD
+(or)Tj
+/TT8 1 Tf
+0 g
+1 0 TD
+( )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.278 0 TD
+("+")Tj
+/TT8 1 Tf
+0 g
+1.532 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( x )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.056 0 TD
+(or)Tj
+/TT8 1 Tf
+0 g
+1 0 TD
+( i.klassp\(x\))Tj
+-21.484 -1.1429 TD
+[(204:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(ys)Tj
+/TT8 1 Tf
+0 g
+1.112 0 TD
+(\(i\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.444 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( [col.mid\(\) )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.667 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( col )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.834 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( i.cols.y])Tj
+-19.281 -1.1429 TD
+[(205:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(ysd)Tj
+/TT8 1 Tf
+0 g
+1.723 0 TD
+(\(i\): )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.444 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( [col.sd\(\) )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.112 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( col )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.834 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( i.cols.y])Tj
+-19.337 -1.1429 TD
+(206:)Tj
+/TT10 1 Tf
+0.698 0.133 0.133 rg
+2.779 0 TD
+(# __________________)Tj
+/TT8 1 Tf
+-2.779 -1.1429 TD
+(207:)Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(stratify)Tj
+/TT8 1 Tf
+0 g
+3.334 0 TD
+(\(src\):)Tj
+-7.891 -1.1429 TD
+[(208:)-832.7(  all, klass = None, {})]TJ
+T*
+[(209:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( n, row )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.279 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( enumerate\(src\):)Tj
+-8.836 -1.1429 TD
+[(210:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( all:)Tj
+-4.502 -1.1429 TD
+[(211:)-832.7(      kl = row[all.cols.klass.at])]TJ
+T*
+[(212:)-832.7(      here = klass[kl] = klass.get\(kl, None\) )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+20.842 0 TD
+(or)Tj
+/TT8 1 Tf
+0 g
+1 0 TD
+( all.clone\(\))Tj
+-21.842 -1.1429 TD
+[(213:)-832.7(      here.add\(row\))]TJ
+T*
+[(214:)-832.7(      all.add\(row\))]TJ
+T*
+[(215:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(else)Tj
+/TT8 1 Tf
+0 g
+1.946 0 TD
+(:)Tj
+-5.837 -1.1429 TD
+[(216:)-832.7(      all = Rows\([row]\))]TJ
+T*
+[(217:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( o\(all=all, klass=klass\))Tj
 -6.224 -1.1429 TD
-(208:)Tj
+(218:)Tj
 T*
-(209:)Tj
-/TT6 1 Tf
+(219:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# Discretizations ________________________________________)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 -2.779 -1.1429 TD
-(210:)Tj
-/TT6 1 Tf
+(220:)Tj
+/TT10 1 Tf
 2.779 0 TD
 (# Use ëbinsë to divide numeric data into ranges.)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(211:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(221:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (bins)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
 (\(xy, iota=0, size=30\):)Tj
 -6.613 -1.1429 TD
-[(212:)-832.7(  )]TJ
-/TT8 1 Tf
+[(222:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (merge)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.001 0 TD
 (\(b4\):)Tj
 -8.114 -1.1429 TD
-[(213:)-832.7(    j, tmp, n = 0, [], len\(b4\))]TJ
+[(223:)-832.7(    j, tmp, n = 0, [], len\(b4\))]TJ
 T*
-[(214:)-832.7(    )]TJ
-/TT8 1 Tf
+[(224:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (while)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.501 0 TD
 ( j < n:)Tj
 -6.392 -1.1429 TD
-[(215:)-832.7(      \(\(lo,_\),ay\) = a = b4[j])]TJ
+[(225:)-832.7(      \(\(lo, _\), ay\) = a = b4[j])]TJ
 T*
-[(216:)-832.7(      )]TJ
-/TT8 1 Tf
+[(226:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( j < n - 1:)Tj
 -5.058 -1.1429 TD
-[(217:)-832.7(        \(\(_,hi\),by\) = b4[j + 1])]TJ
+[(227:)-832.7(        \(\(_, hi\), by\) = b4[j + 1])]TJ
 T*
-[(218:)-832.7(        )]TJ
-/TT8 1 Tf
+[(228:)-832.7(        )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.003 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( cy := ay.merged\(by\):)Tj
 -5.614 -1.1429 TD
-[(219:)-832.7(          a = \(\(lo, hi\), cy\))]TJ
+[(229:)-832.7(          a = \(\(lo, hi\), cy\))]TJ
 T*
-[(220:)-832.7(          j += 1)]TJ
+[(230:)-832.7(          j += 1)]TJ
 T*
-[(221:)-832.7(      tmp += [a])]TJ
+[(231:)-832.7(      tmp += [a])]TJ
 T*
-[(222:)-832.7(      j += 1)]TJ
+[(232:)-832.7(      j += 1)]TJ
 T*
-[(223:)-832.7(    )]TJ
-/TT8 1 Tf
+[(233:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( merge\(tmp\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.723 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( len\(tmp\) < len\(b4\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 8.475 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( b4)Tj
 -23.535 -1.1429 TD
-(224:)Tj
+(234:)Tj
 T*
-[(225:)-832.7(  )]TJ
-/TT8 1 Tf
+[(235:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (divide)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.89 0 TD
 (\(xy\):)Tj
 -8.003 -1.1429 TD
-[(226:)-832.7(    bin  = o\(x=Num\(\), y=Sym\(\)\))]TJ
+[(236:)-832.7(    bin = o\(x=Num\(\), y=Sym\(\)\))]TJ
 T*
-[(227:)-832.7(    bins = [bin])]TJ
+[(237:)-832.7(    bins = [bin])]TJ
 T*
-[(228:)-832.7(    )]TJ
-/TT8 1 Tf
+[(238:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( i, \(x, y\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.556 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( enumerate\(xy\):)Tj
 -9.669 -1.1429 TD
-[(229:)-832.7(      )]TJ
-/TT8 1 Tf
+[(239:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( bin.x.n >= size )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.004 0 TD
 (and)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 ( x != b4:)Tj
 -13.84 -1.1429 TD
-[(230:)-832.7(        )]TJ
-/TT8 1 Tf
+[(240:)-832.7(        )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.003 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( i < len\(xy\)-size )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 7.029 0 TD
 (and)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.778 0 TD
 ( bin.x.wide\(iota\):)Tj
 -14.421 -1.1429 TD
-[(231:)-832.7(          bin = o\(x=Num\(\), y=Sym\(\)\))]TJ
+[(241:)-832.7(          bin = o\(x=Num\(\), y=Sym\(\)\))]TJ
 T*
-[(232:)-832.7(          bins += [bin])]TJ
+[(242:)-832.7(          bins += [bin])]TJ
 T*
-[(233:)-832.7(      bin.x.add\(x\))]TJ
+[(243:)-832.7(      bin.x.add\(x\))]TJ
 T*
-[(234:)-832.7(      bin.y.add\(y\))]TJ
+[(244:)-832.7(      bin.y.add\(y\))]TJ
 T*
-[(235:)-832.7(      b4 = x)]TJ
+[(245:)-832.7(      b4 = x)]TJ
 T*
-[(236:)-832.7(    )]TJ
-/TT8 1 Tf
+[(246:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( bins)Tj
 -6.78 -1.1429 TD
-(237:)Tj
+(247:)Tj
 T*
-[(238:)-832.7(  xy = sorted\(xy, key=first\))]TJ
+[(248:)-832.7(  xy = sorted\(xy, key=first\))]TJ
 T*
-[(239:)-832.7(  )]TJ
-/TT8 1 Tf
+[(249:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( merge\([\(bin.x.span\(\), bin.y\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 12.559 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( bin )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.89 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( divide\(xy\)]\))Tj
 -22.895 -1.1429 TD
-(240:)Tj
+(250:)Tj
 T*
-(241:)Tj
-/TT6 1 Tf
+(251:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# Learn class deltas ___________________________________)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(242:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(252:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (contrasts)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 4.501 0 TD
 (\(here, there, the\):)Tj
--9.058 -1.1429 TD
-[(243:)-832.7(  goal= {)]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-6.421 0 TD
-(íbestí)Tj
+28.7516 70.8571 TD
+[(253:)-832.7(  goal = {)]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+6.699 0 TD
+(íbestí)Tj
+/TT8 1 Tf
 0 g
 2.612 0 TD
 ( : )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.834 0 TD
 (lambda)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.501 0 TD
 ( b, r: b**2/b+r,)Tj
--13.368 -1.1429 TD
-[(244:)-832.7(         )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-5.281 0 TD
-(írestí)Tj
+-13.646 -1.1429 TD
+[(254:)-832.7(          )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+5.559 0 TD
+(írestí)Tj
+/TT8 1 Tf
 0 g
 2.39 0 TD
 ( : )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.834 0 TD
 (lambda)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.501 0 TD
 ( b, r: r**2/\(b+r\),)Tj
--12.006 -1.1429 TD
-[(245:)-832.7(         )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-5.281 0 TD
-(íotherí)Tj
+-12.284 -1.1429 TD
+[(255:)-832.7(          )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+5.559 0 TD
+(íotherí)Tj
+/TT8 1 Tf
 0 g
 3.056 0 TD
 (: )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 0.556 0 TD
 (lambda)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.501 0 TD
 ( b, r: 1/\(b+r\)    }[the.GOAL])Tj
--12.394 -1.1429 TD
-(246:)Tj
+-12.672 -1.1429 TD
+(256:)Tj
 T*
-[(247:)-832.7(  )]TJ
-/TT8 1 Tf
+[(257:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (like)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.668 0 TD
 (\(d, kl\):)Tj
 -6.781 -1.1429 TD
-[(248:)-832.7(    out = prior = \(hs[kl] + the.K\) / \(n + the.K*2\))]TJ
+[(258:)-832.7(    out = prior = \(hs[kl] + the.K\) / \(n + the.K*2\))]TJ
 T*
-[(249:)-832.7(    )]TJ
-/TT8 1 Tf
+[(259:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( at, span )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.114 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( d.items\(\):)Tj
 -10.227 -1.1429 TD
-[(250:)-832.7(      f = has.get\(\(kl, \(at, span\)\), 0\))]TJ
+[(260:)-832.7(      f = has.get\(\(kl, \(at, span\)\), 0\))]TJ
 T*
-[(251:)-832.7(      out *= \(f + the.M*prior\) / \(hs[kl] + M\))]TJ
+[(261:)-832.7(      out *= \(f + the.M*prior\) / \(hs[kl] + M\))]TJ
 T*
-[(252:)-832.7(    )]TJ
-/TT8 1 Tf
+[(262:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( out)Tj
 -6.78 -1.1429 TD
-(253:)Tj
+(263:)Tj
 T*
-[(254:)-832.7(  )]TJ
-/TT8 1 Tf
+[(264:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (val)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.39 0 TD
 (\(d\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.778 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( goal\(like\(d, True\), like\(d, False\)\), d)Tj
 -11.17 -1.1429 TD
-[(255:)-832.7(  )]TJ
-/TT8 1 Tf
+[(265:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (top)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.555 0 TD
 (\(a\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.778 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
-( sorted\(a,reversed=True,key=first\)[:the.TOP])Tj
+( sorted\(a, reversed=True, key=first\)[:the.TOP])Tj
 -11.335 -1.1429 TD
-(256:)Tj
+(266:)Tj
 T*
-[(257:)-832.7(  has = {\(kl, \(at, \(lo, hi\)\)\): f)]TJ
+[(267:)-832.7(  has = {\(kl, \(at, \(lo, hi\)\)\): f)]TJ
 T*
-[(258:)-832.7(         )]TJ
-/TT8 1 Tf
+[(268:)-832.7(         )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.281 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col1, col2 )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.78 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( zip\(here.cols.x, there.cols.x\))Tj
 -12.283 -1.1429 TD
-[(259:)-832.7(         )]TJ
-/TT8 1 Tf
+[(269:)-832.7(         )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.281 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( at, \(lo, hi\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.724 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( col1.bins\(col2, the\)})Tj
 -12.227 -1.1429 TD
-[(260:)-832.7(  n = len\(here.rows, there.rows\))]TJ
+[(270:)-832.7(  n = len\(here.rows, there.rows\))]TJ
 T*
-[(261:)-832.7(  hs = {True: len\(here.rows\), False: len\(there.rows\)})]TJ
+[(271:)-832.7(  hs = {True: len\(here.rows\), False: len\(there.rows\)})]TJ
 T*
-[(262:)-832.7(  solos = [val\(dict\(at=x\)\) )]TJ
-/TT8 1 Tf
+[(272:)-832.7(  solos = [val\(dict\(at=x\)\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 13.449 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( at, x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.446 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( set\([z )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.001 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( _, z )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.168 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( has]\)])Tj
 -25.508 -1.1429 TD
-[(263:)-832.7(  ranges = {})]TJ
+[(273:)-832.7(  ranges = {})]TJ
 T*
-[(264:)-832.7(  )]TJ
-/TT8 1 Tf
+[(274:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( _, d )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.224 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( top\(solos\):)Tj
 -7.781 -1.1429 TD
-[(265:)-832.7(    )]TJ
-/TT8 1 Tf
+[(275:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( k )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( d:)Tj
 -7.169 -1.1429 TD
-[(266:)-832.7(      ranges[k] = ranges.get\(k, set\(\)\).add\(d[k]\))]TJ
+[(276:)-832.7(      ranges[k] = ranges.get\(k, set\(\)\).add\(d[k]\))]TJ
 T*
-[(267:)-832.7(  )]TJ
-/TT8 1 Tf
+[(277:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( rule )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.223 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( top\([val\(d\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.057 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( d )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( dict_product\(ranges\)]\):)Tj
 -16.171 -1.1429 TD
-[(268:)-832.7(    )]TJ
-/TT8 1 Tf
+[(278:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (print)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.222 0 TD
 (\(rule\))Tj
-31.6966 74.2857 TD
-(269:)Tj
-0 -1.1429 TD
-(270:)Tj
-/TT6 1 Tf
+-6.113 -1.1429 TD
+(279:)Tj
+T*
+(280:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
-(# Misc utils ______________________________________________ )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(271:)Tj
-/TT6 1 Tf
-2.779 0 TD
-(# string stuff )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(272:)Tj
+(# Misc utils ______________________________________________)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(281:)Tj
+/TT10 1 Tf
+2.779 0 TD
+(# string stuff)Tj
+/TT8 1 Tf
+-2.779 -1.1429 TD
+(282:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (color)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.445 0 TD
 (\(end=)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 2.585 0 TD
 ("\\n")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.837 0 TD
 (, **kw\):)Tj
 -11.424 -1.1429 TD
-[(273:)-832.7(  s, a, z = )]TJ
-/TT8 1 Tf
+[(283:)-832.7(  s, a, z = )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 7.143 0 TD
 ("")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.948 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 ("\\u001b[")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 4.449 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 (";1m")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -13.652 -1.1429 TD
-[(274:)-832.7(  c = dict\(black=30, red=31,  green=32, yellow=33, )]TJ
+[(284:)-832.7(  c = dict\(black=30, red=31, green=32, yellow=33,)]TJ
 T*
-[(275:)-832.7(           purple=34, pink=35,  blue=36, white=37\))]TJ
+[(285:)-832.7(           purple=34, pink=35, blue=36, white=37\))]TJ
 T*
-[(276:)-832.7(  )]TJ
-/TT8 1 Tf
+[(286:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
-( col,txt )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.168 0 TD
-(in)Tj
+( col, txt )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.446 0 TD
+(in)Tj
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( kw.items\(\): s = s+a + str\(c[col]\) +z+txt+)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-17.506 0 TD
-("\\033[0m")Tj
+( kw.items\(\):)Tj
+-9.003 -1.1429 TD
+[(287:)-832.7(    s = s+a + str\(c[col]\) + z+txt+)]TJ
 /TT4 1 Tf
-0 g
--26.231 -1.1429 TD
-[(277:)-832.7(  )]TJ
+0.737 0.561 0.561 rg
+16.286 0 TD
+("\\033[0m")Tj
 /TT8 1 Tf
+0 g
+-16.286 -1.1429 TD
+[(288:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (print)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.222 0 TD
 (\(s, end=end\))Tj
 -5.557 -1.1429 TD
-(278:)Tj
+(289:)Tj
 T*
-(279:)Tj
-/TT8 1 Tf
+(290:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (mline)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.612 0 TD
-(\(m\): m+= [[)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-4.89 0 TD
-("-")Tj
+(\(m\): m += [[)Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+5.168 0 TD
+("-")Tj
+/TT8 1 Tf
 0 g
 1.281 0 TD
 (*len\(str\(x\)\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.944 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( m[-1]]])Tj
--21.562 -1.1429 TD
-(280:)Tj
+-21.84 -1.1429 TD
+(291:)Tj
 T*
-(281:)Tj
-/TT8 1 Tf
+(292:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (printm)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.111 0 TD
 (\(matrix\):)Tj
 -7.668 -1.1429 TD
-[(282:)-832.7(  s = [[str\(e\) )]TJ
-/TT8 1 Tf
+[(293:)-832.7(  s = [[str\(e\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 8.142 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( e )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( row] )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.445 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( row )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.167 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( matrix])Tj
 -18.31 -1.1429 TD
-[(283:)-832.7(  lens = [max\(map\(len, col\)\) )]TJ
-/TT8 1 Tf
+[(294:)-832.7(  lens = [max\(map\(len, col\)\) )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 15.199 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( col )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.834 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( zip\(*s\)])Tj
 -19.255 -1.1429 TD
-[(284:)-832.7(  fmt = )]TJ
-/TT8 1 Tf
+[(295:)-832.7(  fmt = )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 5.864 0 TD
 (í | í)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.392 0 TD
 (.join\()Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 2.167 0 TD
 (í{{:>{}}}í)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.807 0 TD
 (.format\(x\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.556 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( lens\))Tj
 -21.064 -1.1429 TD
-[(285:)-832.7(  )]TJ
-/TT8 1 Tf
+[(296:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( row )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.167 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( [fmt.format\(*row\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 8.001 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( row )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.167 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
-( s]: )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.612 0 TD
-(print)Tj
+( s]:)Tj
+-20.114 -1.1429 TD
+[(297:)-832.7(    )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(print)Tj
+/TT8 1 Tf
 0 g
 2.222 0 TD
 (\(row\))Tj
--23.948 -1.1429 TD
-(286:)Tj
+-6.113 -1.1429 TD
+(298:)Tj
 T*
-(287:)Tj
-/TT6 1 Tf
+(299:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
-(# maths stuff )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(288:)Tj
+(# maths stuff)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(300:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (r3)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.945 0 TD
 (\(a\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.778 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
-( [round\(x,3\) )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-5.391 0 TD
-(for)Tj
+( [round\(x, 3\) )Tj
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+5.669 0 TD
+(for)Tj
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( x )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( a])Tj
--18.838 -1.1429 TD
-(289:)Tj
+-19.116 -1.1429 TD
+(301:)Tj
 T*
-(290:)Tj
-/TT6 1 Tf
+(302:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
-(# dictionary stuff )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(291:)Tj
+(# dictionary stuff)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(303:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (has)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.723 0 TD
 (\(d, k\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.834 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( d.get\(k, 0\))Tj
 -12.003 -1.1429 TD
-(292:)Tj
-/TT8 1 Tf
+(304:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (inc)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.445 0 TD
 (\(d, k, n=1\): tmp = d[k] = n + d.get\(k, 0\); )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 17.399 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( tmp)Tj
 -26.29 -1.1429 TD
-(293:)Tj
+(305:)Tj
 T*
-(294:)Tj
-/TT8 1 Tf
+(306:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (dict_product)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 6.056 0 TD
 (\(d\):)Tj
 -10.613 -1.1429 TD
-[(295:)-832.7(  keys = d.keys\(\))]TJ
+[(307:)-832.7(  keys = d.keys\(\))]TJ
 T*
-[(296:)-832.7(  )]TJ
-/TT8 1 Tf
+[(308:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( p )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.112 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( itertools.product\(*d.values\(\)\):)Tj
 -6.669 -1.1429 TD
-[(297:)-832.7(    )]TJ
-/TT8 1 Tf
+[(309:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (yield)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.279 0 TD
-( dict\(zip\(keys, p\)\)  )Tj
+( dict\(zip\(keys, p\)\))Tj
 -6.17 -1.1429 TD
-(298:)Tj
+(310:)Tj
 T*
-(299:)Tj
-/TT6 1 Tf
+(311:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
-(# list stuff )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(300:)Tj
+(# list stuff)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(312:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (first)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.889 0 TD
 (\(a\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.778 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( a[0])Tj
 -11.113 -1.1429 TD
-(301:)Tj
-/TT8 1 Tf
+(313:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (last)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.723 0 TD
 (\(a\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.778 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( a[-1]  )Tj
-/TT6 1 Tf
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.835 0 TD
-(#$\\label{comment}$)Tj
-/TT4 1 Tf
--13.782 -1.1429 TD
-(302:)Tj
+(# $\\label{comment}$)Tj
 /TT8 1 Tf
+-13.782 -1.1429 TD
+(314:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (per)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.556 0 TD
 (\(a, p=.5\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.308 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( a[int\(p*len\(a\)\)])Tj
 -13.31 -1.1429 TD
-(303:)Tj
-T*
-(304:)Tj
-/TT6 1 Tf
+(315:)Tj
+37.8094 70.8571 TD
+(316:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# file stuff)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(305:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(317:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (csv)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.668 0 TD
 (\(f=None, sep=)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 6.337 0 TD
 (",")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.226 0 TD
 (\):)Tj
 -13.788 -1.1429 TD
-[(306:)-832.7(  )]TJ
-/TT8 1 Tf
+[(318:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (prep)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.167 0 TD
 (\(s\): )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.722 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
 ( re.sub\(r)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.723 0 TD
 (í\([\\n\\t\\r ]|#.*\)í)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 5.836 0 TD
 (, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.556 0 TD
 (íí)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.556 0 TD
 (, s\))Tj
--22.562 -1.1428 TD
-[(307:)-832.7(  )]TJ
-/TT8 1 Tf
+-22.562 -1.1429 TD
+[(319:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( f:)Tj
 -3.946 -1.1429 TD
-[(308:)-832.7(    with open\(f\) as fp:)]TJ
+[(320:)-832.7(    with open\(f\) as fp:)]TJ
 T*
-[(309:)-832.7(      )]TJ
-/TT8 1 Tf
+[(321:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( s )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( fp:)Tj
 -7.725 -1.1429 TD
-[(310:)-832.7(        )]TJ
-/TT8 1 Tf
+[(322:)-832.7(        )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.003 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( s := prep\(s\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-5.919 0 TD
-(yield)Tj
+( s := prep\(s\):)Tj
+-5.614 -1.1429 TD
+[(323:)-832.7(          )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+5.559 0 TD
+(yield)Tj
+/TT8 1 Tf
 0 g
 2.279 0 TD
 ( s.split\(sep\))Tj
--13.812 -1.1429 TD
-[(311:)-832.7(  )]TJ
-/TT8 1 Tf
+-7.838 -1.1429 TD
+[(324:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 (:)Tj
 -5.281 -1.1429 TD
-[(312:)-832.7(    )]TJ
-/TT8 1 Tf
+[(325:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( s )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.056 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( sys.stdin:)Tj
 -7.169 -1.1429 TD
-[(313:)-832.7(      )]TJ
-/TT8 1 Tf
+[(326:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( s := prep\(s\): )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-5.919 0 TD
-(yield)Tj
+( s := prep\(s\):)Tj
+-5.058 -1.1429 TD
+[(327:)-832.7(        )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+5.003 0 TD
+(yield)Tj
+/TT8 1 Tf
 0 g
 2.279 0 TD
 ( s.split\(sep\))Tj
--13.256 -1.1429 TD
-(314:)Tj
+-7.282 -1.1429 TD
+(328:)Tj
 T*
-(315:)Tj
-/TT6 1 Tf
+(329:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
 (# command-line stuff)Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(316:)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(330:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (cli)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.112 0 TD
 (\(use, txt, config\):)Tj
 -5.669 -1.1429 TD
-[(317:)-832.7(  fmt= argparse.RawTextHelpFormatter)]TJ
+[(331:)-832.7(  fmt = argparse.RawTextHelpFormatter)]TJ
 T*
-[(318:)-832.7(  used, p = {}, argparse.ArgumentParser\(prog=use, description=txt, )]TJ
+[(332:)-832.7(  used, p = {}, argparse.ArgumentParser\(prog=use, description=txt,)]TJ
 T*
-[(319:)-832.7(                                        formatter_class=fmt\))]TJ
+[(333:)-832.7(                                        formatter_class=fmt\))]TJ
 T*
-[(320:)-832.7(  )]TJ
-/TT8 1 Tf
+[(334:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( k, \(_, b4, h\) )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 5.614 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( config.items\(\):)Tj
 -11.171 -1.1429 TD
-[(321:)-832.7(    k0 = k[0])]TJ
+[(335:)-832.7(    k0 = k[0])]TJ
 T*
-[(322:)-832.7(    used[k0] = c = k0 )]TJ
-/TT8 1 Tf
+[(336:)-832.7(    used[k0] = c = k0 )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 11.785 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( k0 )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.612 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( used )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.724 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
 ( k0.lower\(\))Tj
 -19.567 -1.1429 TD
-[(323:)-832.7(    )]TJ
-/TT8 1 Tf
+[(337:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( b4==False: )Tj
+( b4 == False:)Tj
 -4.502 -1.1429 TD
-[(324:)-832.7(          p.add_argument\()]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-13.174 0 TD
-("-")Tj
+[(338:)-832.7(      p.add_argument\()]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+12.062 0 TD
+("-")Tj
+/TT8 1 Tf
 0 g
 1.281 0 TD
-(+c, dest=k, default=False, )Tj
--14.455 -1.1429 TD
-[(325:)-832.7(                         help=h, )]TJ
+(+c, dest=k, default=False,)Tj
+-13.343 -1.1429 TD
+[(339:)-832.7(                     help=h,)]TJ
 T*
-[(326:)-832.7(                         action=)]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-12.981 0 TD
-("store_true")Tj
+[(340:)-832.7(                     action=)]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+11.869 0 TD
+("store_true")Tj
+/TT8 1 Tf
 0 g
 5.838 0 TD
 (\))Tj
--18.819 -1.1429 TD
-[(327:)-832.7(    )]TJ
-/TT8 1 Tf
+-17.707 -1.1429 TD
+[(341:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
-(: p.add_argument\()Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-8.171 0 TD
-("-")Tj
+(:)Tj
+-5.837 -1.1429 TD
+[(342:)-832.7(      p.add_argument\()]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+12.062 0 TD
+("-")Tj
+/TT8 1 Tf
 0 g
 1.281 0 TD
-(+c, dest=k, default=b4, )Tj
--15.289 -1.1429 TD
-[(328:)-832.7(                         help=h + )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-13.899 0 TD
-(" [")Tj
+(+c, dest=k, default=b4,)Tj
+-13.343 -1.1429 TD
+[(343:)-832.7(                     help=h + )]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+12.787 0 TD
+(" [")Tj
+/TT8 1 Tf
 0 g
 1.559 0 TD
 ( + str\(b4\) + )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 5.169 0 TD
 ("]")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.281 0 TD
-(, )Tj
--21.908 -1.1429 TD
-[(329:)-832.7(                         type=type\(b4\), metavar=k\))]TJ
+(,)Tj
+-20.796 -1.1429 TD
+[(344:)-832.7(                     type=type\(b4\), metavar=k\))]TJ
 T*
-[(330:)-832.7(  )]TJ
-/TT8 1 Tf
+[(345:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (return)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.889 0 TD
-( o\( **p.parse_args\(\).___dict___ \) )Tj
+( o\( **p.parse_args\(\).__dict__ \))Tj
 -6.224 -1.1429 TD
-(331:)Tj
+(346:)Tj
 T*
-(332:)Tj
-/TT6 1 Tf
+(347:)Tj
+/TT10 1 Tf
 0.698 0.133 0.133 rg
 2.779 0 TD
-(# Unit tests ______________________________________________ )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(333:)Tj
+(# Unit tests ______________________________________________)Tj
 /TT8 1 Tf
+-2.779 -1.1429 TD
+(348:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (class)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.502 0 TD
 ( Eg:)Tj
 -5.281 -1.1429 TD
-[(334:)-832.7(  )]TJ
-/TT8 1 Tf
+[(349:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (ls)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.834 0 TD
 (\(the\):)Tj
-31.8624 74.2857 TD
-[(335:)-832.7(    )]TJ
-/TT8 1 Tf
+-5.947 -1.1429 TD
+[(350:)-832.7(    )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.891 0 TD
 ("list  all examples.")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -3.891 -1.1429 TD
-[(336:)-832.7(    )]TJ
-/TT8 1 Tf
+[(351:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (print)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.222 0 TD
 (\()Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.333 0 TD
 ("\\nexamples:")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 6.728 0 TD
 (\))Tj
 -13.174 -1.1429 TD
-[(337:)-832.7(    )]TJ
-/TT8 1 Tf
+[(352:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (for)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.333 0 TD
 ( k, f )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 1.89 0 TD
 (in)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.889 0 TD
 ( vars\(Eg\).items\(\):)Tj
 -8.003 -1.1429 TD
-[(338:)-832.7(      )]TJ
-/TT8 1 Tf
+[(353:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
 ( k[0] != )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.308 0 TD
 ("_")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.504 0 TD
-(: )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.556 0 TD
-(print)Tj
+(:)Tj
+-9.87 -1.1429 TD
+[(354:)-832.7(        )]TJ
 /TT4 1 Tf
+0.627 0.125 0.941 rg
+5.003 0 TD
+(print)Tj
+/TT8 1 Tf
 0 g
 2.222 0 TD
 (\(f)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 0.611 0 TD
 ("  {k:<13} {f.___doc___}")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 11.648 0 TD
 (\))Tj
--24.907 -1.1429 TD
-(339:)Tj
+-19.484 -1.1429 TD
+(355:)Tj
 T*
-[(340:)-832.7(  )]TJ
-/TT8 1 Tf
+[(356:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (_fail)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.001 0 TD
 (\(the\):)Tj
 -7.114 -1.1429 TD
-[(341:)-832.7(    )]TJ
-/TT8 1 Tf
+[(357:)-832.7(    )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.891 0 TD
 ("testing failure")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -3.891 -1.1429 TD
-[(342:)-832.7(    )]TJ
-/TT8 1 Tf
+[(358:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
 ( False, )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.279 0 TD
 ("failing")Tj
-/TT4 1 Tf
-0 g
-3.893 0 TD
-( )Tj
--14.009 -1.1429 TD
-(343:)Tj
-T*
-[(344:)-832.7(  )]TJ
 /TT8 1 Tf
+0 g
+-10.116 -1.1429 TD
+(359:)Tj
+T*
+[(360:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (data)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
-(\(the,file=)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-3.863 0 TD
-("../data/vote.csv")Tj
+(\(the, file=)Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+4.141 0 TD
+("../data/vote.csv")Tj
+/TT8 1 Tf
 0 g
 8.118 0 TD
 (\):)Tj
--19.15 -1.1429 TD
-[(345:)-832.7(    )]TJ
-/TT8 1 Tf
+-19.428 -1.1429 TD
+[(361:)-832.7(    )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.891 0 TD
 ("simple load of data into  a table")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -3.891 -1.1429 TD
-[(346:)-832.7(    r = Rows\(csv\(file\)\))]TJ
+[(362:)-832.7(    r = Rows\(csv\(file\)\))]TJ
 T*
-[(347:)-832.7(    )]TJ
-/TT8 1 Tf
+[(363:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
-( 435 == len\(r.rows\) )Tj
+( 435 == len\(r.rows\))Tj
 -6.837 -1.1429 TD
-[(348:)-832.7(    )]TJ
-/TT8 1 Tf
+[(364:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
 ( 195 == r.cols.all[1].has[)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 10.617 0 TD
 (íyí)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.112 0 TD
-(] )Tj
+(])Tj
 -18.566 -1.1429 TD
-(349:)Tj
+(365:)Tj
 T*
-[(350:)-832.7(  )]TJ
-/TT8 1 Tf
+[(366:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (nclasses)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 4.225 0 TD
-(\(the,file=)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-3.863 0 TD
-("../data/diabetes.csv")Tj
+(\(the, file=)Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+4.141 0 TD
+("../data/diabetes.csv")Tj
+/TT8 1 Tf
 0 g
 10.119 0 TD
 (, kl=)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 1.862 0 TD
 ("positive")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 4.727 0 TD
 (\):)Tj
--29.909 -1.1429 TD
-[(351:)-832.7(    )]TJ
-/TT8 1 Tf
+-30.187 -1.1429 TD
+[(367:)-832.7(    )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.891 0 TD
 ("read data with nclasses")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -3.891 -1.1429 TD
-[(352:)-832.7(    rs = stratify\(csv\(file\)\))]TJ
+[(368:)-832.7(    rs = stratify\(csv\(file\)\))]TJ
 T*
-[(353:)-832.7(    )]TJ
-/TT8 1 Tf
+[(369:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
-( 2       == len\(rs.klass\))Tj
+( 2 == len\(rs.klass\))Tj
 -6.837 -1.1429 TD
-[(354:)-832.7(    )]TJ
-/TT8 1 Tf
+[(370:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
-( 268     == len\(rs.klass[kl].rows\))Tj
+( 268 == len\(rs.klass[kl].rows\))Tj
 -6.837 -1.1429 TD
-[(355:)-832.7(    )]TJ
-/TT8 1 Tf
+[(371:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
-( 768     == len\(rs.all.rows\))Tj
+( 768 == len\(rs.all.rows\))Tj
 -6.837 -1.1429 TD
-[(356:)-832.7(    )]TJ
-/TT8 1 Tf
+[(372:)-832.7(    )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.891 0 TD
 (assert)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.946 0 TD
 ( 3.90625 == rs.klass[kl].cols.all[0].sd\(\))Tj
 -6.837 -1.1429 TD
-[(357:)-832.7(    )]TJ
+(373:)Tj
 T*
-[(358:)-832.7(  )]TJ
-/TT8 1 Tf
+[(374:)-832.7(  )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 3.335 0 TD
 (def)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.5 0 TD
 ( )Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0 0 1 rg
 0.278 0 TD
 (bins)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 2.056 0 TD
 (\(the, file=)Tj
-/TT8 1 Tf
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 4.141 0 TD
 ("../data/diabetes.csv")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 10.119 0 TD
-(, )Tj
+(,)Tj
 -21.429 -1.1429 TD
-[(359:)-832.7(                k1= )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-9.145 0 TD
-("positive")Tj
+[(375:)-832.7(           k1=)]TJ
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+7.477 0 TD
+("positive")Tj
+/TT8 1 Tf
 0 g
 4.727 0 TD
-(, k2= )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-2.474 0 TD
-("negative")Tj
+(, k2=)Tj
 /TT4 1 Tf
+0.737 0.561 0.561 rg
+2.196 0 TD
+("negative")Tj
+/TT8 1 Tf
 0 g
 5.005 0 TD
 (\):)Tj
--21.351 -1.1429 TD
-[(360:)-832.7(    )]TJ
-/TT8 1 Tf
+-19.405 -1.1429 TD
+[(376:)-832.7(    )]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 3.891 0 TD
 ("discretize some data")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 -3.891 -1.1429 TD
-[(361:)-832.7(    rs = stratify\(csv\(file\)\))]TJ
+[(377:)-832.7(    rs = stratify\(csv\(file\)\))]TJ
 T*
-[(362:)-832.7(    bins1\(rs.klass[k1], rs.klass[k2], the\))]TJ
-T*
-(363:)Tj
-T*
-[(364:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(bestrest)Tj
-/TT4 1 Tf
-0 g
-3.89 0 TD
-(\(the, file=)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-4.141 0 TD
-("../data/auto93.csv")Tj
-/TT4 1 Tf
-0 g
-9.285 0 TD
-(\): )Tj
--22.429 -1.1428 TD
-[(365:)-832.7(    )]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-3.891 0 TD
-("discretize some multi-goal data")Tj
-/TT4 1 Tf
-0 g
--3.891 -1.1429 TD
-[(366:)-832.7(    r = Rows\(csv\(file\)\))]TJ
-T*
-[(367:)-832.7(    goods, bads = r.best\(the\) )]TJ
-T*
-[(368:)-832.7(    bins1\(goods, bads, the\))]TJ
-T*
-(369:)Tj
-T*
-(370:)Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(bins1)Tj
-/TT4 1 Tf
-0 g
-2.612 0 TD
-(\(goods, bads, the\):)Tj
--7.169 -1.1429 TD
-[(371:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( good,bad )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.726 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( zip\(goods.cols.x, bads.cols.x\):)Tj
--10.283 -1.1429 TD
-[(372:)-832.7(    bins = list\(good.bins\(bad, the\)\))]TJ
-T*
-[(373:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( len\(bins\) > 1:)Tj
--4.502 -1.1429 TD
-[(374:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(print)Tj
-/TT4 1 Tf
-0 g
-2.222 0 TD
-(\(f)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.611 0 TD
-("\\n{good.txt}")Tj
-/TT4 1 Tf
-0 g
-6.559 0 TD
-(\))Tj
--13.839 -1.1429 TD
-[(375:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( bin )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.89 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( bins: )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.668 0 TD
-(print)Tj
-/TT4 1 Tf
-0 g
-2.222 0 TD
-(\()Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.333 0 TD
-("\\t")Tj
-/TT4 1 Tf
-0 g
-1.559 0 TD
-(,bin\))Tj
--15.341 -1.1429 TD
-(376:)Tj
-T*
-(377:)Tj
-/TT6 1 Tf
-0.698 0.133 0.133 rg
-2.779 0 TD
-(# Main program ____________________________________________ )Tj
-/TT4 1 Tf
--2.779 -1.1429 TD
-(378:)Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-2.779 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(main)Tj
-/TT4 1 Tf
-0 g
-2.334 0 TD
-(\(the\):)Tj
--6.891 -1.1429 TD
-[(379:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(def)Tj
-/TT4 1 Tf
-0 g
-1.5 0 TD
-( )Tj
-/TT8 1 Tf
-0 0 1 rg
-0.278 0 TD
-(run)Tj
-/TT4 1 Tf
-0 g
-1.611 0 TD
-(\(fun, fails, the\):)Tj
--6.724 -1.1429 TD
-[(380:)-832.7(    s= f)]TJ
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-5.531 0 TD
-(" {fun.___name___:<12}")Tj
-/TT4 1 Tf
-0 g
--5.531 -1.1429 TD
-[(381:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( the.WILD:)Tj
--4.502 -1.1429 TD
-[(382:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(print)Tj
-/TT4 1 Tf
-0 g
-2.222 0 TD
-(\()Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-0.333 0 TD
-("raw")Tj
-/TT4 1 Tf
-0 g
-2.671 0 TD
-(\))Tj
--9.673 -1.1429 TD
-[(383:)-832.7(      fun\(copy.deepcopy\(the\)\); sys.exit\(\))]TJ
-T*
-[(384:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(try)Tj
-/TT4 1 Tf
-0 g
-1.278 0 TD
-(:  )Tj
--5.169 -1.1429 TD
-[(385:)-832.7(      fun\(copy.deepcopy\(the\)\))]TJ
-T*
-[(386:)-832.7(      random.seed\(the.SEED\))]TJ
-T*
-[(387:)-832.7(      color\(green= \(chr\(10003\)+ s\), white=fun.___doc___\))]TJ
-T*
-[(388:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(except)Tj
-/TT4 1 Tf
-0 g
-3.168 0 TD
-( Exception as err: )Tj
--7.059 -1.1429 TD
-[(389:)-832.7(      fails = fails + 1)]TJ
-T*
-[(390:)-832.7(      color\(red=   \(chr\(10007\)+ s\), white= str\(err\)\))]TJ
-T*
-[(391:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(return)Tj
-/TT4 1 Tf
-0 g
-2.889 0 TD
-( fails)Tj
--6.78 -1.1429 TD
-[(392:)-832.7(  )]TJ
-/TT6 1 Tf
-0.698 0.133 0.133 rg
-3.335 0 TD
-(# __________________)Tj
-/TT4 1 Tf
--3.335 -1.1429 TD
-(393:)Tj
-0 g
-2.779 0 TD
-(  fails=0)Tj
--2.779 -1.1429 TD
-[(394:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( the.XAMPLE == )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-7.727 0 TD
-("all")Tj
-/TT4 1 Tf
-0 g
-2.06 0 TD
-(:)Tj
--13.733 -1.1429 TD
-[(395:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(for)Tj
-/TT4 1 Tf
-0 g
-1.333 0 TD
-( k, f )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-1.89 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( vars\(Eg\).items\(\):)Tj
--8.003 -1.1429 TD
-[(396:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( k[0] != )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-3.308 0 TD
-("_")Tj
-/TT4 1 Tf
-0 g
-1.504 0 TD
-( )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-0.278 0 TD
-(and)Tj
-/TT4 1 Tf
-0 g
-1.778 0 TD
-( k!=)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-1.64 0 TD
-("ls")Tj
-/TT4 1 Tf
-0 g
-1.782 0 TD
-(: fails = run\(f,fails, the\))Tj
--15.348 -1.1429 TD
-[(397:)-832.7(  )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.335 0 TD
-(else)Tj
-/TT4 1 Tf
-0 g
-1.946 0 TD
-(:)Tj
--5.281 -1.1429 TD
-[(398:)-832.7(    )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-3.891 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( the.XAMPLE )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-6.281 0 TD
-(and)Tj
-/TT4 1 Tf
-0 g
-1.778 0 TD
-( the.XAMPLE )Tj
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-6.281 0 TD
-(in)Tj
-/TT4 1 Tf
-0 g
-0.889 0 TD
-( vars\(Eg\): )Tj
--19.731 -1.1429 TD
-[(399:)-832.7(      f = vars\(Eg\)[the.XAMPLE])]TJ
-T*
-[(400:)-832.7(      )]TJ
-/TT8 1 Tf
-0.627 0.125 0.941 rg
-4.447 0 TD
-(if)Tj
-/TT4 1 Tf
-0 g
-0.611 0 TD
-( the.XAMPLE==)Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-7.171 0 TD
-("ls")Tj
-/TT4 1 Tf
-0 g
-1.782 0 TD
-(: f\(the\))Tj
+[(378:)-832.7(    bins1\(rs.klass[k1], rs.klass[k2], the\))]TJ
 ET
 endstream
 endobj
-12 0 obj
+13 0 obj
 <<
 /ProcSet [/PDF /Text ]
 /Font <<
@@ -4865,85 +4569,534 @@ endobj
 /TT4 5 0 R
 /TT6 6 0 R
 /TT8 7 0 R
+/TT10 8 0 R
 >>
 /ExtGState <<
-/GS1 8 0 R
+/GS1 9 0 R
 >>
 >>
 endobj
-14 0 obj
+15 0 obj
 <<
-/Length 721
+/Length 6555
 >>
 stream
+0 G
+0 J 0 j 0.1 w 10 M []0 d
+/GS1 gs
+1 i 
+571 288.667 m
+60 288.667 l
+571 553.333 m
+60 553.333 l
+S
+0.95 g
+42 818 18 -794 re
+f
+0.7 g
+24 96 36 -72 re
+f
 BT
 /TT2 1 Tf
-0 10 -10 0 35.6667 29 Tm
+0 12 -12 0 40 38.666 Tm
 0 g
-/GS1 gs
 0 Tc
 0 Tw
-[(keys)-4500(Thu Jul 22 17:14:18 2021)-4500(3)]TJ
+(07/22/21)Tj
+-0.0552 -1.0667 TD
+(19:27:10)Tj
+ET
+0.7 g
+24 818 36 -72 re
+f
+BT
 /TT4 1 Tf
-0 7 -7 0 49 37.784 Tm
-[(401:)-832.7(      )]TJ
+0 28.8 -28.8 0 52.8 773.9915 Tm
+1 g
+(3)Tj
+/TT6 1 Tf
+0 14 -14 0 55.5 408.1689 Tm
+0 g
+(keys)Tj
 /TT8 1 Tf
+0 7 -7 0 70 37.784 Tm
+(379:)Tj
+0 -1.1429 TD
+[(380:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(bestrest)Tj
+/TT8 1 Tf
+0 g
+3.89 0 TD
+(\(the, file=)Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+4.141 0 TD
+("../data/auto93.csv")Tj
+/TT8 1 Tf
+0 g
+9.285 0 TD
+(\):)Tj
+-22.429 -1.1429 TD
+[(381:)-832.7(    )]TJ
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+3.891 0 TD
+("discretize some multi-goal data")Tj
+/TT8 1 Tf
+0 g
+-3.891 -1.1429 TD
+[(382:)-832.7(    r = Rows\(csv\(file\)\))]TJ
+T*
+[(383:)-832.7(    goods, bads = r.best\(the\))]TJ
+T*
+[(384:)-832.7(    bins1\(goods, bads, the\))]TJ
+T*
+(385:)Tj
+T*
+(386:)Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(bins1)Tj
+/TT8 1 Tf
+0 g
+2.612 0 TD
+(\(goods, bads, the\):)Tj
+-7.169 -1.1429 TD
+[(387:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( good, bad )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+5.004 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( zip\(goods.cols.x, bads.cols.x\):)Tj
+-10.561 -1.1429 TD
+[(388:)-832.7(    bins = sorted\(good.bins\(bad, the\)\))]TJ
+T*
+[(389:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( len\(bins\) > 1:)Tj
+-4.502 -1.1429 TD
+[(390:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(print)Tj
+/TT8 1 Tf
+0 g
+2.222 0 TD
+(\(f)Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.611 0 TD
+("\\n{good.txt}")Tj
+/TT8 1 Tf
+0 g
+6.559 0 TD
+(\))Tj
+-13.839 -1.1429 TD
+[(391:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( bin )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.89 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( bins:)Tj
+-8.559 -1.1429 TD
+[(392:)-832.7(        )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+5.003 0 TD
+(print)Tj
+/TT8 1 Tf
+0 g
+2.222 0 TD
+(\()Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.333 0 TD
+("\\t")Tj
+/TT8 1 Tf
+0 g
+1.559 0 TD
+(, bin\))Tj
+-9.117 -1.1429 TD
+(393:)Tj
+T*
+(394:)Tj
+/TT10 1 Tf
+0.698 0.133 0.133 rg
+2.779 0 TD
+(# Main program ____________________________________________)Tj
+/TT8 1 Tf
+-2.779 -1.1429 TD
+(395:)Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+2.779 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(main)Tj
+/TT8 1 Tf
+0 g
+2.334 0 TD
+(\(the\):)Tj
+-6.891 -1.1429 TD
+[(396:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(def)Tj
+/TT8 1 Tf
+0 g
+1.5 0 TD
+( )Tj
+/TT4 1 Tf
+0 0 1 rg
+0.278 0 TD
+(run)Tj
+/TT8 1 Tf
+0 g
+1.611 0 TD
+(\(fun, fails, the\):)Tj
+-6.724 -1.1429 TD
+[(397:)-832.7(    s = f)]TJ
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+5.809 0 TD
+(" {fun.__name__:<12}")Tj
+/TT8 1 Tf
+0 g
+-5.809 -1.1429 TD
+[(398:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( the.WILD:)Tj
+-4.502 -1.1429 TD
+[(399:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(print)Tj
+/TT8 1 Tf
+0 g
+2.222 0 TD
+(\()Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+0.333 0 TD
+("wild")Tj
+/TT8 1 Tf
+0 g
+2.893 0 TD
+(\))Tj
+-9.895 -1.1429 TD
+[(400:)-832.7(      fun\(copy.deepcopy\(the\)\))]TJ
+T*
+[(401:)-832.7(      sys.exit\(\))]TJ
+T*
+[(402:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(try)Tj
+/TT8 1 Tf
+0 g
+1.278 0 TD
+(:)Tj
+-5.169 -1.1429 TD
+[(403:)-832.7(      fun\(copy.deepcopy\(the\)\))]TJ
+T*
+[(404:)-832.7(      random.seed\(the.SEED\))]TJ
+T*
+[(405:)-832.7(      color\(green=\(chr\(10003\) + s\), white=fun.__doc__\))]TJ
+T*
+[(406:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(except)Tj
+/TT8 1 Tf
+0 g
+3.168 0 TD
+( Exception as err:)Tj
+-7.059 -1.1429 TD
+[(407:)-832.7(      fails = fails + 1)]TJ
+T*
+[(408:)-832.7(      color\(red=\(chr\(10007\) + s\), white=str\(err\)\))]TJ
+T*
+[(409:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(return)Tj
+/TT8 1 Tf
+0 g
+2.889 0 TD
+( fails)Tj
+-6.78 -1.1429 TD
+[(410:)-832.7(  )]TJ
+/TT10 1 Tf
+0.698 0.133 0.133 rg
+3.335 0 TD
+(# __________________)Tj
+/TT8 1 Tf
+-3.335 -1.1429 TD
+(411:)Tj
+0 g
+2.779 0 TD
+(  fails = 0)Tj
+-2.779 -1.1429 TD
+[(412:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( the.XAMPLE == )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+7.727 0 TD
+("all")Tj
+/TT8 1 Tf
+0 g
+2.06 0 TD
+(:)Tj
+-13.733 -1.1429 TD
+[(413:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(for)Tj
+/TT8 1 Tf
+0 g
+1.333 0 TD
+( k, f )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+1.89 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( vars\(Eg\).items\(\):)Tj
+-8.003 -1.1429 TD
+[(414:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( k[0] != )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+3.308 0 TD
+("_")Tj
+/TT8 1 Tf
+0 g
+1.504 0 TD
+( )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+0.278 0 TD
+(and)Tj
+/TT8 1 Tf
+0 g
+1.778 0 TD
+( k != )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+2.196 0 TD
+("ls")Tj
+/TT8 1 Tf
+0 g
+1.782 0 TD
+(:)Tj
+-15.904 -1.1429 TD
+[(415:)-832.7(        fails = run\(f, fails, the\))]TJ
+T*
+[(416:)-832.7(  )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.335 0 TD
+(else)Tj
+/TT8 1 Tf
+0 g
+1.946 0 TD
+(:)Tj
+-5.281 -1.1429 TD
+[(417:)-832.7(    )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+3.891 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( the.XAMPLE )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+6.281 0 TD
+(and)Tj
+/TT8 1 Tf
+0 g
+1.778 0 TD
+( the.XAMPLE )Tj
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+6.281 0 TD
+(in)Tj
+/TT8 1 Tf
+0 g
+0.889 0 TD
+( vars\(Eg\):)Tj
+-19.731 -1.1429 TD
+[(418:)-832.7(      f = vars\(Eg\)[the.XAMPLE])]TJ
+T*
+[(419:)-832.7(      )]TJ
+/TT4 1 Tf
+0.627 0.125 0.941 rg
+4.447 0 TD
+(if)Tj
+/TT8 1 Tf
+0 g
+0.611 0 TD
+( the.XAMPLE == )Tj
+/TT4 1 Tf
+0.737 0.561 0.561 rg
+7.727 0 TD
+("ls")Tj
+/TT8 1 Tf
+0 g
+1.782 0 TD
+(:)Tj
+-14.567 -1.1429 TD
+[(420:)-832.7(        f\(the\))]TJ
+T*
+[(421:)-832.7(      )]TJ
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 4.447 0 TD
 (else)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 1.946 0 TD
-(               : fails=run\(f,fails,the\))Tj
+( :)Tj
 -6.393 -1.1429 TD
-[(402:)-832.7(  sys.exit\(fails\))]TJ
+[(422:)-832.7(        fails = run\(f, fails, the\))]TJ
 T*
-(403:)Tj
+[(423:)-832.7(  sys.exit\(fails\))]TJ
 T*
-(404:)Tj
-/TT8 1 Tf
+(424:)Tj
+T*
+(425:)Tj
+T*
+(426:)Tj
+/TT4 1 Tf
 0.627 0.125 0.941 rg
 2.779 0 TD
 (if)Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 0.611 0 TD
-( ___name___ == )Tj
-/TT8 1 Tf
-0.737 0.561 0.561 rg
-7.839 0 TD
-("___main___")Tj
+( __name__ == )Tj
 /TT4 1 Tf
-0 g
-6.618 0 TD
-(: )Tj
--17.847 -1.1429 TD
-[(405:)-832.7(  main\( cli\()]TJ
+0.737 0.561 0.561 rg
+6.727 0 TD
+("__main__")Tj
 /TT8 1 Tf
+0 g
+5.506 0 TD
+(:)Tj
+-15.623 -1.1429 TD
+[(427:)-832.7(  main\( cli\()]TJ
+/TT4 1 Tf
 0.737 0.561 0.561 rg
 7.39 0 TD
 ("./keys")Tj
-/TT4 1 Tf
+/TT8 1 Tf
 0 g
 3.728 0 TD
-(, ___doc___, config\(\)\) \))Tj
+(, __doc__, config\(\)\) \))Tj
 ET
 endstream
 endobj
-15 0 obj
+16 0 obj
 <<
 /ProcSet [/PDF /Text ]
 /Font <<
 /TT2 4 0 R
 /TT4 5 0 R
+/TT6 6 0 R
 /TT8 7 0 R
+/TT10 8 0 R
 >>
 /ExtGState <<
-/GS1 8 0 R
+/GS1 9 0 R
 >>
 >>
 endobj
-8 0 obj
+9 0 obj
 <<
 /Type /ExtGState
 /SA false
@@ -4957,52 +5110,22 @@ endobj
 /TR2 /Default
 >>
 endobj
-16 0 obj
-<<
-/Type /FontDescriptor
-/Ascent 753
-/CapHeight 562
-/Descent -246
-/Flags 262179
-/FontBBox [-113 -250 749 801]
-/FontName /Courier-Bold
-/ItalicAngle 0
-/StemV 133
-/XHeight 439
-/StemH 84
->>
-endobj
 17 0 obj
 <<
 /Type /FontDescriptor
-/Ascent 770
-/CapHeight 718
-/Descent -229
-/Flags 32
-/FontBBox [-166 -225 1000 931]
-/FontName /Helvetica
+/Ascent 750
+/CapHeight 676
+/Descent -250
+/Flags 262178
+/FontBBox [-168 -218 1000 935]
+/FontName /Times-Bold
 /ItalicAngle 0
-/StemV 88
-/XHeight 523
-/StemH 88
+/StemV 133
+/XHeight 461
+/StemH 139
 >>
 endobj
 18 0 obj
-<<
-/Type /FontDescriptor
-/Ascent 770
-/CapHeight 718
-/Descent -229
-/Flags 96
-/FontBBox [-170 -225 1116 931]
-/FontName /Helvetica-Oblique
-/ItalicAngle -15
-/StemV 88
-/XHeight 523
-/StemH 88
->>
-endobj
-19 0 obj
 <<
 /Type /FontDescriptor
 /Ascent 770
@@ -5017,60 +5140,64 @@ endobj
 /StemH 140
 >>
 endobj
+19 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 662
+/Descent -250
+/Flags 34
+/FontBBox [-168 -218 1000 898]
+/FontName /Times-Roman
+/ItalicAngle 0
+/StemV 84
+/XHeight 450
+/StemH 84
+>>
+endobj
+20 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 770
+/CapHeight 718
+/Descent -229
+/Flags 32
+/FontBBox [-166 -225 1000 931]
+/FontName /Helvetica
+/ItalicAngle 0
+/StemV 88
+/XHeight 523
+/StemH 88
+>>
+endobj
+21 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 770
+/CapHeight 718
+/Descent -229
+/Flags 96
+/FontBBox [-170 -225 1116 931]
+/FontName /Helvetica-Oblique
+/ItalicAngle -15
+/StemV 88
+/XHeight 523
+/StemH 88
+>>
+endobj
 4 0 obj
 <<
 /Type /Font
 /Subtype /TrueType
-/FirstChar 32
-/LastChar 121
-/Widths [600 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-600 600 600 600 600 0 0 600 600 0 600 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 600 0 0 0 0 0 
-0 0 0 0 600 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 600 0 0 600 0 0 600 600 0 0 0 
-0 0 0 600 0 600 0 0 0 600 ]
+/FirstChar 47
+/LastChar 58
+/Widths [278 500 500 500 0 0 0 0 500 0 500 333 ]
 /Encoding /WinAnsiEncoding
-/BaseFont /Courier-Bold
-/FontDescriptor 16 0 R
->>
-endobj
-5 0 obj
-<<
-/Type /Font
-/Subtype /TrueType
-/FirstChar 32
-/LastChar 125
-/Widths [278 278 0 0 0 0 0 0 333 333 389 584 278 333 278 278 
-556 556 556 556 556 556 556 556 556 556 278 278 584 584 584 0 
-0 667 667 722 722 667 611 778 722 278 0 667 556 833 722 778 
-667 0 722 667 611 0 667 944 667 0 0 278 0 278 0 556 
-0 556 556 500 556 556 278 556 556 222 222 500 222 833 556 556 
-556 0 333 500 278 556 500 722 500 500 500 334 260 334 ]
-/Encoding /WinAnsiEncoding
-/BaseFont /Helvetica
+/BaseFont /Times-Bold
 /FontDescriptor 17 0 R
 >>
 endobj
-6 0 obj
-<<
-/Type /Font
-/Subtype /TrueType
-/FirstChar 32
-/LastChar 145
-/Widths [278 278 0 556 556 0 0 0 333 333 0 0 278 333 278 278 
-0 556 556 556 0 0 0 0 0 556 278 0 0 584 0 0 
-0 0 0 722 722 0 0 0 0 0 0 0 556 833 0 0 
-0 0 722 0 0 722 0 0 0 0 0 0 278 0 0 556 
-0 556 556 500 556 556 278 556 556 222 0 0 222 833 556 556 
-556 0 333 500 278 556 500 722 0 500 500 334 0 334 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-0 222 ]
-/Encoding /WinAnsiEncoding
-/BaseFont /Helvetica-Oblique
-/FontDescriptor 18 0 R
->>
-endobj
-7 0 obj
+5 0 obj
 <<
 /Type /Font
 /Subtype /TrueType
@@ -5086,99 +5213,150 @@ endobj
 0 278 278 ]
 /Encoding /WinAnsiEncoding
 /BaseFont /Helvetica-Bold
+/FontDescriptor 18 0 R
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 101
+/LastChar 121
+/Widths [444 0 0 0 0 0 500 0 0 0 0 0 0 0 389 0 
+0 0 0 0 500 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Times-Roman
 /FontDescriptor 19 0 R
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 125
+/Widths [278 278 0 0 0 0 0 0 333 333 389 584 278 333 278 278 
+556 556 556 556 556 556 556 556 556 556 278 278 584 584 584 0 
+0 667 667 722 722 667 611 778 722 278 0 667 556 833 722 778 
+667 0 722 667 611 0 667 944 667 0 0 278 0 278 0 556 
+0 556 556 500 556 556 278 556 556 222 222 500 222 833 556 556 
+556 0 333 500 278 556 500 722 500 500 500 334 260 334 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Helvetica
+/FontDescriptor 20 0 R
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 146
+/Widths [278 278 0 556 556 0 0 0 0 0 0 0 278 333 278 278 
+556 556 556 556 556 0 556 0 556 556 278 0 0 584 0 0 
+0 0 0 722 722 667 0 0 0 0 0 0 556 833 0 0 
+0 0 722 0 0 722 0 0 0 0 0 0 278 0 0 556 
+0 556 556 500 556 556 278 556 556 222 0 0 222 833 556 556 
+556 0 333 500 278 556 500 722 500 500 500 334 0 334 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 222 222 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Helvetica-Oblique
+/FontDescriptor 21 0 R
 >>
 endobj
 1 0 obj
 <<
 /Type /Page
-/Parent 9 0 R
+/Parent 10 0 R
 /Resources 3 0 R
 /Contents 2 0 R
 >>
 endobj
-10 0 obj
+11 0 obj
 <<
 /Type /Page
-/Parent 9 0 R
-/Resources 12 0 R
-/Contents 11 0 R
+/Parent 10 0 R
+/Resources 13 0 R
+/Contents 12 0 R
 >>
 endobj
-13 0 obj
+14 0 obj
 <<
 /Type /Page
-/Parent 9 0 R
-/Resources 15 0 R
-/Contents 14 0 R
+/Parent 10 0 R
+/Resources 16 0 R
+/Contents 15 0 R
 >>
 endobj
-20 0 obj
+22 0 obj
 <<
 /S /D
 >>
 endobj
-21 0 obj
+23 0 obj
 <<
-/Nums [0 20 0 R ]
+/Nums [0 22 0 R ]
 >>
 endobj
-9 0 obj
+10 0 obj
 <<
 /Type /Pages
-/Kids [1 0 R 10 0 R 13 0 R]
+/Kids [1 0 R 11 0 R 14 0 R]
 /Count 3
 /Rotate 90
 /MediaBox [0 0 595 842]
 >>
 endobj
-22 0 obj
+24 0 obj
 <<
-/CreationDate (D:20210722171509-04'00')
-/ModDate (D:20210722171509-04'00')
+/CreationDate (D:20210722193034-04'00')
+/ModDate (D:20210722193034-04'00')
 /Producer (PSNormalizer.framework)
 >>
 endobj
-23 0 obj
+25 0 obj
 <<
 /Type /Catalog
-/Pages 9 0 R
-/PageLabels 21 0 R
+/Pages 10 0 R
+/PageLabels 23 0 R
 >>
 endobj
 xref
-0 24
+0 26
 0000000000 65535 f 
-0000066437 00000 n 
+0000068484 00000 n 
 0000000016 00000 n 
-0000032392 00000 n 
-0000064507 00000 n 
-0000064893 00000 n 
-0000065402 00000 n 
-0000065905 00000 n 
-0000063559 00000 n 
-0000066751 00000 n 
-0000066517 00000 n 
-0000032520 00000 n 
-0000062539 00000 n 
-0000066600 00000 n 
-0000062668 00000 n 
-0000063441 00000 n 
-0000063699 00000 n 
-0000063901 00000 n 
-0000064096 00000 n 
-0000064301 00000 n 
-0000066683 00000 n 
-0000066711 00000 n 
-0000066857 00000 n 
-0000066989 00000 n 
+0000027861 00000 n 
+0000066512 00000 n 
+0000066712 00000 n 
+0000067244 00000 n 
+0000067460 00000 n 
+0000067969 00000 n 
+0000065367 00000 n 
+0000068801 00000 n 
+0000068565 00000 n 
+0000028001 00000 n 
+0000058477 00000 n 
+0000068649 00000 n 
+0000058618 00000 n 
+0000065226 00000 n 
+0000065507 00000 n 
+0000065709 00000 n 
+0000065915 00000 n 
+0000066112 00000 n 
+0000066307 00000 n 
+0000068733 00000 n 
+0000068761 00000 n 
+0000068908 00000 n 
+0000069040 00000 n 
 trailer
 <<
-/Size 24
-/Root 23 0 R
-/Info 22 0 R
-/ID [<54fddc40ecf9a68b1d9113bf685ad1e3><54fddc40ecf9a68b1d9113bf685ad1e3>]
+/Size 26
+/Root 25 0 R
+/Info 24 0 R
+/ID [<d6d554b2788e5e21d6db1d0759ce4ba9><d6d554b2788e5e21d6db1d0759ce4ba9>]
 >>
 startxref
-67058
+69110
 %%EOF
