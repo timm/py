@@ -10,21 +10,21 @@
 import re, sys, math, copy, argparse, random, itertools
 
 def config(): return dict(
-    BINS=(   float, .5,      'bins are of size n**BINS'),
-    COLS=(   str,   'x',     'columns to use for inference'),
-    DATA=(   str,   '../data/auto2.csv', 'where to read data'),
-    FAR=(    float, .9,      'where to look for far things'),
-    GOAL=(   str,   'best',  'learning goals: best|rest|other'),
-    IOTA=(   float, .3,       'small = sd**iota'),
-    K=(      int,    2,      'bayes low class frequency hack'),
-    M=(      int,    1,      'bayes low range frequency hack'),
-    P=(      int,    2,      'distance calculation exponent'),
-    SAMPLES=(int,    20,     '#samples to find far things?'),
-    SEED=(   int,    10013,  'seed for random numbers'),
-    TOP=(    int,    10,     'focus on this many'),
-    UNSAFE=( bool,   False,  'run example, no protection'),
-    VERBOSE=(bool,   False,  'set verbose'),
-    XAMPLE=( str,    "",     "'-x ls' lists all, '-x all' runs all"))
+    BINS=(   float, .5, 'bins are of size n**BINS'),
+    COLS=(   str, 'x', 'columns to use for inference'),
+    DATA=(   str, '../data/auto2.csv', 'where to read data'),
+    FAR=(    float, .9, 'where to look for far things'),
+    GOAL=(   str, 'best', 'learning goals: best|rest|other'),
+    IOTA=(   float, .3, 'small = sd**iota'),
+    K=(      int, 2, 'bayes low class frequency hack'),
+    M=(      int, 1, 'bayes low range frequency hack'),
+    P=(      int, 2, 'distance calculation exponent'),
+    SAMPLES=(int, 20, '#samples to find far things?'),
+    SEED=(   int, 10013, 'seed for random numbers'),
+    TOP=(    int, 10, 'focus on this many'),
+    UNSAFE=( bool, False, 'run example, no protection'),
+    VERBOSE=(bool, False, 'set verbose'),
+    XAMPLE=( str, "", "'-x ls' lists all, '-x all' runs all"))
 
 class o(object):
   def __init__(i, **k): i.__dict__.update(**k)
@@ -46,6 +46,18 @@ class Col(o):
       i.n += n
       x = i.add1(x, n)
     return x
+
+  def merge(i, j):
+    k = i.__class__(at=i.at, txt=i.txt)
+    [k.add(x, n) for has in (i.has, j.has) for x, n in has.items()]
+    return k
+
+  def merged(i, j):
+    k = i.merge(j)
+    vi, vj, vk = i.var(), j.var(), k.var()
+    if vi + vj < 0.01 or vk * .95 < (i.n*vi + j.n*vj) / (i.n + j.n):
+      return k
+
 # __________________
 class Skip(Col):
   def add1(i, x, n=1): return x
@@ -67,23 +79,11 @@ class Sym(Col):
       yield False, j.has.get(k, 0), j.at, (k, k)
 
   def dist(i, x, y): return 0 if x == y else 1
+  def mid(i): return i.mode
 
-  def ent(i):
+  def var(i):
     return sum(-v/i.n * math.log(v/i.n) for v in i.has.values())
 
-  def merge(i, j):
-    k = Sym(at=i.at, txt=i.txt)
-    [k.add(x, n) for has in (i.has, j.has) for x, n in has.items()]
-    return k
-
-  def merged(i, j):
-    k = i.merge(j)
-    e1, n1, e2, n2, e, n = i.ent(), i.n, j.ent(), j.n, k.ent(), k.n
-    tmp = n1/n*e1 + n2/n*e2
-    if e1 + e2 < 0.01 or e * .95 < tmp:
-      return k
-
-  def mid(i): return i.mode
 # __________________
 class Num(Col):
   def __init__(i, **kw):
@@ -130,6 +130,7 @@ class Num(Col):
 
   def sd(i)      : return (per(i.all(), .9) - per(i.all(), .1))/2.56
   def span(i)    : return (first(i.all()), last(i.all()))
+  def var(i)     : return i.sd()
   def wide(i, n=0): return last(i.all()) - first(i.all()) >= n
 
 # Row and Rows __________________________________________
@@ -186,12 +187,12 @@ class Rows(o):
     i.rows += [Row([col.add(a[col.at]) for col in i.cols.all],
                    rows=i)]
 
-  def display(i,s,rule):
-    def n(x): return int(x) if x==int(x) else x
+  def display(i, s, rule):
+    def n(x): return int(x) if x == int(x) else x
     return f"{s:>.5f}: " + (' and '.join(
-      (i.cols.names[k])+"="+(
-       str(n(lo)) if lo==hi else f"{n(lo)}..{n(hi)}") 
-      for k,(lo,hi) in sorted(rule.items())))
+        (i.cols.names[k])+" = "+(
+            str(n(lo)) if lo == hi else f"{n(lo)}..{n(hi)}")
+        for k, (lo, hi) in sorted(rule.items())))
 
   def header(i, a):
     i.cols.names = a
@@ -269,9 +270,11 @@ def contrasts(here, there, the):
     return out
 
   def top(a): return sorted(a, reverse=True, key=first)[:the.TOP]
-  def val(d): 
-    for k,v in list(d.items()):
-      if v == None: del d[k]
+
+  def val(d):
+    for k, v in list(d.items()):
+      if v == None:
+        del d[k]
     return (goal(like(d, True), like(d, False)), d)
 
   has = {(klass, at, (lo, hi)): f
@@ -279,16 +282,17 @@ def contrasts(here, there, the):
          for klass, f, at, (lo, hi) in col1.bins(col2, the)}
   n = len(here.rows) + len(there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
-  solos = [val({at: span}) for (   at, span) in 
+  solos = [val({at: span}) for (   at, span) in
            set([(at, span) for (_, at, span) in has])]
   ranges = {}
   for _, d in top(solos):
     for k in d:
-      if k not in ranges: ranges[k] = set([None])
+      if k not in ranges:
+        ranges[k] = set([None])
       ranges[k].add(d[k])
-  for s,rule in top([val(d) for d in dict_product(ranges)]):
+  for s, rule in top([val(d) for d in dict_product(ranges)]):
     if rule:
-      print(here.display(s,rule))
+      print(here.display(s, rule))
 
 # Misc utils ______________________________________________
 # string stuff
@@ -327,17 +331,19 @@ def last(a): return a[-1]  # $\label{comment}$
 def per(a, p=.5): return a[int(p*len(a))]
 
 # file stuff
-def csv(f=None, sep=","):
-  def prep(s): return re.sub(r'([\n\t\r ]|#.*)', '', s)
-  if f:
-    with open(f) as fp:
-      for s in fp:
-        if s := prep(s):
-          yield s.split(sep)
+def csv(src=None, sep=",", zap=r'([\n\t\r ]|#.*)'):
+  if lines := (not src and sys.stdin or
+               type(src) == list and src or
+               "\n" in src and src.splitlines() or
+               None):
+    for line in lines:
+      if line := re.sub(zap, line, ""):
+        yield line.split(sep)
   else:
-    for s in sys.stdin:
-      if s := prep(s):
-        yield s.split(sep)
+    with open(src) as lines:
+      for line in lines:
+        if line := re.sub(zap, line, ""):
+          yield line.split(sep)
 
 # command-line stuff
 def cli(use, txt, config):
@@ -377,7 +383,7 @@ class Eg:
     assert 195 == r.cols.all[1].has['y']
 
   def nclasses(the, file="../data/diabetes.csv", kl="positive"):
-    "read data with nclasses"
+    "ead data with nclasses"
     rs = stratify(csv(file))
     assert 2 == len(rs.klass)
     assert 268 == len(rs.klass[kl].rows)
@@ -404,7 +410,7 @@ class Eg:
 
   def con2(the, file="../data/china.csv"):
     "discretize china "
-    Eg.con1(the,file)
+    Eg.con1(the, file)
 
 def bins1(goods, bads, the):
   for good, bad in zip(goods.cols.x, bads.cols.x):
