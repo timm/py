@@ -22,8 +22,8 @@ def config(): return dict(
     SAMPLES=(int,    20,     '#samples to find far things?'),
     SEED=(   int,    10013,  'seed for random numbers'),
     TOP=(    int,    10,     'focus on this many'),
+    UNSAFE=( bool,   False,  'run example, no protection'),
     VERBOSE=(bool,   False,  'set verbose'),
-    WILD=(   int,    False,  'run example, no protection'),
     XAMPLE=( str,    "",     "'-x ls' lists all, '-x all' runs all"))
 
 class o(object):
@@ -186,10 +186,12 @@ class Rows(o):
     i.rows += [Row([col.add(a[col.at]) for col in i.cols.all],
                    rows=i)]
 
-  def display(i,d):
-    return f"{s:>.5f}:" + (' and '.join(
-            (str(lo) if lo==hi else f"{lo}..{hi}") 
-            for k,(lo,hi) in sorted(d.items())))
+  def display(i,s,rule):
+    def n(x): return int(x) if x==int(x) else x
+    return f"{s:>.5f}: " + (' and '.join(
+      (i.cols.names[k])+"="+(
+       str(n(lo)) if lo==hi else f"{n(lo)}..{n(hi)}") 
+      for k,(lo,hi) in sorted(rule.items())))
 
   def header(i, a):
     i.cols.names = a
@@ -266,8 +268,11 @@ def contrasts(here, there, the):
       out *= (f + the.M*prior) / (hs[kl] + the.M)
     return out
 
-  def val(d): return (goal(like(d, True), like(d, False)), d)
   def top(a): return sorted(a, reverse=True, key=first)[:the.TOP]
+  def val(d): 
+    for k,v in list(d.items()):
+      if v == None: del d[k]
+    return (goal(like(d, True), like(d, False)), d)
 
   has = {(klass, at, (lo, hi)): f
          for col1, col2 in zip(here.cols.x, there.cols.x)
@@ -279,10 +284,11 @@ def contrasts(here, there, the):
   ranges = {}
   for _, d in top(solos):
     for k in d:
-      if k not in ranges: ranges[k] = set()
+      if k not in ranges: ranges[k] = set([None])
       ranges[k].add(d[k])
   for s,rule in top([val(d) for d in dict_product(ranges)]):
-    rprint(s,rule)
+    if rule:
+      print(here.display(s,rule))
 
 # Misc utils ______________________________________________
 # string stuff
@@ -390,11 +396,15 @@ class Eg:
     goods, bads = r.best(the)
     bins1(goods, bads, the)
 
-  def contrast(the, file="../data/auto93.csv"):
+  def con1(the, file="../data/auto93.csv"):
     "discretize some multi-goal data"
     r = Rows(csv(file))
     goods, bads = r.best(the)
     contrasts(goods, bads, the)
+
+  def con2(the, file="../data/china.csv"):
+    "discretize china "
+    Eg.con1(the,file)
 
 def bins1(goods, bads, the):
   for good, bad in zip(goods.cols.x, bads.cols.x):
@@ -408,8 +418,8 @@ def bins1(goods, bads, the):
 def main(the):
   def run(fun, fails, the):
     s = f" {fun.__name__:<12}"
-    if the.WILD:
-      print("wild")
+    if the.UNSAFE:
+      print("unsafe mode:")
       fun(copy.deepcopy(the))
       sys.exit()
     try:
