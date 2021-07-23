@@ -55,7 +55,8 @@ class Col(o):
   def merged(i, j):
     k = i.merge(j)
     vi, vj, vk = i.var(), j.var(), k.var()
-    if vi + vj < 0.01 or vk * .95 < (i.n*vi + j.n*vj) / (i.n + j.n):
+    if vk < (i.n*vi + j.n*vj) / (i.n + j.n):
+    #if vi + vj < 0.01 or vk * .95 < (i.n*vi + j.n*vj) / (i.n + j.n):
       return k
 
 # __________________
@@ -275,24 +276,29 @@ def contrasts(here, there, the):
     for k, v in list(d.items()):
       if v == None:
         del d[k]
-    return (goal(like(d, True), like(d, False)), d)
+    s= goal(like(d,True),like(d,False)) if d else 0
+    return s,d
 
   has = {(klass, at, (lo, hi)): f
          for col1, col2 in zip(here.cols.x, there.cols.x)
          for klass, f, at, (lo, hi) in col1.bins(col2, the)}
   n = len(here.rows) + len(there.rows)
   hs = {True: len(here.rows), False: len(there.rows)}
-  solos = [val({at: span}) for (   at, span) in
-           set([(at, span) for (_, at, span) in has])]
+  all= set([(at, span) for (_, at, span) in has])
+  for x,ys in sorted(all):
+    print(f"\n{here.cols.names[x]}")
+    [print(f"\t{y}")  for y in ys if y]
+  solos = [val({at: span}) for (   at, span) in all]
   ranges = {}
   for _, d in top(solos):
     for k in d:
       if k not in ranges:
         ranges[k] = set([None])
       ranges[k].add(d[k])
+  print("\nrules:")
   for s, rule in top([val(d) for d in dict_product(ranges)]):
-    if rule:
-      print(here.display(s, rule))
+    if s and rule:
+      print("\t"+here.display(s, rule))
 
 # Misc utils ______________________________________________
 # string stuff
@@ -306,7 +312,7 @@ def color(end="\n", **kw):
 
 def mline(m): m += [["-"*len(str(x)) for x in m[-1]]]
 
-def printm(matrix):
+def mlines(matrix):
   s = [[str(e) for e in row] for row in matrix]
   lens = [max(map(len, col)) for col in zip(*s)]
   fmt = ' | '.join('{{:>{}}}'.format(x) for x in lens)
@@ -337,12 +343,12 @@ def csv(src=None, sep=",", zap=r'([\n\t\r ]|#.*)'):
                "\n" in src and src.splitlines() or
                None):
     for line in lines:
-      if line := re.sub(zap, line, ""):
+      if line := re.sub(zap, "",line):
         yield line.split(sep)
   else:
     with open(src) as lines:
       for line in lines:
-        if line := re.sub(zap, line, ""):
+        if line := re.sub(zap,"",line):
           yield line.split(sep)
 
 # command-line stuff
@@ -376,6 +382,10 @@ class Eg:
     "testing failure"
     assert False, "failing"
 
+  def csv(the, file="../data/vote.csv"):
+    "simple load of data into  a table"
+    for r in csv(file): print(r)
+
   def data(the, file="../data/vote.csv"):
     "simple load of data into  a table"
     r = Rows(csv(file))
@@ -408,9 +418,15 @@ class Eg:
     goods, bads = r.best(the)
     contrasts(goods, bads, the)
 
-  def con2(the, file="../data/china.csv"):
+  def con2(the):
     "discretize china "
-    Eg.con1(the, file)
+    Eg.con1(the, "../data/china.csv")
+
+  def con3(the, file="../data/diabetes.csv",
+           k1="positive", k2="negative"):
+    "contrast sets from diabetes"
+    rs = stratify(csv(file))
+    contrasts(rs.klass[k1], rs.klass[k2], the)
 
 def bins1(goods, bads, the):
   for good, bad in zip(goods.cols.x, bads.cols.x):
