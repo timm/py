@@ -319,15 +319,14 @@ def mlines(matrix):
   for row in [fmt.format(*row) for row in s]:
     print(row)
 
-def norepeats(old):
-  b4s, out = None, []
-  for n,nows in enumerate(old):
-    if  b4:
-      out += [[("" if b4==now else now) for b4,now in zip(b4s,nows)]]
-    else:
-      out += [nows]
-    b4s = nows
-  return out
+def norepeats(m):
+  b4, new = None, []
+  for xs in m:
+    if b4: tmp = ["" if old==x else x for old,x in zip(b4,xs)]
+    else : tmp = xs
+    b4 = xs
+    new += [tmp]
+  return new
 
 # maths stuff
 def r3(a): return [round(x, 3) for x in a]
