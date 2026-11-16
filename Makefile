@@ -33,21 +33,6 @@ edit: $(Tmp)/init.lua ## edit $(it) in nvim (use: make it=file)
 sh: $(Tmp)/bashrc ## bash with our prompt and aliases
 	bash --rcfile $(Tmp)/bashrc -i
 
-
-# used in publish: a parentless commit of scratch index last staged
-snap = $$(git commit-tree $$(git write-tree) -m publish)
-
-publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
-	for f in *.py Makefile; do $(MAKE) hi it=$$f; done
-	{ $(call mark,index.top); \
-	  for f in docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
-	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
-	  $(call mark,index.bot); } > docs/index.html
-	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
-	git --work-tree=docs add -A . && \
-	git push -q -f origin $(snap):refs/heads/gh-pages
-	echo "https://timm.github.io/py/"
-
 $(Tmp):
 	mkdir -p $(Tmp)/undo $(Tmp)/swap $(Tmp)/backup
 
@@ -64,6 +49,21 @@ $(Tmp)/bashrc:   Makefile | $(Tmp) ; $(call mark,bashrc)   > $@
 $(Tmp)/hi.py   : Makefile | $(Tmp) ; $(call mark,hi.py)    > $@
 .gitignore:      Makefile          ; $(call mark,gitignore) > $@
 LICENSE.md:      Makefile          ; $(call mark,license)   > $@
+
+#-- website ---------------------------------------------------
+# used in publish: a parentless commit of scratch index last staged
+snap = $$(git commit-tree $$(git write-tree) -m publish)
+
+publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
+	for f in *.py Makefile; do $(MAKE) hi it=$$f; done
+	{ $(call mark,index.top); \
+	  for f in docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
+	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
+	  $(call mark,index.bot); } > docs/index.html
+	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
+	git --work-tree=docs add -A . && \
+	git push -q -f origin $(snap):refs/heads/gh-pages
+	echo "https://timm.github.io/py/"
 
 #-- highlight ---------------------------------------------------
 # render source as tiny-type, n-column, colored html (see the
