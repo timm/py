@@ -134,8 +134,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # BEGIN          {FS=":.*##"
 #                 print "\n\033[1mmake\033[0m [\033[36mWHAT\033[0m]\n"}
 # /^[a-z.]+:.*##/ {printf "  make \033[36m%-8s\033[0m %s\n", $1, $2 | "sort"}
-# END            {close("sort")
-#                 print "  make \033[36mit=F\033[0m      edit file F in nvim\n"}
+# END            { print "  make \033[36mit=F\033[0m      edit file F in nvim\n"}
 
 # ──────────────────────────────────────────────────────────────
 
