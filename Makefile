@@ -17,26 +17,27 @@ else
 .DEFAULT_GOAL := edit
 endif
 
-PY_KW  = if elif else for while return break continue def lambda \
+# highlight faces per language, looked up by file suffix via
+# computed variable names: KW_$(sfx) etc. New language = three
+# vars, no logic. No suffix (Makefile) falls back to the _mk set.
+KW_py  = if elif else for while return break continue def lambda \
          yield import from as and or not in is class try except \
          with pass True False None self
-MK_KW  = define endef export ifeq ifneq ifdef ifndef else endif \
+KW_mk  = define endef export ifeq ifneq ifdef ifndef else endif \
          include call shell filter notdir wildcard foreach
-LUA_KW = function local end if then else elseif for while do \
+KW_lua = function local end if then else elseif for while do \
          repeat until return require nil true false and or not
-# pick rules by what we are rendering ('#' needs the backslash:
-# unescaped it would start a make comment)
-hikw  = $(if $(filter %.lua,$(it)),$(LUA_KW),$(if \
-        $(filter Makefile,$(notdir $(it))),$(MK_KW),$(PY_KW)))
-hicom = $(if $(filter %.lua,$(it)),--.*,\#.*)
-# "fun" face: def/class names for python; targets and $(var)
-# refs for make; function names for lua. Kept in named vars --
-# their parens would confuse $(if ...)'s argument parsing.
-PY_FUN = (?<=def )\w+|(?<=class )\w+
-MK_FUN = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
-LUA_FUN = (?<=function )\w+
-hifun = $(if $(filter %.lua,$(it)),$(LUA_FUN),$(if \
-        $(filter Makefile,$(notdir $(it))),$(MK_FUN),$(PY_FUN)))
+COM_py  = \#.*
+COM_mk  = \#.*
+COM_lua = --.*
+FUN_py  = (?<=def )\w+|(?<=class )\w+
+FUN_mk  = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
+FUN_lua = (?<=function )\w+
+
+sfx   = $(subst .,,$(suffix $(it)))
+hikw  = $(or $(KW_$(sfx)),$(KW_mk))
+hicom = $(or $(COM_$(sfx)),$(COM_mk))
+hifun = $(or $(FUN_$(sfx)),$(FUN_mk))
 
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
                        $$0=="\#</"f">"{on=0} \
