@@ -19,7 +19,16 @@ else
 .DEFAULT_GOAL := edit
 endif
 
-help: $(Tmp)/help.awk ## show this help
+Need = gawk nvim git python3 sed tail basename mkdir
+
+deps: ## complain about any missing tools, else silence
+	miss=""; for c in $(Need); do command -v $$c >/dev/null || \
+	  miss="$$miss $$c"; done; \
+	[ -z "$$miss" ] || { echo "missing:$$miss"; \
+	  echo "try: sudo apt install -y gawk neovim  (or brew install)"; \
+	  exit 1; }
+
+help: deps $(Tmp)/help.awk ## show this help
 	gawk -f $(Tmp)/help.awk $(MAKEFILE_LIST)
 
 pull: ## update from main
