@@ -17,6 +17,9 @@ else
 .DEFAULT_GOAL := edit
 endif
 
+# a parentless commit of whatever the scratch index last staged
+snap = $$(git commit-tree $$(git write-tree) -m publish)
+
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
                        $$0=="\#</"f">"{on=0} \
                        on{sub(/^\# ?/,"");print}' Makefile \
@@ -47,8 +50,7 @@ publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 	  python3 $(Tmp)/hi.py $(cols) $$f > "docs/$$f.html"; done
 	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
 	git --work-tree=docs add -A . && \
-	git push -q -f origin $$(git commit-tree $$(git write-tree) \
-	  -m publish):refs/heads/gh-pages
+	git push -q -f origin $(snap):refs/heads/gh-pages
 	echo "https://timm.github.io/py/"
 
 $(Tmp):
