@@ -39,13 +39,10 @@ snap = $$(git commit-tree $$(git write-tree) -m publish)
 
 publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 	for f in *.py Makefile; do $(MAKE) hi it=$$f; done
-	{ echo '<meta charset=utf-8><body style="font:14px JetBrains \
-	   Mono,Menlo,monospace;color:#1f2328;max-width:30em;margin:4em auto">'; \
-	  echo '<h1 style="color:#0033b3">timm/py</h1><ul>'; \
+	{ $(call mark,index.top); \
 	  for f in docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
 	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
-	  echo '</ul><p><a href="https://github.com/timm/py">source</a></p>'; \
-	} > docs/index.html
+	  $(call mark,index.bot); } > docs/index.html
 	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
 	git --work-tree=docs add -A . && \
 	git push -q -f origin $(snap):refs/heads/gh-pages
@@ -58,7 +55,8 @@ $(Tmp):
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
                        $$0=="\#</"f">"{on=0} \
                        on{sub(/^\# ?/,"");print}' Makefile \
-       | sed -e 's|{Tmp}|$(Tmp)|g' -e 's|{Here}|$(CURDIR)|g'
+       | sed -e 's|{Tmp}|$(Tmp)|g' -e 's|{Here}|$(CURDIR)|g' \
+             -e 's|{Name}|$(notdir $(CURDIR))|g'
 
 $(Tmp)/help.awk: Makefile | $(Tmp) ; $(call mark,help.awk) > $@
 $(Tmp)/init.lua: Makefile | $(Tmp) ; $(call mark,init.lua) > $@
@@ -99,6 +97,19 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 	echo "docs/$(notdir $(it)).html"
 
 #-- payloads: comment blocks, extracted by `mark` ---------------
+
+#<index.bot>
+# </ul>
+# <p><a href="https://github.com/timm/{Name}">source</a></p>
+#</index.bot>
+
+#<index.top>
+# <meta charset=utf-8>
+# <body style="font:14px JetBrains Mono,Menlo,monospace;
+#              color:#1f2328;max-width:30em;margin:4em auto">
+# <h1 style="color:#0033b3">timm/{Name}</h1>
+# <ul>
+#</index.top>
 
 #<help.awk>
 # # pretty help: targets with trailing ## comments. The target
