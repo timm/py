@@ -9,7 +9,7 @@ MAKEFLAGS += --no-print-directory
 .SILENT:
 Tmp  ?= $(HOME)/tmp/sa
 it   ?=
-cols ?= 3
+cols ?= 6
 
 ifeq ($(it),)
 .DEFAULT_GOAL := help
