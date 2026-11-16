@@ -7,7 +7,7 @@ simulated annealing and active acquisition over one cache
 
 ## SYNOPSIS
 
-**python3 sa.py** [--how=sa|acq|near|rand] [--key=val ...]
+**python3 sa.py** [--how=sa|acq|rand] [--key=val ...]
 
 ## DESCRIPTION
 
@@ -15,13 +15,12 @@ Labels a few warm-up rows, splits them into *best* (top sqrt(n)
 by distance-to-heaven) and *rest*; then spends a label budget
 hunting better rows. `--how` picks the hunter: **sa** mutates
 the current row toward best and anneals; **acq** labels the
-first pool row nearer best's centroid than rest's; **near**
-does the same with row-wise distances; **rand** is the random
-baseline. Reports the best row found and the labels spent.
+first pool row nearer best's centroid than rest's; **rand**
+is the random baseline. Reports the best row found and the labels spent.
 
 ## OPTIONS
 
-    --how     sa|acq|near|rand (sa)
+    --how     sa|acq|rand (sa)
     --file    data file        ($MOOT/optimize/misc/auto93.csv)
     --seed    random seed      (1)
     --val     warm-up labels   (10)

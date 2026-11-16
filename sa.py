@@ -14,7 +14,7 @@ OPTIONS:
   --budget new labels      = 30
   --temp   start temp      = 0.2
   --cool   cooling rate    = 0.9
-  --how    sa | acq | near | rand = sa
+  --how    sa | acq | rand = sa
 
 Design: val labelled rows seed a best/rest cache (best = top
 sqrt(n) by disty). SA walks: mutate current by extrapolating
@@ -204,21 +204,6 @@ def acquire(tbl) -> "Cache":
     pool.remove(row); c.add(row)
   return c
 
-def near(tbl) -> "Cache":
-  """Baseline: classic acquire. Scan the pool; label the first
-  item sitting nearer its best rows than its rest rows."""
-  rows = random.sample(tbl.rows, len(tbl.rows))
-  val, pool = rows[:the.val], rows[the.val:the.val+the.pool]
-  c = CACHE(tbl)
-  for row in val: c.add(row)
-  d = lambda rs, r: min(tbl.distx(r1, r) for r1 in rs)
-  while len(c.all) - the.val < the.budget and pool:
-    row = pool[0]
-    for r in pool:
-      if d(c.best.rows, r) < d(c.rest.rows, r): row = r; break
-    pool.remove(row); c.add(row)
-  return c
-
 def accept(y: float, ycur: float, t: float) -> bool:
   "The whole SA kernel: better, or lucky at this temperature"
   return y < ycur or rand() < exp(-(y - ycur)/(t + TINY))
@@ -249,7 +234,7 @@ def main() -> None:
       if hasattr(the, k): setattr(the, k, thing(v))
   random.seed(the.seed)
   tbl  = TAB(csv(the.file))
-  c    = dict(sa=sa, acq=acquire, near=near, rand=rando)[the.how](tbl)
+  c    = dict(sa=sa, acq=acquire, rand=rando)[the.how](tbl)
   base = sorted(tbl.disty(r) for r in tbl.rows)
   best = min(c.best.rows, key=tbl.disty)
   print("rows %s  labels %s+%s  best %.3f  (corpus best %.3f, median %.3f)"
