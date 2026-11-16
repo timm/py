@@ -38,7 +38,7 @@ $(Tmp):
 
 #-- config files ---------------------------------------------------
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
-                       $$0=="\#</"f">"{on=0} \
+                       on && (/^\# ─/ || !/^\#/) {exit} \
                        on{sub(/^\# ?/,"");print}' Makefile \
        | sed -e 's|{Tmp}|$(Tmp)|g' -e 's|{Here}|$(CURDIR)|g' \
              -e 's|{Name}|$(notdir $(CURDIR))|g'
@@ -97,6 +97,8 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 	echo "docs/$(notdir $(it)).html"
 
 #-- payloads: comment blocks, extracted by `mark` ---------------
+# a block is "#<name>" plus the "#" lines after it; the first
+# blank line or ─── bar ends it (no close tags needed)
 
 # ──────────────────────────────────────────────────────────────
 #<index.bot>
@@ -108,7 +110,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <b>License</b><br>
 # &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c) 2026</a>. Share and enjoy.
 # </span></td></tr></table></center>
-#</index.bot>
 
 # ──────────────────────────────────────────────────────────────
 #<index.top>
@@ -122,7 +123,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <tr><td align="left"><span style="font-size:12pt">
 # <b>Sources</b><br>
 # <ul>
-#</index.top>
 
 # ──────────────────────────────────────────────────────────────
 #<help.awk>
@@ -134,7 +134,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # /^[a-z.]+:.*##/ {printf "  make \033[36m%-8s\033[0m %s\n", $1, $2 | "sort"}
 # END            {close("sort")
 #                 print "  make \033[36mit=F\033[0m      edit file F in nvim\n"}
-#</help.awk>
 
 # ──────────────────────────────────────────────────────────────
 #<init.lua>
@@ -157,7 +156,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # vim.cmd [[autocmd BufReadPost * silent! normal! g`"]]
 # vim.cmd [[syntax on]]
 # vim.cmd [[colorscheme lunaperche]]
-#</init.lua>
 
 # ──────────────────────────────────────────────────────────────
 #<license>
@@ -184,7 +182,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#</license>
 
 # 
 # ──────────────────────────────────────────────────────────────
@@ -218,7 +215,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # .luarocks/
 # # os
 # .DS_Store
-#</gitignore>
 
 # ──────────────────────────────────────────────────────────────
 #<bashrc>
@@ -257,7 +253,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #   PS1="\033[36m$(basename "${PWD%/*}")/\W$b\033[0m> "
 # }
 # PROMPT_COMMAND=_p
-#</bashrc>
 
 # ──────────────────────────────────────────────────────────────
 #<hi.py>
@@ -301,4 +296,3 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #     carry = opens[-1]; line += "</span>"
 #   print('<span style="color:%s">%4d</span> %s' % (COLOR["n"], n, line))
 # print("</pre>")
-#</hi.py>
