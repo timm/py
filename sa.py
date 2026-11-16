@@ -110,6 +110,11 @@ def div4Sym(i) -> float:
   N = sum(i.has.values()) or 1
   return -sum(v/N * log2(v/N) for v in i.has.values() if v)
 
+def norm4Num(i, v) -> float|str:
+  if v == "?": return v
+  z = (v - i.mu) / (i.div() + TINY)
+  return 1 / (1 + exp(-1.7 * max(-3, min(3, z))))
+
 def mid4Num(i) -> float: return i.mu
 def mid4Sym(i): return max(i.has, key=i.has.get)
 
