@@ -46,13 +46,6 @@ def klass(name: str, **kw) -> type:
   return type(name, (), dict(__slots__=tuple(kw), __init__=__init__,
                              __repr__=__repr__))
 
-def x4y(g: dict) -> None:
-  "Move each global `x4Y` function onto class Y as method x."
-  for name,f in list(g.items()):
-    x,_,y = name.rpartition("4")
-    if x and callable(f) and isinstance(g.get(y), type):
-      setattr(g[y], x, f); del g[name]
-
 #-- klasses -----------------------------------------------------
 Num   = klass("Num",   n=0, mu=0, m2=0)
 Sym   = klass("Sym",   has=dict)
@@ -167,6 +160,13 @@ def mutate4Cache(i, row: list, p=1.0) -> list:
   return out
 
 #-- lib ---------------------------------------------------------
+def x4y(g: dict) -> None:
+  "Move each global `x4Y` function onto class Y as method x."
+  for name,f in list(g.items()):
+    x,_,y = name.rpartition("4")
+    if x and callable(f) and isinstance(g.get(y), type):
+      setattr(g[y], x, f); del g[name]
+
 def thing(s: str) -> int|float|bool|str:
   if (s[1:] if s[:1]=="-" else s).isdigit(): return int(s)
   try: return float(s)
