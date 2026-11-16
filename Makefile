@@ -102,9 +102,9 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #<index.bot>
 # </ul>
 # <b>Code</b><br>
-# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse the source</a>,
-# <a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">license</a>,
-# <a href="https://github.com/timm/{Name}/issues">issues</a>
+# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse</a> ::
+# <a href="https://github.com/timm/{Name}/issues">issues</a> ::
+# <a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c)2026 timm</a>
 # </span></td></tr></table></center>
 #</index.bot>
 
