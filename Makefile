@@ -4,7 +4,9 @@
 # #</name>; make greps its own source to build them (see mark).
 # Inside a block, text is verbatim (no $$ doubling): {Tmp} and
 # {Here} are filled in by sed at extraction time.
-SHELL     := bash
+SHELL       := bash
+.SHELLFLAGS := -o pipefail -ec   # a dead gawk must kill the pipe
+.DELETE_ON_ERROR:                # failed recipes leave no corpses
 MAKEFLAGS += --no-print-directory
 .SILENT:
 Tmp  ?= $(HOME)/tmp/sa
@@ -38,7 +40,7 @@ $(Tmp):
 
 #-- config files ---------------------------------------------------
 H    := \#
-mark  = gawk -v RS= 'index($$0,"$(H)<$(1)>")==1' Makefile | tail +2 \
+mark  = gawk -v RS= 'index($$0,"$(H)<$(1)>")==1' Makefile | tail -n +2 \
         | sed -e 's/^$(H) \{0,1\}//' -e 's|{Tmp}|$(Tmp)|g' \
               -e 's|{Here}|$(CURDIR)|g' -e 's|{Name}|$(notdir $(CURDIR))|g'
 
