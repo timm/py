@@ -101,15 +101,18 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # ──────────────────────────────────────────────────────────────
 #<index.bot>
 # </ul>
-# <p><a href="https://github.com/timm/{Name}">source</a></p>
+# <hr size=1 noshade>
+# <p><i><a href="https://github.com/timm/{Name}">source</a> ·
+# tiny AI, explained</i></p>
 #</index.bot>
 
 # ──────────────────────────────────────────────────────────────
 #<index.top>
-# <meta charset=utf-8>
-# <body style="font:14px JetBrains Mono,Menlo,monospace;
-#              color:#1f2328;max-width:30em;margin:4em auto">
-# <h1 style="color:#0033b3">timm/{Name}</h1>
+# <meta charset=utf-8><title>{Name}</title>
+# <body style="background:#ffffea;color:#000;font-family:Georgia,serif;
+#              max-width:28em;margin:3em auto;line-height:1.5">
+# <h2 style="font-weight:normal">{Name}</h2>
+# <hr size=1 noshade>
 # <ul>
 #</index.top>
 
