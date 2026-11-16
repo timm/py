@@ -57,6 +57,7 @@ read is a "label" and is charged to the budget.
 
 ## INSTALL
 
+    sudo apt install -y gawk neovim   # or: brew install gawk neovim
     git clone https://github.com/timm/py ~/gh/py
     git clone https://github.com/timm/moot ~/gits/moot   # data
     cd ~/gh/py && python3 sa.py
