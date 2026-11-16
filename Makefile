@@ -87,6 +87,7 @@ FUN_py  = (?<=def )\w+|(?<=class )\w+
 FUN_mk  = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
 FUN_lua = (?<=function )\w+
 
+# faces picked by suffix via computed var names; no suffix -> _mk
 sfx   = $(subst .,,$(suffix $(it)))
 hikw  = $(or $(KW_$(sfx)),$(KW_mk))
 hicom = $(or $(COM_$(sfx)),$(COM_mk))
