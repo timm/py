@@ -36,17 +36,18 @@ upper case means numeric, else symbolic. Last character:
     X      ignore this column
     else   an input (x) column
 
-E.g. auto93.csv (here sorted by distance to heaven on the
-goal columns -- best three rows, then the worst three):
+E.g. auto93.csv. For illustration only, these rows are sorted
+by their distance to the optimum (`disty`, 0 = heaven, shown
+at right; real data files need no such order, no such column):
 
-    Clndrs,Volume,HpX,Model,origin,Lbs-,Acc+,Mpg+
-    4,90,48,78,2,1985,21.5,40    # disty 0.07
-    4,90,48,80,2,2085,21.7,40    # disty 0.09
-    4,85,65,81,3,1975,19.4,40    # disty 0.09
+    Clndrs, Volume, HpX, Model, origin, Lbs-, Acc+, Mpg+
+         4,     90,  48,    78,      2, 1985, 21.5,   40   # disty 0.07
+         4,     90,  48,    80,      2, 2085, 21.7,   40   # disty 0.09
+         4,     85,  65,    81,      3, 1975, 19.4,   40   # disty 0.09
     ...
-    8,440,215,70,1,4312,8.5,10   # disty 0.96
-    8,454,220,70,1,4354,9,10     # disty 0.96
-    8,455,225,73,1,4951,11,10    # disty 0.96
+         8,    440, 215,    70,      1, 4312,  8.5,   10   # disty 0.96
+         8,    454, 220,    70,      1, 4354,  9.0,   10   # disty 0.96
+         8,    455, 225,    73,      1, 4951, 11.0,   10   # disty 0.96
 
 Numeric inputs, a symbolic input `origin`, one ignored column
 (`HpX`), and goals minimize Lbs, maximize Acc and Mpg: light,
