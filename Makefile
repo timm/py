@@ -109,9 +109,11 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # ──────────────────────────────────────────────────────────────
 #<index.top>
 # <meta charset=utf-8><title>timm / {Name}</title>
-# <body>
+# <body style="padding-top:2em">
 # <center><h2>timm / {Name}</h2></center>
 # <center><h3>tiny AI, explained</h3></center>
+# <center><img src="img/ant.png" width=140 alt="ant"></center>
+# <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
 # <b>Sources</b><br>
