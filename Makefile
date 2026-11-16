@@ -45,7 +45,10 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 	for f in *.py Makefile; do \
 	  python3 $(Tmp)/hi.py $(cols) $$f > "docs/$$f.html"; done
-	pipx run ghp-import -n -p -f docs
+	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
+	git --work-tree=docs add -A . && \
+	git push -q -f origin $$(git commit-tree $$(git write-tree) \
+	  -m publish):refs/heads/gh-pages
 	echo "https://timm.github.io/py/"
 
 $(Tmp):
