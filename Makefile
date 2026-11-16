@@ -111,7 +111,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <meta charset=utf-8><title>{Name}</title>
 # <body style="background:#ffffea;color:#000;font-family:Georgia,serif;
 #              max-width:28em;margin:3em auto;line-height:1.5">
-# <h2 style="font-weight:normal">{Name}</h2>
+# <h2 style="font-weight:normal">timm / {Name}</h2>
 # <hr size=1 noshade>
 # <ul>
 #</index.top>
