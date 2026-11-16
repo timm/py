@@ -106,7 +106,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <a href="https://github.com/timm/{Name}/issues">issues</a>
 # <p>
 # <b>License</b><br>
-# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c)2026 timm</a>
+# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c) 2026</a>. Share and enjoy.
 # </span></td></tr></table></center>
 #</index.bot>
 
