@@ -119,11 +119,6 @@ def mid4Tab(i) -> list:
   return i.mids
 
 #-- dist --------------------------------------------------------
-def norm4Num(i, v) -> float|str:
-  if v == "?": return v
-  z = (v - i.mu) / (i.div() + TINY)
-  return 1 / (1 + exp(-1.7 * max(-3, min(3, z))))
-
 def minkowski(vals, p=2) -> float:
   tot = nn = 0
   for v in vals: tot += v**p; nn += 1
