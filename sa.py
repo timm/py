@@ -14,7 +14,7 @@ OPTIONS:
   --budget new labels      = 30
   --temp   start temp      = 0.2
   --cool   cooling rate    = 0.9
-  --how    sa | near | rand = sa
+  --how    sa | acq | near | rand = sa
 
 Design: val labelled rows seed a best/rest cache (best = top
 sqrt(n) by disty). SA walks: mutate current by extrapolating
@@ -190,6 +190,20 @@ def rando(tbl) -> "Cache":
     c.add(row)
   return c
 
+def acquire(tbl) -> "Cache":
+  "Label the first pool row nearer best's centroid than rest's"
+  rows = random.sample(tbl.rows, len(tbl.rows))
+  val, pool = rows[:the.val], rows[the.val:the.val+the.pool]
+  c = CACHE(tbl)
+  for row in val: c.add(row)
+  while len(c.all) - the.val < the.budget and pool:
+    row = pool[0]                              # default: oldest
+    for r in pool:                             # first one nearer
+      if tbl.distx(c.best.mid(), r) < tbl.distx(c.rest.mid(), r):
+        row = r; break
+    pool.remove(row); c.add(row)
+  return c
+
 def near(tbl) -> "Cache":
   """Baseline: classic acquire. Scan the pool; label the first
   item sitting nearer its best rows than its rest rows."""
@@ -235,7 +249,7 @@ def main() -> None:
       if hasattr(the, k): setattr(the, k, thing(v))
   random.seed(the.seed)
   tbl  = TAB(csv(the.file))
-  c    = dict(sa=sa, near=near, rand=rando)[the.how](tbl)
+  c    = dict(sa=sa, acq=acquire, near=near, rand=rando)[the.how](tbl)
   base = sorted(tbl.disty(r) for r in tbl.rows)
   best = min(c.best.rows, key=tbl.disty)
   print("rows %s  labels %s+%s  best %.3f  (corpus best %.3f, median %.3f)"

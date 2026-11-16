@@ -1,26 +1,27 @@
-# ACQ(1)
+# SA(1)
 
 ## NAME
 
-**acq.py** — label-efficient multi-objective optimization by
-active acquisition
+**sa.py** — label-efficient multi-objective optimization:
+simulated annealing and active acquisition over one cache
 
 ## SYNOPSIS
 
-**python3 acq.py** [--key=val ...]
+**python3 sa.py** [--how=sa|acq|near|rand] [--key=val ...]
 
 ## DESCRIPTION
 
 Labels a few warm-up rows, splits them into *best* (top sqrt(n)
-by distance-to-heaven) and *rest*; then repeatedly labels the
-first unlabelled row nearer best's centroid than rest's.
-Reports the best row found and the labels spent.
-
-A sibling, [sa.py](https://timm.github.io/py/sa.py.html), does
-the same job by simulated annealing over the same cache.
+by distance-to-heaven) and *rest*; then spends a label budget
+hunting better rows. `--how` picks the hunter: **sa** mutates
+the current row toward best and anneals; **acq** labels the
+first pool row nearer best's centroid than rest's; **near**
+does the same with row-wise distances; **rand** is the random
+baseline. Reports the best row found and the labels spent.
 
 ## OPTIONS
 
+    --how     sa|acq|near|rand (sa)
     --file    data file        ($MOOT/optimize/misc/auto93.csv)
     --seed    random seed      (1)
     --val     warm-up labels   (10)
@@ -59,7 +60,7 @@ read is a "label" and is charged to the budget.
 
     git clone https://github.com/timm/py ~/gh/py
     git clone https://github.com/timm/moot ~/gits/moot   # data
-    cd ~/gh/py && python3 acq.py
+    cd ~/gh/py && python3 sa.py
 
 Data lives in the [moot](https://github.com/timm/moot) repo;
 set `$MOOT` if you clone it somewhere other than `~/gits/moot`.
@@ -67,7 +68,6 @@ set `$MOOT` if you clone it somewhere other than `~/gits/moot`.
 ## SEE ALSO
 
 Pretty-printed sources:
-[acq.py](https://timm.github.io/py/acq.py.html),
 [sa.py](https://timm.github.io/py/sa.py.html),
 [Makefile](https://timm.github.io/py/Makefile.html).
 
