@@ -17,9 +17,6 @@ else
 .DEFAULT_GOAL := edit
 endif
 
-# a parentless commit of whatever the scratch index last staged
-snap = $$(git commit-tree $$(git write-tree) -m publish)
-
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
                        $$0=="\#</"f">"{on=0} \
                        on{sub(/^\# ?/,"");print}' Makefile \
@@ -44,6 +41,9 @@ sh: $(Tmp)/bashrc ## bash with our prompt and aliases
 hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 	python3 $(Tmp)/hi.py $(cols) $(it) > "docs/$(notdir $(it)).html"
 	echo "docs/$(notdir $(it)).html"
+
+# used in publish: a parentless commit of scratch index last staged
+snap = $$(git commit-tree $$(git write-tree) -m publish)
 
 publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 	for f in *.py Makefile; do \
