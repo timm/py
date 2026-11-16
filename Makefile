@@ -17,11 +17,6 @@ else
 .DEFAULT_GOAL := edit
 endif
 
-mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
-                       $$0=="\#</"f">"{on=0} \
-                       on{sub(/^\# ?/,"");print}' Makefile \
-       | sed -e 's|{Tmp}|$(Tmp)|g' -e 's|{Here}|$(CURDIR)|g'
-
 help: $(Tmp)/help.awk ## show this help
 	gawk -f $(Tmp)/help.awk $(MAKEFILE_LIST)
 
@@ -44,6 +39,13 @@ snap = $$(git commit-tree $$(git write-tree) -m publish)
 
 publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 	for f in *.py Makefile; do $(MAKE) hi it=$$f; done
+	{ echo '<meta charset=utf-8><body style="font:14px JetBrains \
+	   Mono,Menlo,monospace;color:#1f2328;max-width:30em;margin:4em auto">'; \
+	  echo '<h1 style="color:#0033b3">timm/py</h1><ul>'; \
+	  for f in docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
+	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
+	  echo '</ul><p><a href="https://github.com/timm/py">source</a></p>'; \
+	} > docs/index.html
 	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
 	git --work-tree=docs add -A . && \
 	git push -q -f origin $(snap):refs/heads/gh-pages
@@ -52,9 +54,16 @@ publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
 $(Tmp):
 	mkdir -p $(Tmp)/undo $(Tmp)/swap $(Tmp)/backup
 
+#-- config files ---------------------------------------------------
+mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
+                       $$0=="\#</"f">"{on=0} \
+                       on{sub(/^\# ?/,"");print}' Makefile \
+       | sed -e 's|{Tmp}|$(Tmp)|g' -e 's|{Here}|$(CURDIR)|g'
+
 $(Tmp)/help.awk: Makefile | $(Tmp) ; $(call mark,help.awk) > $@
 $(Tmp)/init.lua: Makefile | $(Tmp) ; $(call mark,init.lua) > $@
 $(Tmp)/bashrc:   Makefile | $(Tmp) ; $(call mark,bashrc)   > $@
+$(Tmp)/hi.py   : Makefile | $(Tmp) ; $(call mark,hi.py)    > $@
 .gitignore:      Makefile          ; $(call mark,gitignore) > $@
 LICENSE.md:      Makefile          ; $(call mark,license)   > $@
 
@@ -62,16 +71,6 @@ LICENSE.md:      Makefile          ; $(call mark,license)   > $@
 # render source as tiny-type, n-column, colored html (see the
 # hi.py payload). Faces picked by file suffix, below.
 
-hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
-	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" "$(hifun)" \
-	  > "docs/$(notdir $(it)).html"
-	echo "docs/$(notdir $(it)).html"
-
-$(Tmp)/hi.py:    Makefile | $(Tmp) ; $(call mark,hi.py)    > $@
-
-# highlight faces per language, looked up by file suffix via
-# computed variable names: KW_$(sfx) etc. New language = three
-# vars, no logic. No suffix (Makefile) falls back to the _mk set.
 KW_py  = if elif else for while return break continue def lambda \
          yield import from as and or not in is class try except \
          with pass True False None self
@@ -79,9 +78,11 @@ KW_mk  = define endef export ifeq ifneq ifdef ifndef else endif \
          include call shell filter notdir wildcard foreach
 KW_lua = function local end if then else elseif for while do \
          repeat until return require nil true false and or not
+
 COM_py  = \#.*
 COM_mk  = \#.*
 COM_lua = --.*
+
 FUN_py  = (?<=def )\w+|(?<=class )\w+
 FUN_mk  = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
 FUN_lua = (?<=function )\w+
@@ -90,6 +91,11 @@ sfx   = $(subst .,,$(suffix $(it)))
 hikw  = $(or $(KW_$(sfx)),$(KW_mk))
 hicom = $(or $(COM_$(sfx)),$(COM_mk))
 hifun = $(or $(FUN_$(sfx)),$(FUN_mk))
+
+hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
+	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" "$(hifun)" \
+	  > "docs/$(notdir $(it)).html"
+	echo "docs/$(notdir $(it)).html"
 
 #-- payloads: comment blocks, extracted by `mark` ---------------
 
