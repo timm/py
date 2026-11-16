@@ -102,7 +102,9 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #<index.bot>
 # </ul>
 # <b>Code</b><br>
-# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse the source</a>
+# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse the source</a>,
+# <a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">license</a>,
+# <a href="https://github.com/timm/{Name}/issues">issues</a>
 # </span></td></tr></table></center>
 #</index.bot>
 
@@ -112,7 +114,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <body style="padding-top:2em">
 # <center><h2>timm / {Name}</h2></center>
 # <center><h3>tiny AI, explained</h3></center>
-# <center><img src="img/ant.png" width=140 alt="ant"></center>
+# <center><img src="img/ant.png" width=180 alt="ant"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
