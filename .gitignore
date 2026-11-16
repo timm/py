@@ -1,1 +1,29 @@
+# generated html stays out of main (published via gh-pages)
 docs/*.html
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.ipynb_checkpoints/
+# nvim / vim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+.nvimlog
+# lua
+luac.out
+*.rock
+lua_modules/
+.luarocks/
+# os
+.DS_Store
