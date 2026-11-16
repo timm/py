@@ -30,6 +30,7 @@ function onto class Y as method x, so methods group by purpose
 import os, re, sys, random
 from math import exp, sqrt, log2
 from collections.abc import Iterator
+
 TINY = 1e-32
 rand = random.random
 any  = random.choice   # shadows builtin; csv() avoids it
@@ -139,12 +140,12 @@ def distx4Num(i, u, v) -> float:
   if v == "?": v = 1 if u < .5 else 0
   return abs(u - v)
 
+def distx4Tab(i, r1: list, r2: list) -> float:
+  return minkowski(i.cols[a].distx(r1[a], r2[a]) for a in i.x)
+
 def disty4Tab(i, row: list) -> float:
   return minkowski(abs(i.cols[a].norm(row[a]) - i.goal[a])
                    for a in i.y if row[a] != "?")
-
-def distx4Tab(i, r1: list, r2: list) -> float:
-  return minkowski(i.cols[a].distx(r1[a], r2[a]) for a in i.x)
 
 def neary4Cache(i, row: list) -> float:
   "disty of the labelled row nearest in x-space"
