@@ -41,6 +41,9 @@ push: ## save to main
 edit: $(Tmp)/init.lua ## edit $(it) in nvim (use: make it=file)
 	nvim --clean -u $(Tmp)/init.lua -i $(Tmp)/shada $(it)
 
+serve: ## serve docs/ at http://localhost:8000
+	cd docs && python3 -m http.server
+
 sh: $(Tmp)/bashrc ## bash with our prompt and aliases
 	bash --rcfile $(Tmp)/bashrc -i
 
@@ -276,6 +279,8 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # # a2ps for the browser: tiny type, N columns, line numbers.
 # # One pass: named-group alternation, first rule wins, so strings
 # # beat comments beat keywords -- no placeholder or state games.
+# # Section banners (#-- name ---) rotate a pale background, so
+# # the big conceptual blocks (and their relative sizes) show.
 # import re, sys, html
 #
 # RULES = [
@@ -288,12 +293,14 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #  ("num", r"\b\d+\.?\d*\b")]
 # COLOR = dict(str="#a31515", com="#6a737d", fun="#795e26",
 #              kw="#0033b3",  num="#098658", n="#b0b0b0")
+# BG = ["#ffffff","#eef4ff","#fff7e8","#eefaf0","#faf0f6","#f4f4f4"]
+#
 # PAT = re.compile("|".join("(?P<%s>%s)" % kv for kv in RULES), re.M)
 #
 # def paint(m) -> str:
 #   return '<span style="color:%s">%s</span>' % (COLOR[m.lastgroup], m.group())
 #
-# cols = sys.argv[1] if len(sys.argv) > 1 else "3"
+# cols = sys.argv[1] if len(sys.argv) > 1 else "6"
 # src  = open(sys.argv[2]).read() if len(sys.argv) > 2 else sys.stdin.read()
 # out  = PAT.sub(paint, html.escape(src, quote=False))
 #
@@ -304,12 +311,15 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # print('<pre style="font:6.5pt/1.4 JetBrains Mono,Monaco,Menlo,monospace;'
 #       'color:#1f2328;columns:%s 80ch;column-gap:2em;'
 #       'column-rule:1px solid #dddddd">' % cols)
-# carry = ""                      # a span left open by a docstring:
-# for n, line in enumerate(out.split("\n"), 1):   # close it at eol,
-#   line  = carry + line                          # reopen next line
+# carry, bg = "", 0
+# for n, line in enumerate(out.split("\n"), 1):
+#   if "#--" in line[:60]: bg += 1          # new conceptual block
+#   line  = carry + line
 #   opens = re.findall(r"<span[^>]*>", line)
 #   carry = ""
 #   if len(opens) > line.count("</span>"):
 #     carry = opens[-1]; line += "</span>"
-#   print('<span style="color:%s">%4d</span> %s' % (COLOR["n"], n, line))
+#   print('<span style="display:block;background:%s">'
+#         '<span style="color:%s">%4d</span> %s</span>'
+#         % (BG[bg % len(BG)], COLOR["n"], n, line))
 # print("</pre>")
