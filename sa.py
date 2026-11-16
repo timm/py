@@ -28,7 +28,7 @@ function onto class Y as method x, so methods group by purpose
 (create, query, dist, mutate), not by class.
 """
 import os, re, sys, random
-from math import exp, sqrt
+from math import exp, sqrt, log2
 from collections.abc import Iterator
 TINY = 1e-32
 rand = random.random
@@ -56,7 +56,7 @@ def x4y(g: dict) -> None:
 Num   = klass("Num",   n=0, mu=0, m2=0)
 Sym   = klass("Sym",   has=dict)
 Tab   = klass("Tab",   names=list, cols=dict, x=list, y=list,
-                       goal=dict, rows=list, _mids=None)
+                       goal=dict, rows=list, mids=None)
 Cache = klass("Cache", tbl=None, all=list, best=None, rest=None)
 
 #-- create ------------------------------------------------------
@@ -87,7 +87,7 @@ def add4Sym(i, v, inc=1) -> None:
   else: i.has.pop(v, None)
 
 def add4Tab(i, row: list, inc=1) -> None:
-  i._mids = None
+  i.mids = None
   (i.rows.append if inc > 0 else i.rows.remove)(row)
   for at,col in i.cols.items():
     if row[at] != "?": col.add(row[at], inc)
@@ -101,21 +101,27 @@ def add4Cache(i, row: list) -> None:
     i.best.add(doomed, -1); i.rest.add(doomed)
 
 #-- query -------------------------------------------------------
-def sd4Num(i) -> float:
+def div4Num(i) -> float:
+  "standard deviation"
   return 0 if i.n < 2 else (i.m2/(i.n - 1))**.5
+
+def div4Sym(i) -> float:
+  "entropy"
+  N = sum(i.has.values()) or 1
+  return -sum(v/N * log2(v/N) for v in i.has.values() if v)
 
 def mid4Num(i) -> float: return i.mu
 def mid4Sym(i): return max(i.has, key=i.has.get)
 
-def mids4Tab(i) -> list:
+def mid4Tab(i) -> list:
   "Cached centroid, one mid per column; add invalidates"
-  i._mids = i._mids or [col.mid() for col in i.cols.values()]
-  return i._mids
+  i.mids = i.mids or [col.mid() for col in i.cols.values()]
+  return i.mids
 
 #-- dist --------------------------------------------------------
 def norm4Num(i, v) -> float|str:
   if v == "?": return v
-  z = (v - i.mu) / (i.sd() + TINY)
+  z = (v - i.mu) / (i.div() + TINY)
   return 1 / (1 + exp(-1.7 * max(-3, min(3, z))))
 
 def minkowski(vals, p=2) -> float:
