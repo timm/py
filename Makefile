@@ -29,6 +29,14 @@ LUA_KW = function local end if then else elseif for while do \
 hikw  = $(if $(filter %.lua,$(it)),$(LUA_KW),$(if \
         $(filter Makefile,$(notdir $(it))),$(MK_KW),$(PY_KW)))
 hicom = $(if $(filter %.lua,$(it)),--.*,\#.*)
+# "fun" face: def/class names for python; targets and $(var)
+# refs for make; function names for lua. Kept in named vars --
+# their parens would confuse $(if ...)'s argument parsing.
+PY_FUN = (?<=def )\w+|(?<=class )\w+
+MK_FUN = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
+LUA_FUN = (?<=function )\w+
+hifun = $(if $(filter %.lua,$(it)),$(LUA_FUN),$(if \
+        $(filter Makefile,$(notdir $(it))),$(MK_FUN),$(PY_FUN)))
 
 mark = gawk -v f=$(1) '$$0=="\#<"f">"{on=1;next} \
                        $$0=="\#</"f">"{on=0} \
@@ -52,7 +60,7 @@ sh: $(Tmp)/bashrc ## bash with our prompt and aliases
 	bash --rcfile $(Tmp)/bashrc -i
 
 hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
-	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" \
+	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" "$(hifun)" \
 	  > "docs/$(notdir $(it)).html"
 	echo "docs/$(notdir $(it)).html"
 
@@ -216,14 +224,14 @@ LICENSE.md:      Makefile          ; $(call mark,license)   > $@
 # RULES = [
 #  ("str", r'"""[\s\S]*?"""|"[^"]*"|\'[^\']*\''),
 #  ("com", sys.argv[4] if len(sys.argv) > 4 else r"#.*"),
-#  ("fun", r"(?<=def )\w+|(?<=class )\w+|(?<=function )\w+"),
+#  ("fun", sys.argv[5] if len(sys.argv) > 5 else r"(?<=def )\w+"),
 #  ("kw",  r"\b(?:%s)\b" % "|".join(map(re.escape,
 #          (sys.argv[3] if len(sys.argv) > 3 else
 #           "if else for while def return import class").split()))),
 #  ("num", r"\b\d+\.?\d*\b")]
 # COLOR = dict(str="#a31515", com="#6a737d", fun="#795e26",
 #              kw="#0033b3",  num="#098658", n="#b0b0b0")
-# PAT = re.compile("|".join("(?P<%s>%s)" % kv for kv in RULES))
+# PAT = re.compile("|".join("(?P<%s>%s)" % kv for kv in RULES), re.M)
 #
 # def paint(m) -> str:
 #   return '<span style="color:%s">%s</span>' % (COLOR[m.lastgroup], m.group())
