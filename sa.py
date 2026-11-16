@@ -92,7 +92,7 @@ def add4Tab(i, row: list, inc=1) -> None:
   for at,col in i.cols.items():
     if row[at] != "?": col.add(row[at], inc)
 
-def push4Cache(i, row: list) -> None:
+def add4Cache(i, row: list) -> None:
   "Newcomers start in best; overflow demotes best's worst to rest"
   i.all += [row]
   i.best.add(row)
@@ -123,10 +123,10 @@ def minkowski(vals, p=2) -> float:
   for v in vals: tot += v**p; nn += 1
   return (tot / (nn or 1)) ** (1/p)
 
-def gap4Sym(i, u, v) -> float|bool:
+def distx4Sym(i, u, v) -> float|bool:
   return 1 if u == v == "?" else u != v
 
-def gap4Num(i, u, v) -> float:
+def distx4Num(i, u, v) -> float:
   if u == v == "?": return 1
   u, v = i.norm(u), i.norm(v)
   if u == "?": u = 1 if v < .5 else 0
@@ -138,7 +138,7 @@ def disty4Tab(i, row: list) -> float:
                    for a in i.y if row[a] != "?")
 
 def distx4Tab(i, r1: list, r2: list) -> float:
-  return minkowski(i.cols[a].gap(r1[a], r2[a]) for a in i.x)
+  return minkowski(i.cols[a].distx(r1[a], r2[a]) for a in i.x)
 
 def neary4Cache(i, row: list) -> float:
   "disty of the labelled row nearest in x-space"
@@ -158,8 +158,6 @@ def mutate4Cache(i, row: list, p=1.0) -> list:
     elif isinstance(i.tbl.cols[a], Sym): out[a] = u if rand() < .5 else v
     else: out[a] = v + (rand()*1.5 - .25) * (u - v)
   return out
-
-x4y(globals())
 
 #-- lib ---------------------------------------------------------
 def thing(s: str) -> int|float|bool|str:
@@ -183,7 +181,7 @@ def rando(tbl) -> "Cache":
   "Baseline: spend the whole budget on random rows"
   c = CACHE(tbl)
   for row in random.sample(tbl.rows, the.val + the.budget):
-    c.push(row)
+    c.add(row)
   return c
 
 def near(tbl) -> "Cache":
@@ -192,13 +190,13 @@ def near(tbl) -> "Cache":
   rows = random.sample(tbl.rows, len(tbl.rows))
   val, pool = rows[:the.val], rows[the.val:the.val+the.pool]
   c = CACHE(tbl)
-  for row in val: c.push(row)
+  for row in val: c.add(row)
   d = lambda rs, r: min(tbl.distx(r1, r) for r1 in rs)
   while len(c.all) - the.val < the.budget and pool:
     row = pool[0]
     for r in pool:
       if d(c.best.rows, r) < d(c.rest.rows, r): row = r; break
-    pool.remove(row); c.push(row)
+    pool.remove(row); c.add(row)
   return c
 
 def accept(y: float, ycur: float, t: float) -> bool:
@@ -209,7 +207,7 @@ def sa(tbl) -> "Cache":
   rows = random.sample(tbl.rows, len(tbl.rows))
   val, pool = rows[:the.val], rows[the.val:the.val+the.pool]
   c = CACHE(tbl)
-  for row in val: c.push(row)                    # seed: holdout
+  for row in val: c.add(row)                    # seed: holdout
   cur   = min(c.all, key=tbl.disty)
   ycur, t = tbl.disty(cur), the.temp
   for _ in range(32 * the.budget):               # hard iteration cap
@@ -218,7 +216,7 @@ def sa(tbl) -> "Cache":
     cand  = min(pool, key=lambda r: tbl.distx(synth, r))
     if accept(c.neary(cand), ycur, t):           # cheap estimate..
       pool.remove(cand)                          # ..then pay a label
-      c.push(cand)
+      c.add(cand)
       cur, ycur = cand, tbl.disty(cand)
     t *= the.cool
   return c
@@ -240,5 +238,6 @@ def main() -> None:
   print("  " + ", ".join("%s=%s" % (n,v)
         for n,v in zip(tbl.names, best) if n[-1] != "X"))
 
+x4y(globals())
 the = settings(__doc__)
 if __name__ == "__main__": main()
