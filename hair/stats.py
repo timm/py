@@ -139,7 +139,9 @@ def confuse(pairs: list) -> o:
   return o(acc=100*sum(w==g for w,g in pairs)/(N+TINY), classes=per)
 
 def auc(pairs: list) -> float:
-  """Prevalence-weighted one-vs-rest AUC, 0..100, over (want, posts)
+  """Standard ROC AUC (Hanley & McNeil), for classifiers that emit
+  scores; optimizers want disty (distance to heaven) instead.
+  Prevalence-weighted one-vs-rest, 0..100, over (want, posts)
   pairs where posts = {class: probability}. Per class: AUC = chance a
   random in-class row scores above a random out-of-class one (Mann-
   Whitney U, ties averaged); weight each by its in-class count."""

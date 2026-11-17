@@ -37,9 +37,8 @@ def bin(tbl: o, rows: list, Y, accum, leaf=3):
               for b in bins(tbl, rows, at, Y, accum, leaf)),
              default=None)
 
-def has(row: list, col, at: int, v) -> bool:
-  "Does row fall on the yes-side of a bin? (? = yes)"
-  w = row[at]
+def has(w, col, v) -> bool:
+  "Does one cell fall on the yes-side of a bin? (? = yes)"
   return w == "?" or (v == w if isa(col, Sym) else w <= v)
 
 def tree(tbl: o, rows: list, Y, accum=Num, leaf=3, maxd=8, lvl=0) -> o:
@@ -52,7 +51,7 @@ def tree(tbl: o, rows: list, Y, accum=Num, leaf=3, maxd=8, lvl=0) -> o:
       _, at, v = b
       yes, no = [], []
       for r in rows:
-        (yes if has(r, tbl.cols[at], at, v) else no).append(r)
+        (yes if has(r[at], tbl.cols[at], v) else no).append(r)
       if yes and no:
         t.at, t.v = at, v
         t.yes = tree(tbl, yes, Y, accum, leaf, maxd, lvl+1)
@@ -62,7 +61,7 @@ def tree(tbl: o, rows: list, Y, accum=Num, leaf=3, maxd=8, lvl=0) -> o:
 def leaf(tbl: o, t: o, row: list):
   "Walk a row down to its leaf; return the leaf's mid"
   while t.at is not None:
-    t = t.yes if has(row, tbl.cols[t.at], t.at, t.v) else t.no
+    t = t.yes if has(row[t.at], tbl.cols[t.at], t.v) else t.no
   return t.mid
 
 def leaves(t: o):
