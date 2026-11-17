@@ -148,9 +148,9 @@ $(page): $(it) $(Tmp)/hi.py
 # </span></td></tr></table></center>
 # <p>
 # <center>
-# <a href="https://github.com/timm/{Name}"><img src="img/gh.svg?v=4" alt="github"></a>
-# &nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md"><img src="img/mit.svg?v=4" alt="MIT license"></a>
-# &nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg?v=4" alt="NC State Computer Science"></a>
+# <a href="https://github.com/timm/{Name}"><img src="img/gh.svg?v=5" alt="github"></a>
+# &nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md"><img src="img/mit.svg?v=5" alt="MIT license"></a>
+# &nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg?v=5" alt="NC State Computer Science"></a>
 # </center>
 
 # ──────────────────────────────────────────────────────────────
