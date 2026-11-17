@@ -12,9 +12,10 @@ MOOT = os.environ.get("MOOT") or os.path.expanduser("~/gits/moot")
 
 def thing(s: str) -> int|float|bool|str:
   "Coerce a string to int/float/bool, else leave as str"
-  if (s[1:] if s[:1]=="-" else s).isdigit(): return int(s)
-  try: return float(s)
-  except ValueError: return s=="True" or (s!="False" and s)
+  for f in (int, float):
+    try: return f(s)
+    except ValueError: pass
+  return s=="True" or (s!="False" and s)
 
 def settings(doc: str) -> o:
   "Parse '--key ... = val' lines of doc into an o()"
