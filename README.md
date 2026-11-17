@@ -2,8 +2,6 @@
 
 # hair : hands-on AI recipes
 
-Tiny AI, explained.
-
 The `hair/` package is the library, split by job: `lib` (csv,
 flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`
 (distances, distance-to-heaven), `tree` (splits, trees), `stats`
