@@ -1,6 +1,6 @@
 [project]
 name = "hair"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tiny AI, explained: short, readable examples of AI over tabular data."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,10 +12,21 @@ dependencies = []
 Homepage = "https://timm.github.io/hair/"
 Source = "https://github.com/timm/hair"
 
+# The eg/ demos install as CLI tools: `hair-knn`, `hair-nb`, `hair-sa`.
+[project.scripts]
+hair-knn = "hair_eg.knn:main"
+hair-nb  = "hair_eg.nb:main"
+hair-sa  = "hair_eg.sa:main"
+
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
-# One file is the library. The examples in eg/ are not installed.
+# `hair/` is the package; its helpers (lib, data, dist, tree, stats,
+# about) are PRIVATE submodules (hair.lib, hair.data, ...), not
+# top-level names. egs/ ships as the package `hair_eg` for the scripts.
 [tool.setuptools]
-py-modules = ["hair"]
+packages = ["hair", "hair_eg"]
+
+[tool.setuptools.package-dir]
+hair_eg = "egs"

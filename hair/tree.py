@@ -9,8 +9,8 @@ recurses the min-cost bin; leaves keep their rows and a `mid`
 prediction. `leaf` routes a row down; `leaves` yields them all;
 `show` pretty-prints.
 """
-from lib import o, isa
-from data import Sym, Num, add, adds, mid, div
+from .lib import o, isa
+from .data import Sym, Num, add, adds, mid, div
 
 def score(a: dict|tuple, b: dict|tuple) -> float:
   "Split cost (lower=better): size-weighted mean of spread"

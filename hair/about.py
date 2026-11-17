@@ -9,9 +9,10 @@ USAGE: python3 hair.py [--key=val ...] [test ...]
 
 OPTIONS:
   --dir    data directory  = $MOOT/optimize
-  --file   file(s) | all   = misc/auto93
-  --seed   random seed     = 1
+  --file   file(s)|all|fast = fast
+  --seed   random seed     = 1234567891
   --k      most neighbours = 5
+  --eval   score metric    = relerr
   --test   rows to guess   = 100
   --pool   known rows, cap = 1000
   --runs   repeats         = 5

@@ -28,6 +28,11 @@ def cli(the: o) -> None:
       k,v = arg[2:].split("=",1)
       if hasattr(the, k): setattr(the, k, thing(v))
 
+def conf(the: o, prog="", **extra) -> str:
+  "Copy-pastable one-liner of the current settings: prog :key val :key val"
+  d = {**vars(the), **extra}
+  return prog + "".join(" :%s %s" % kv for kv in d.items())
+
 def csv(file: str) -> Iterator[list]:
   "Yield typed rows; a leading $MOOT expands to the moot repo"
   file = os.path.expanduser(file.replace("$MOOT", MOOT, 1))

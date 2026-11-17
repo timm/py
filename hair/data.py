@@ -15,7 +15,7 @@ case means numeric (Num), else symbolic (Sym). Last character:
 Cells holding "?" are unknown.
 """
 from math import exp, log2
-from lib import o, isa, TINY
+from .lib import o, isa, TINY
 
 Sym = dict
 Num = lambda n=0, mu=0, m2=0: (n, mu, m2)

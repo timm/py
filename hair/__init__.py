@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 import random
-from about import __doc__          # the one doc is about.py
-from lib   import *
-from data  import *
-from dist  import *
-from tree  import *
-from stats import *
+from .about import __doc__          # the one doc is about.py
+from .lib   import *
+from .data  import *
+from .dist  import *
+from .tree  import *
+from .stats import *
 
 ALL = """misc/auto93 config/SS-A config/SS-M systems/HSQLDB
          systems/LLVM systems/storm systems/redis sales_data/socks
          process/coc1000 process/pom3d"""
 
+FAST = """misc/auto93 config/SS-B process/nasa93dem
+          sales_data/wallpaper process/pom3d"""   # 5 small, quick sets
+
 def files() -> list:
-  "Paths named by --dir and --file (--file=all means ALL)"
-  names = ALL.split() if the.file == "all" else the.file.split(",")
+  "Paths named by --dir and --file (--file=all|fast, or a,b,c list)"
+  named = {"all": ALL, "fast": FAST}.get(the.file)
+  names = named.split() if named else the.file.split(",")
   return ["%s/%s.csv" % (the.dir, name) for name in names]
 
 def name(file: str) -> str:
@@ -62,7 +66,7 @@ def test_confuse():
   "Score a deliberately flawed classifier"
   got  = "a a a b b b b c".split()
   want = "a a b b b b c c".split()
-  c = confuse(list(zip(got, want)))
+  c = confuse(list(zip(want, got)))
   print("acc %.0f" % c.acc)
   for x in c.classes:
     print("%4s prec %3.0f recall %3.0f" % (x.label, x.prec, x.recall))

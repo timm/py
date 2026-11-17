@@ -13,7 +13,7 @@ MAKEFLAGS += --no-print-directory
 .SILENT:
 # no __pycache__ litter, here or in `make sh`
 export PYTHONDONTWRITEBYTECODE := 1
-Tmp  ?= $(HOME)/tmp/sa
+Tmp  ?= $(HOME)/tmp/hair
 it   ?=
 cols ?= 6
 Root := $(shell git rev-parse --show-toplevel)
@@ -43,6 +43,23 @@ push: ## save to main
 	echo -en "\033[33mWhy this push? \033[0m"; read x; \
 	git commit -am "$$x"; git push; git status
 
+clean: ## remove build litter: dist/ build/ *.egg-info __pycache__
+	cd $(Root); rm -rf dist build *.egg-info; \
+	find . -name __pycache__ -type d -prune -exec rm -rf {} +; \
+	find . -name '*.pyc' -delete; echo "cleaned"
+
+dist: clean ## build wheel + sdist into dist/ (and check them)
+	cd $(Root); rm -rf dist build *.egg-info; \
+	python3 -m pip install -q --upgrade build twine; \
+	python3 -m build; python3 -m twine check dist/*
+
+testpypi: dist ## upload to TestPyPI (practice index; needs a test.pypi token)
+	python3 -m twine upload --repository testpypi $(Root)/dist/*
+
+pypi: dist ## upload to the REAL PyPI (run testpypi first; asks y/N)
+	echo -en "\033[31mReally upload to real PyPI? [y/N] \033[0m"; read x; \
+	[ "$$x" = y ] && python3 -m twine upload --verbose $(Root)/dist/* || echo "skipped"
+
 edit: $(Tmp)/init.lua ## edit $(it) in nvim (use: make it=file)
 	nvim --clean -u $(Tmp)/init.lua -i $(Tmp)/shada $(it)
 
@@ -71,56 +88,48 @@ LICENSE.md:      $(Root)/Makefile  ; $(call mark,license)   > $(Root)/$@
 
 #-- examples ---------------------------------------------------
 # hair.py is the library; each eg/*.py is one small example of it
-loc: $(Tmp)/loc.py ## lines of code in hair.py and each eg/ file
-	cd $(Root) && python3 $(Tmp)/loc.py hair.py eg/*.py
+loc: $(Tmp)/loc.py ## lines of code in hair/ and each egs/ file
+	cd $(Root) && python3 $(Tmp)/loc.py hair/*.py egs/*.py
 
 #-- website ---------------------------------------------------
 # used in publish: a parentless commit of scratch index last staged
 snap = $$(git commit-tree $$(git write-tree) -m publish)
 
+# one <li> link per non-empty file in $(1) (href = basename.html)
+links = for f in $(1); do [ -s "$$f" ] || continue; \
+          b=$$(basename $$f); \
+          echo "<li><a href=\"$$b.html\">$$b</a></li>"; done
+
+# emit the index page (header, Sources, Examples, lines-of-code, footer)
+# to stdout; the caller redirects it. The {} group all the echoes so a
+# single external redirect captures them. Plain `=` (not `define`) so
+# there is no trailing newline to break `$(INDEX) > file`.
+INDEX = { $(call mark,index.top); \
+  echo "<b>Sources</b><ul>";       $(call links,$(Root)/hair/*.py Makefile); \
+  echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/egs/*.py); \
+  echo "</ul><b>Lines of code</b><pre>"; \
+  (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py egs/*.py); echo "</pre>"; \
+  $(call mark,index.bot); }
+
 publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
-	cd $(Root) && for f in *.py eg/*.py Makefile; do $(MAKE) hi it=$$f; done
-	{ $(call mark,index.top); \
-	  for f in $(Root)/docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
-	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
-	  echo "</ul><b>Lines of code</b><pre>"; \
-	  (cd $(Root) && python3 $(Tmp)/loc.py hair.py eg/*.py); echo "</pre>"; \
-	  $(call mark,index.bot); } > $(Root)/docs/index.html
+	cd $(Root) && for f in hair/*.py egs/*.py Makefile; do \
+	  [ -s "$$f" ] && $(MAKE) hi it=$$f; done        # -s: skip empty __init__
+	$(INDEX) > $(Root)/docs/index.html
 	cd $(Root); export GIT_INDEX_FILE=$(Tmp)/pubindex; \
 	git --work-tree=docs add -A . && \
 	git push -q -f origin $(snap):refs/heads/gh-pages
 	echo "https://timm.github.io/hair/"
 
 #-- highlight ---------------------------------------------------
-# render source as tiny-type, n-column, colored html (see the
-# hi.py payload). Faces picked by file suffix, below.
+# render source as tiny-type, n-column, colored html. hi.py picks
+# the syntax faces from the file's suffix, so there is nothing to
+# pass but cols and the file itself.
 
-KW_py  = if elif else for while return break continue def lambda \
-         yield import from as and or not in is class try except \
-         with pass True False None self
-KW_mk  = define endef export ifeq ifneq ifdef ifndef else endif \
-         include call shell filter notdir wildcard foreach
-KW_lua = function local end if then else elseif for while do \
-         repeat until return require nil true false and or not
+page = $(Root)/docs/$(notdir $(it)).html
 
-COM_py  = \#.*
-COM_mk  = \#.*
-COM_lua = --.*
-
-FUN_py  = (?<=def )\w+|(?<=class )\w+
-FUN_mk  = ^[A-Za-z0-9_.]+(?=:)|[$$][(][A-Za-z0-9_]+[)]
-FUN_lua = (?<=function )\w+
-
-# faces picked by suffix via computed var names; no suffix -> _mk
-sfx   = $(subst .,,$(suffix $(it)))
-hikw  = $(or $(KW_$(sfx)),$(KW_mk))
-hicom = $(or $(COM_$(sfx)),$(COM_mk))
-hifun = $(or $(FUN_$(sfx)),$(FUN_mk))
-
-hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
-	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" "$(hifun)" \
-	  > "$(Root)/docs/$(notdir $(it)).html"
-	echo "$(Root)/docs/$(notdir $(it)).html"
+hi: $(page) ## render $(it) as colored html into docs/
+$(page): $(it) $(Tmp)/hi.py
+	python3 $(Tmp)/hi.py $(cols) $< > $@
 
 #-- payloads: comment blocks, extracted by `mark` ---------------
 # a block is one blank-line-delimited paragraph starting
@@ -134,7 +143,9 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <a href="https://github.com/timm/{Name}/issues">issues</a>
 # <p>
 # <b>License</b><br>
-# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c) 2026</a>. Share and enjoy.
+# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c) 2026</a>
+# by <a href="https://timm.fyi">timm</a>.  
+# Share and enjoy.
 # </span></td></tr></table></center>
 
 # ──────────────────────────────────────────────────────────────
@@ -142,14 +153,12 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #<index.top>
 # <meta charset=utf-8><title>timm / {Name}</title>
 # <body style="padding-top:2em">
-# <center><h2>timm / {Name}</h2></center>
+# <center><h2>github.com / timm / {Name}</h2></center>
 # <center><h3>tiny AI, explained</h3></center>
 # <center><img src="img/hair.png" width=180 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
-# <b>Sources</b><br>
-# <ul>
 
 # ──────────────────────────────────────────────────────────────
 
@@ -288,16 +297,17 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # ──────────────────────────────────────────────────────────────
 
 #<loc.py>
-# # lines of code per file: no blanks, comments or top docstring
+# # lines of code per file: no blanks, comments or top docstring.
+# # count on the LEFT, path on the right; empty files are skipped.
 # import ast, sys
 # for path in sys.argv[1:]:
 #   src  = open(path).read()
 #   tree = ast.parse(src)
 #   doc  = tree.body[0] if ast.get_docstring(tree) else None
 #   skip = set(range(doc.lineno, doc.end_lineno + 1)) if doc else set()
-#   print("%-12s %4d" % (path, sum(
-#     1 for i, s in enumerate(src.split("\n"), 1) if s.strip()
-#     and not s.strip().startswith("#") and i not in skip)))
+#   n = sum(1 for i, s in enumerate(src.split("\n"), 1) if s.strip()
+#           and not s.strip().startswith("#") and i not in skip)
+#   if n: print("%5d  %s" % (n, path))
 
 # ──────────────────────────────────────────────────────────────
 
@@ -306,19 +316,40 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # # One pass: named-group alternation, first rule wins, so strings
 # # beat comments beat keywords -- no placeholder or state games.
 # # Section banners (lines starting #-- name ---) each take the
-# # next pale background, so the big conceptual blocks (and their
-# # relative sizes) show. Helper sections (MISC names) all share
-# # one blue, wherever they sit. White: everything before the
-# # first banner, and main.
-# import re, sys, html
+# # next pale background. MISC names share one blue; white before
+# # the first banner and at main. Faces (keywords/comment/func) are
+# # chosen HERE from the file suffix, so callers pass just cols+file.
+# import re, sys, html, os
+#
+# FACES = {
+#  "py":  ("if elif else for while return break continue def lambda "
+#          "yield import from as and or not in is class try except "
+#          "with pass True False None self",
+#          r"#.*", 
+#          r"(?<=def )\w+|(?<=class )\w+"
+#          ),
+#  "lua": ("function local end if then else elseif for while do "
+#          "repeat until return require nil true false and or not",
+#          r"--.*",
+#          r"(?<=function )\w+")
+#          }
+# MK    = ("define endef export ifeq ifneq ifdef ifndef else endif "
+#          "include call shell filter notdir wildcard foreach",
+#          r"#.*", 
+#          r"^[A-Za-z0-9_.]+(?=:)|[$][(][A-Za-z0-9_]+[)]"
+#          )
+#
+# cols = sys.argv[1] if len(sys.argv) > 1 else "6"
+# path = sys.argv[2] if len(sys.argv) > 2 else "-"
+# src  = open(path).read() if path != "-" else sys.stdin.read()
+# base = os.path.basename(path)
+# kw, com, fun = FACES.get(base.rsplit(".",1)[-1] if "." in base else "", MK)
 #
 # RULES = [
 #  ("str", r'"""[\s\S]*?"""|"[^"]*"|\'[^\']*\''),
-#  ("com", sys.argv[4] if len(sys.argv) > 4 else r"#.*"),
-#  ("fun", sys.argv[5] if len(sys.argv) > 5 else r"(?<=def )\w+"),
-#  ("kw",  r"\b(?:%s)\b" % "|".join(map(re.escape,
-#          (sys.argv[3] if len(sys.argv) > 3 else
-#           "if else for while def return import class").split()))),
+#  ("com", com),
+#  ("fun", fun),
+#  ("kw",  r"\b(?:%s)\b" % "|".join(map(re.escape, kw.split()))),
 #  ("num", r"\b\d+\.?\d*\b")]
 # COLOR = dict(str="#a31515", com="#6a737d", fun="#795e26",
 #              kw="#0033b3",  num="#098658", n="#b0b0b0")
@@ -333,8 +364,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # def paint(m) -> str:
 #   return '<span style="color:%s">%s</span>' % (COLOR[m.lastgroup], m.group())
 #
-# cols = sys.argv[1] if len(sys.argv) > 1 else "6"
-# src  = open(sys.argv[2]).read() if len(sys.argv) > 2 else sys.stdin.read()
 # out  = PAT.sub(paint, html.escape(src, quote=False))
 #
 # print('<meta charset=utf-8>'

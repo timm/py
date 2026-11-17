@@ -6,8 +6,8 @@ distx is the distance between two rows over the x columns.
 disty is a row's distance to the best possible y values
 (0 = best), so a smaller disty is a better row.
 """
-from lib import isa
-from data import Sym, norm, adds, mid
+from .lib import isa
+from .data import Sym, norm, adds, mid
 
 def minkowski(vals, p=2) -> float:
   tot = nn = 0

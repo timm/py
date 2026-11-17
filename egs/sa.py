@@ -28,7 +28,8 @@ than the median row; mean of --runs repeats. A file with fewer
 rows than evals just evaluates every row. Files are named
 relative to --dir, without ".csv".
 """
-import sys; sys.path[0] += "/.."   # find hair in the parent
+import os, sys  # make hair importable whether run from source or installed
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import random
 from math import exp, sqrt
 from bisect import insort
