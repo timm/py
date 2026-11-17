@@ -31,6 +31,12 @@ def bins(tbl: o, rows: list, at: int, Y, accum, leaf=3):
       if leaf <= j+1 <= n - leaf and x != xy[j+1][0]:
         yield xpect(here, fold(tot, here, -1)), at, x
 
+def bin(tbl: o, rows: list, Y, accum, leaf=3):
+  "The min-cost bin over every x column (None if no legal split)"
+  return min((b for at in tbl.x
+              for b in bins(tbl, rows, at, Y, accum, leaf)),
+             default=None)
+
 def has(row: list, col, at: int, v) -> bool:
   "Does row fall on the yes-side of a bin? (? = yes)"
   w = row[at]
@@ -42,10 +48,8 @@ def tree(tbl: o, rows: list, Y, accum=Num, leaf=3, maxd=8, lvl=0) -> o:
   t = o(at=None, v=None, mid=mid(all), n=len(rows), rows=rows,
         yes=None, no=None)
   if len(rows) >= 2*leaf and lvl < maxd:
-    if bin := min((c for at in tbl.x
-                   for c in bins(tbl, rows, at, Y, accum, leaf)),
-                  default=None):
-      _, at, v = bin
+    if b := bin(tbl, rows, Y, accum, leaf):
+      _, at, v = b
       yes, no = [], []
       for r in rows:
         (yes if has(r, tbl.cols[at], at, v) else no).append(r)
