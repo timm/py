@@ -5,6 +5,7 @@ mean (all neighbours equal) and tri (triangular: nearer rows
 weigh more, weight 1 - d/dmax). Also "mu": guess the known mean.
 (c) 2026, Tim Menzies <timm@ieee.org>, MIT license
 """
+import sys; sys.path[0] += "/.."   # find hair in the parent
 import random
 from hair import *
 

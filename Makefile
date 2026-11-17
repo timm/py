@@ -79,7 +79,7 @@ loc: $(Tmp)/loc.py ## lines of code in hair.py and each eg/ file
 snap = $$(git commit-tree $$(git write-tree) -m publish)
 
 publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
-	cd $(Root) && for f in hair.py eg/*.py Makefile; do $(MAKE) hi it=$$f; done
+	cd $(Root) && for f in *.py eg/*.py Makefile; do $(MAKE) hi it=$$f; done
 	{ $(call mark,index.top); \
 	  for f in $(Root)/docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
 	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \

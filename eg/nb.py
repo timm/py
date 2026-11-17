@@ -6,7 +6,8 @@ predicting it, so accuracy is on unseen rows. Data: --file
 names in $MOOT/classify (with a class! column).
 (c) 2026, Tim Menzies <timm@ieee.org>, MIT license
 """
-from math import log, pi, e
+import sys; sys.path[0] += "/.."   # find hair in the parent
+from math import log, pi
 from hair import *
 
 DATA = "diabetes soybean breast.w vote".split()
