@@ -10,12 +10,12 @@ import random
 from hair import *
 
 def knn(tbl, known: list, row: list, k: int, tri=False) -> float:
-  near = sorted(known, key=lambda r: distx(tbl, r, row))[:k]
-  ys   = [disty(tbl, r) for r in near]
-  if not tri: return sum(ys) / k
-  ds = [distx(tbl, r, row) for r in near]
-  ws = [1 - d/(max(ds) + TINY) for d in ds]
-  return sum(w*y for w,y in zip(ws,ys)) / (sum(ws) + TINY)
+  if not tri: return neary(tbl, known, row, k)
+  rows = near(tbl, known, row, k)
+  ds   = [distx(tbl, r, row) for r in rows]
+  ws   = [1 - d/(max(ds) + TINY) for d in ds]
+  return (sum(w * disty(tbl, r) for w,r in zip(ws,rows))
+          / (sum(ws) + TINY))
 
 def errors(file: str) -> list:
   random.seed(the.seed)

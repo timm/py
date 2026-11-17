@@ -7,7 +7,7 @@ disty is a row's distance to the best possible y values
 (0 = best), so a smaller disty is a better row.
 """
 from lib import isa
-from data import Sym, norm
+from data import Sym, norm, adds, mid
 
 def minkowski(vals, p=2) -> float:
   tot = nn = 0
@@ -29,3 +29,11 @@ def distx(tbl, r1: list, r2: list) -> float:
 def disty(tbl, row: list) -> float:
   return minkowski(abs(norm(tbl.cols[a], row[a]) - tbl.goal[a])
                    for a in tbl.y if row[a] != "?")
+
+def near(tbl, rows: list, row: list, k=1) -> list:
+  "The k rows nearest to row (x columns only)"
+  return sorted(rows, key=lambda r: distx(tbl, r, row))[:k]
+
+def neary(tbl, rows: list, row: list, k=1) -> float:
+  "Mean disty of row's k nearest rows: a cheap y estimate"
+  return mid(adds(disty(tbl, r) for r in near(tbl, rows, row, k)))
