@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""see about.py"""
 import random
-from about import doc
+from about import __doc__          # the one doc is about.py
 from lib   import *
 from data  import *
 from dist  import *
@@ -76,6 +75,5 @@ def main() -> None:
       if arg == k or arg == "all":
         print("\n--", k); random.seed(the.seed); f()
 
-__doc__ = doc
-the = settings(doc)
+the = settings(__doc__)
 if __name__ == "__main__": main()

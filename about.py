@@ -1,5 +1,4 @@
-"""about: the one doc; settings parse from here."""
-doc = """
+"""
 hair: tiny AI, explained. This file is the traffic cop: it loads
 the parts (lib, data, dist, tree, stats), holds the settings and
 the tests. The eg*.py files are short demos that import it.
