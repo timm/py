@@ -1,86 +1,42 @@
 #!/usr/bin/env python3
 """
-hair: tiny AI, explained. This file is the library; the files in
-eg/ are short examples that use it.
+hair: tiny AI, explained. This file is the traffic cop: it loads
+the parts (lib, data, dist, tree, stats), holds the settings and
+the tests. The eg*.py files are short demos that import it.
 (c) 2026, Tim Menzies <timm@ieee.org>, MIT license
-Data model trimmed from ezr-py/xai.py.
 
-USE: from hair import *
+USAGE: python3 hair.py [--key=val ...] [test ...]
+       python3 hair.py all              # run every test
 
-Part one is tools that are not about data: one-line classes,
-reading csv files, command-line flags, printing a table.
-Part two is data: tables of rows, summarized by one Num or Sym
-per column, and the distances between rows.
+OPTIONS:
+  --dir    data directory  = $MOOT/optimize
+  --file   file(s) | all   = misc/auto93
+  --seed   random seed     = 1
+  --k      most neighbours = 5
+  --test   rows to guess   = 100
+  --pool   known rows, cap = 1000
+  --runs   repeats         = 5
+  --val    random evals    = 10
+  --few    pool rows tried = 32
+  --temp   start temp      = 0.2
+  --cool   cooling rate    = 0.9
+  --leaf   tree min leaf   = 3
+  --maxd   tree max depth  = 8
 
-A csv file's first row names the columns. First character upper
-case means numeric (Num), else symbolic (Sym). Last character:
-  +  -   goal to maximize / minimize   (a y column)
-  !      the class                     (tbl.klass)
-  X      ignore this column
-  else   an input                      (an x column)
-Cells holding "?" are unknown.
-
-distx is the distance between two rows over their x columns.
-disty is a row's distance to the best possible y values
-(0 = best), so a smaller disty is a better row.
-
-Layout tricks: `klass` makes one-line slotted classes, so every
-class shape can sit together. `x4y` moves each global `x4Y`
-function onto class Y as method x, so methods can be grouped by
-purpose (create, dist, ...), not by class.
+TESTS: run any by name, e.g. "python3 hair.py tab tree".
 """
-import os, re, sys
-from math import exp, log2
-from collections.abc import Iterator
-
-TINY = 1e-32
-MOOT = os.environ.get("MOOT") or os.path.expanduser("~/gits/moot")
-
-#-- tricks -----------------------------------------------------
-def klass(name: str, **kw) -> type:
-  def __init__(i, **d):
-    for k,v in (kw|d).items():
-      setattr(i, k, v() if callable(v) and k not in d else v)
-  def __repr__(i): return name + str({k:getattr(i,k) for k in kw})
-  return type(name, (), dict(__slots__=tuple(kw), __init__=__init__,
-                             __repr__=__repr__))
-
-def x4y(g: dict) -> None:
-  for name,f in list(g.items()):
-    x,_,y = name.rpartition("4")
-    if x and callable(f) and isinstance(g.get(y), type):
-      setattr(g[y], x, f); del g[name]
-
-#-- strings to things ------------------------------------------
-def thing(s: str) -> int|float|bool|str:
-  if (s[1:] if s[:1]=="-" else s).isdigit(): return int(s)
-  try: return float(s)
-  except ValueError: return s=="True" or (s!="False" and s)
-
-def settings(doc: str) -> type:
-  pat = r"--(\w+)\s+[^=\n]*=\s*(\S+)"
-  return type("the", (), {k: thing(v) for k,v in re.findall(pat, doc)})
-
-def csv(file: str) -> Iterator[list]:
-  file = os.path.expanduser(file.replace("$MOOT", MOOT, 1))
-  with open(file, encoding="utf-8") as f:
-    for line in f:
-      row = [x.strip() for x in line.split(",")]
-      if "".join(row): yield [thing(x) for x in row]
-
-#-- command line -----------------------------------------------
-def cli(the: type) -> None:
-  "Update `the` from the command line's --key=val flags"
-  for arg in sys.argv[1:]:
-    if arg[:2]=="--" and "=" in arg:
-      k,v = arg[2:].split("=",1)
-      if hasattr(the, k): setattr(the, k, thing(v))
+import random
+from lib   import *
+from data  import *
+from dist  import *
+from tree  import *
+from stats import *
 
 ALL = """misc/auto93 config/SS-A config/SS-M systems/HSQLDB
          systems/LLVM systems/storm systems/redis sales_data/socks
          process/coc1000 process/pom3d"""
 
-def files(the: type) -> list:
+def files() -> list:
   "Paths named by --dir and --file (--file=all means ALL)"
   names = ALL.split() if the.file == "all" else the.file.split(",")
   return ["%s/%s.csv" % (the.dir, name) for name in names]
@@ -89,92 +45,60 @@ def name(file: str) -> str:
   "a/b/auto93.csv -> auto93"
   return file.split("/")[-1].removesuffix(".csv")
 
-#-- show -------------------------------------------------------
-def table(names: list, labels: list, cols: list) -> None:
-  "Print one column per name, one row per label; widths fit"
-  rows = [[""] + names] + [[label] + [round(col[j]) for col in cols]
-                           for j, label in enumerate(labels)]
-  wide = [max(len(str(x)) for x in col) for col in zip(*rows)]
-  for row in rows:
-    print("%-*s" % (wide[0], row[0]) + "".join(
-          "  %*s" % wx for wx in zip(wide[1:], row[1:])))
+#-- tests -------------------------------------------------------
+def test_the():
+  "Show the settings"
+  print(the)
 
-#-- klasses ----------------------------------------------------
-Num   = klass("Num",   n=0, mu=0, m2=0)
-Sym   = klass("Sym",   has=dict)
-Tab   = klass("Tab",   names=list, cols=dict, x=list, y=list,
-                       goal=dict, rows=list, mids=None, klass=None)
+def test_tab():
+  "Load a csv; show shape and the centroid"
+  tbl = TAB(csv(files()[0]))
+  print(len(tbl.rows), "rows;", len(tbl.x), "x;", len(tbl.y), "y")
+  print("mids:", [m if isa(m,str) else round(m,2) for m in mids(tbl)])
 
-#-- create -----------------------------------------------------
-def TAB(src) -> "Tab":
-  tbl = Tab()
-  tbl.names = next(src := iter(src))
-  for at,s in enumerate(tbl.names):
-    tbl.cols[at] = Num() if s[0].isupper() else Sym()
-    if   s[-1] == "X": continue
-    elif s[-1] == "!": tbl.klass = at
-    elif s[-1] in "+-": tbl.y += [at]; tbl.goal[at] = s[-1]=="+"
-    else:               tbl.x += [at]
-  for row in src: tbl.add(row)
-  return tbl
+def test_dist():
+  "Best and worst five rows by disty"
+  tbl  = TAB(csv(files()[0]))
+  rows = sorted(tbl.rows, key=lambda r: disty(tbl, r))
+  for r in rows[:5] + ["..."] + rows[-5:]:
+    print(r if r == "..." else (r, round(disty(tbl, r), 2)))
 
-def add4Num(i, v, inc=1) -> None:
-  if (n := i.n + inc) <= 0: i.n = i.mu = i.m2 = 0; return
-  i.n = n
-  d = v - i.mu; i.mu += inc * d / n
-  i.m2 = max(0, i.m2 + inc * d * (v - i.mu))
+def test_tree():
+  "Regression tree predicting disty from the x columns"
+  tbl = TAB(csv(files()[0]))
+  t   = tree(tbl, tbl.rows, lambda r: disty(tbl, r),
+             leaf=the.leaf, maxd=the.maxd)
+  show(tbl, t)
 
-def add4Sym(i, v, inc=1) -> None:
-  if (c := i.has.get(v,0) + inc) > 0: i.has[v] = c
-  else: i.has.pop(v, None)
+def test_stats():
+  "same() should see tiny shifts as same, big ones as different"
+  random.seed(the.seed)
+  xs = [random.gauss(10, 1) for _ in range(50)]
+  for d in [0, .1, .5, 1, 2]:
+    print(d, same(xs, [x + d for x in xs]))
 
-def add4Tab(i, row: list, inc=1) -> None:
-  i.mids = None
-  (i.rows.append if inc > 0 else i.rows.remove)(row)
-  for at,col in i.cols.items():
-    if row[at] != "?": col.add(row[at], inc)
+def test_rank():
+  "Scott-Knott ranks of four treatments (two pairs)"
+  random.seed(the.seed)
+  g = lambda mu: [random.gauss(mu, 1) for _ in range(30)]
+  print(rank(dict(a=g(10), b=g(10.1), c=g(14), d=g(14.2))))
 
-def div4Num(i) -> float: return 0 if i.n < 2 else (i.m2/(i.n - 1))**.5
+def test_confuse():
+  "Score a deliberately flawed classifier"
+  got  = "a a a b b b b c".split()
+  want = "a a b b b b c c".split()
+  c = confuse(list(zip(got, want)))
+  print("acc %.0f" % c.acc)
+  for x in c.classes:
+    print("%4s prec %3.0f recall %3.0f" % (x.label, x.prec, x.recall))
 
-def div4Sym(i) -> float:
-  "entropy"
-  N = sum(i.has.values()) or 1
-  return -sum(v/N * log2(v/N) for v in i.has.values() if v)
+def main() -> None:
+  cli(the)
+  funs = {k[5:]: f for k,f in globals().items() if k[:5]=="test_"}
+  for arg in sys.argv[1:]:
+    for k,f in funs.items():
+      if arg == k or arg == "all":
+        print("\n--", k); random.seed(the.seed); f()
 
-def norm4Num(i, v) -> float|str:
-  if v == "?": return v
-  z = (v - i.mu) / (i.div() + TINY)
-  return 1 / (1 + exp(-1.7 * max(-3, min(3, z))))
-
-def mid4Num(i) -> float: return i.mu
-def mid4Sym(i): return max(i.has, key=i.has.get)
-
-def mid4Tab(i) -> list:
-  "Cached centroid, one mid per column; add invalidates"
-  i.mids = i.mids or [col.mid() for col in i.cols.values()]
-  return i.mids
-
-#-- dist -------------------------------------------------------
-def minkowski(vals, p=2) -> float:
-  tot = nn = 0
-  for v in vals: tot += v**p; nn += 1
-  return (tot / (nn or 1)) ** (1/p)
-
-def distx4Sym(i, u, v) -> float|bool:
-  return 1 if u == v == "?" else u != v
-
-def distx4Num(i, u, v) -> float:
-  if u == v == "?": return 1
-  u, v = i.norm(u), i.norm(v)
-  if u == "?": u = 1 if v < .5 else 0
-  if v == "?": v = 1 if u < .5 else 0
-  return abs(u - v)
-
-def distx4Tab(i, r1: list, r2: list) -> float:
-  return minkowski(i.cols[a].distx(r1[a], r2[a]) for a in i.x)
-
-def disty4Tab(i, row: list) -> float:
-  return minkowski(abs(i.cols[a].norm(row[a]) - i.goal[a])
-                   for a in i.y if row[a] != "?")
-
-x4y(globals())
+the = settings(__doc__)
+if __name__ == "__main__": main()

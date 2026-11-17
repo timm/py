@@ -28,7 +28,6 @@ than the median row; mean of --runs repeats. A file with fewer
 rows than evals just evaluates every row. Files are named
 relative to --dir, without ".csv".
 """
-import sys; sys.path[0] += "/.."; sys.dont_write_bytecode = True
 import random
 from math import exp, sqrt
 from bisect import insort
@@ -52,14 +51,14 @@ def mutate(tbl, done: list, row: list, p=1.0) -> list:
     u, v = b1[a], b2[a]
     if rand() > p or u == v == "?": continue
     if "?" in (u, v): out[a] = v if u == "?" else u
-    elif isinstance(tbl.cols[a], Sym): out[a] = u if rand() < .5 else v
+    elif isa(tbl.cols[a], Sym): out[a] = u if rand() < .5 else v
     else: out[a] = v + (rand()*1.5 - .25) * (u - v)
   return out
 
 #-- sa ---------------------------------------------------------
 def near(tbl, pool: list, row: list) -> int:
   some = random.sample(range(len(pool)), min(the.few, len(pool)))
-  return min(some, key=lambda i: tbl.distx(pool[i], row))
+  return min(some, key=lambda i: distx(tbl, pool[i], row))
 
 def accept(y: float, ycur: float, t: float) -> bool:
   "The whole SA kernel: better, or lucky at this temperature"
@@ -69,14 +68,14 @@ def sa(tbl) -> list:
   "Return the best disty seen after each eval"
   pool, done, best = random.sample(tbl.rows, len(tbl.rows)), [], []
   def evaluate(row):
-    insort(done, row, key=tbl.disty)
-    best.append(tbl.disty(done[0]))
+    insort(done, row, key=lambda r: disty(tbl, r))
+    best.append(disty(tbl, done[0]))
     return row
   for _ in range(the.val): evaluate(pool.pop())
   cur, t = done[0], the.temp
   while pool and len(best) < EVALS[-1]:
     new = evaluate(pool.pop(near(tbl, pool, mutate(tbl, done, cur))))
-    if accept(tbl.disty(new), tbl.disty(cur), t): cur = new
+    if accept(disty(tbl,new), disty(tbl,cur), t): cur = new
     t *= the.cool
   return best
 
@@ -86,7 +85,7 @@ def win(y: float, lo: float, mid: float) -> float:
 
 def wins(file: str) -> list:
   tbl  = TAB(csv(file))
-  ys   = sorted(map(tbl.disty, tbl.rows))
+  ys   = sorted(disty(tbl,r) for r in tbl.rows)
   random.seed(the.seed)
   runs = [sa(tbl) for _ in range(the.runs)]
   return [sum(win(best[min(n, len(best)) - 1], ys[0], ys[len(ys)//2])
@@ -97,8 +96,7 @@ def main() -> None:
   cli(the)
   print("win after n evals: 100 = found the best row; "
         "0 = only the median row\n")
-  table([name(f) for f in files(the)], EVALS,
-        [wins(f) for f in files(the)])
+  table([name(f) for f in files()], EVALS,
+        [wins(f) for f in files()])
 
-the = settings(__doc__)
 if __name__ == "__main__": main()
