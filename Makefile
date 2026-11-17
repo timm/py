@@ -107,7 +107,7 @@ links = for f in $(1); do [ -s "$$f" ] || continue; \
 INDEX = { $(call mark,index.top); \
   echo "<b>Sources</b><ul>";       $(call links,$(Root)/hair/*.py Makefile); \
   echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/eg/*.py); \
-  echo "</ul><b>Lines of code</b><pre>"; \
+  echo "</ul><b>Lines of code</b><pre style=\"font-size:9pt\">"; \
   (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py eg/*.py); echo "</pre>"; \
   $(call mark,index.bot); }
 
@@ -138,15 +138,20 @@ $(page): $(it) $(Tmp)/hi.py
 # ──────────────────────────────────────────────────────────────
 
 #<index.bot>
-# <b>Code</b><br>
-# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse</a> ::
-# <a href="https://github.com/timm/{Name}/issues">issues</a>
+# <b>Problems</b><br>
+# &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/issues">raise an issue</a>
 # <p>
 # <b>License</b><br>
 # &nbsp;&nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md">(c) 2026</a>
 # by <a href="https://timm.fyi">timm</a>.  
 # Share and enjoy.
 # </span></td></tr></table></center>
+# <p>
+# <center>
+# <a href="https://github.com/timm/{Name}"><img src="img/gh.svg" alt="github"></a>
+# &nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md"><img src="img/mit.svg" alt="MIT license"></a>
+# &nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg" alt="NC State Computer Science"></a>
+# </center>
 
 # ──────────────────────────────────────────────────────────────
 
