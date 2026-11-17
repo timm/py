@@ -2,7 +2,7 @@
 
 # hair
 
-**HAIR = a Handbook of AI Recipes.** Tiny AI, explained.
+**HAIR = Hands-on AI Recipes.** Tiny AI, explained.
 
 The `hair/` package is the library, split by job: `lib` (csv,
 flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`
