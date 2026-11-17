@@ -32,6 +32,12 @@ def add(col, v, inc=1):
   d = v - mu; mu += inc * d / n
   return (n, mu, max(0, m2 + inc * d * (v - mu)))
 
+def adds(src, out=None):
+  "Fold a stream of values into a col (a fresh Num by default)"
+  out = Num() if out is None else out
+  for v in src: out = add(out, v)
+  return out
+
 def mid(col):
   "Center: mode of a Sym, mean of a Num"
   return max(col, key=col.get) if isa(col, Sym) else col[1]

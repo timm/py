@@ -10,7 +10,7 @@ prediction. `leaf` routes a row down; `leaves` yields them all;
 `show` pretty-prints.
 """
 from lib import o, isa
-from data import Sym, Num, add, mid, div
+from data import Sym, Num, add, adds, mid, div
 
 def score(a: dict|tuple, b: dict|tuple) -> float:
   "Split cost (lower=better): size-weighted mean of spread"
@@ -33,15 +33,13 @@ def bins(tbl: o, rows: list, at: int, Y, accum, leaf=3):
   "Yield (cost, at, v) bins; both sides hold at least leaf rows"
   xy  = [(r[at], Y(r)) for r in rows if r[at] != "?"]
   n   = len(xy)
-  tot = accum()
-  for _,y in xy: tot = add(tot, y)
+  tot = adds((y for _,y in xy), accum())
   big = lambda lo: leaf <= lo <= n - leaf
   one = lambda here,k: (score(here, sub(tot,here)), at, k)
   if isa(tbl.cols[at], Sym):
     for k in {x for x,_ in xy}:
-      ys, here = [y for x,y in xy if x==k], accum()
-      for y in ys: here = add(here, y)
-      if big(len(ys)): yield one(here, k)
+      ys = [y for x,y in xy if x==k]
+      if big(len(ys)): yield one(adds(ys, accum()), k)
   else:
     xy.sort(); here = accum()
     for j,(x,y) in enumerate(xy):
@@ -56,8 +54,7 @@ def has(row: list, col, at: int, v) -> bool:
 
 def tree(tbl: o, rows: list, Y, accum=Num, leaf=3, maxd=8, lvl=0) -> o:
   "Recursively split rows on the min-cost bin; accum=Num|Sym"
-  all = accum()
-  for r in rows: all = add(all, Y(r))
+  all = adds((Y(r) for r in rows), accum())
   t = o(at=None, v=None, mid=mid(all), n=len(rows), rows=rows,
         yes=None, no=None)
   if len(rows) >= 2*leaf and lvl < maxd:

@@ -21,7 +21,7 @@ def errors(file: str) -> list:
   tbl = TAB(csv(file))
   test, known = split(tbl.rows, the.test, the.pool)
   wants = [disty(tbl, r) for r in test]
-  mu    = sum(disty(tbl, r) for r in known) / len(known)
+  mu    = mid(adds(disty(tbl, r) for r in known))
   guess = lambda k,tri: [knn(tbl, known, r, k, tri) for r in test]
   return ([relerr(wants, guess(k, False)) for k in ks()]
         + [relerr(wants, guess(k, True))  for k in ks()]
