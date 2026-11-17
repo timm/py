@@ -18,18 +18,18 @@ def bins(tbl: o, rows: list, at: int, Y, accum, leaf=3):
   xy  = [(r[at], Y(r)) for r in rows if r[at] != "?"]
   n   = len(xy)
   tot = adds((y for _,y in xy), accum())
-  big = lambda lo: leaf <= lo <= n - leaf
-  one = lambda here,k: (xpect(here, fold(tot, here, -1)), at, k)
   if isa(tbl.cols[at], Sym):
     for k in {x for x,_ in xy}:
       ys = [y for x,y in xy if x==k]
-      if big(len(ys)): yield one(adds(ys, accum()), k)
+      if leaf <= len(ys) <= n - leaf:
+        here = adds(ys, accum())
+        yield xpect(here, fold(tot, here, -1)), at, k
   else:
     xy.sort(); here = accum()
     for j,(x,y) in enumerate(xy):
       here = add(here, y)
-      if j+1 < n and x != xy[j+1][0] and big(j+1):
-        yield one(here, x)
+      if leaf <= j+1 <= n - leaf and x != xy[j+1][0]:
+        yield xpect(here, fold(tot, here, -1)), at, x
 
 def has(row: list, col, at: int, v) -> bool:
   "Does row fall on the yes-side of a bin? (? = yes)"
