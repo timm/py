@@ -40,7 +40,7 @@ def csv(file: str) -> Iterator[list]:
   with open(file, encoding="utf-8") as f:
     for line in f:
       row = [x.strip() for x in line.split(",")]
-      if "".join(row): yield [thing(x) for x in row]
+      if any(row): yield [thing(x) for x in row]
 
 def table(names: list, labels: list, cols: list) -> None:
   "Print one column per name, one row per label; widths fit"
