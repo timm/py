@@ -2,14 +2,24 @@
 
 # hair
 
-Tiny AI, explained. `hair.py` is the library: one file. Each file
-in `eg/` is a short example that uses it, and that you can read
-in a few minutes.
+**HAIR = a Handbook of AI Recipes.** Tiny AI, explained.
 
-| file | lines of code | what |
+The `hair/` package is the library, split by job: `lib` (csv,
+flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`
+(distances, distance-to-heaven), `tree` (splits, trees), `stats`
+(effect sizes, Scott-Knott ranks, confusion, AUC). Each file in
+`eg/` is a short recipe you can read in a few minutes.
+
+| file | lines | what |
 |---|---|---|
-| `hair.py` | 115 | tools (one-line classes, csv reader, command-line flags, table printer); then data (tables of rows, one `Num` or `Sym` summary per column, distances between rows) |
-| `eg/knn.py` | 33 | guess a row's score from its k nearest neighbours |
+| `hair/lib.py` | 41 | `o`, `isa`, string-to-thing, settings, cli, csv, table |
+| `hair/data.py` | 69 | `Num` tuples, `Sym` dicts, `add`/`adds`/`fold`, `mid`, `div`, `norm`, `TAB` |
+| `hair/dist.py` | 25 | `minkowski`, `gap`, `distx`, `disty`, `near`, `neary` |
+| `hair/tree.py` | 64 | `bins`, `bin`, `tree`, `leaf`, `show` |
+| `hair/stats.py` | 139 | `cliffs`, `ks`, `cohen`, `same`, `rank`, `xval`, `confuse`, `auc` |
+| `hair/__init__.py` | 68 | the traffic cop: loads the parts, holds `the` and the tests |
+| `eg/knn.py` | 38 | guess a row's score from its k nearest rows (two kernels) |
+| `eg/nb.py` | 57 | naive bayes, scored by AUC over a 5x5 cross-validation |
 | `eg/sa.py` | 60 | simulated annealing that reads one row's goals at a time |
 
 (`make loc` prints these counts: no blank lines, comments or top
