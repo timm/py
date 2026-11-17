@@ -1,0 +1,21 @@
+[project]
+name = "hair"
+version = "0.1.0"
+description = "Tiny AI, explained: short, readable examples of AI over tabular data."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Tim Menzies", email = "timm@ieee.org"}]
+dependencies = []
+
+[project.urls]
+Homepage = "https://timm.github.io/hair/"
+Source = "https://github.com/timm/hair"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+# One file is the library. The examples in eg/ are not installed.
+[tool.setuptools]
+py-modules = ["hair"]

@@ -1,17 +1,22 @@
-# py Makefile. One file, no support code. Temps in $(Tmp); html
-# into ./docs. "make" = help. "make it=f" edits f in nvim.
+# hair Makefile. One file, no support code. Temps in $(Tmp); html
+# into $(Root)/docs. "make" = help. "make it=f" edits f in nvim.
+# Every repo path is spelled $(Root)/..., so sub-directories can
+# reuse all of this with a one-line Makefile: include ../Makefile
 # Long payloads live at the end as comment blocks #<name> ...
 # #</name>; make greps its own source to build them (see mark).
 # Inside a block, text is verbatim (no $$ doubling): {Tmp} and
-# {Here} are filled in by sed at extraction time.
+# {Here} (the repo root) are filled in by sed at extraction time.
 SHELL       := bash
 .SHELLFLAGS := -o pipefail -ec   # a dead gawk must kill the pipe
 .DELETE_ON_ERROR:                # failed recipes leave no corpses
 MAKEFLAGS += --no-print-directory
 .SILENT:
+# no __pycache__ litter, here or in `make sh`
+export PYTHONDONTWRITEBYTECODE := 1
 Tmp  ?= $(HOME)/tmp/sa
 it   ?=
 cols ?= 6
+Root := $(shell git rev-parse --show-toplevel)
 
 ifeq ($(it),)
 .DEFAULT_GOAL := help
@@ -29,7 +34,7 @@ deps: ## complain about any missing tools, else silence
 	  exit 1; }
 
 help: deps $(Tmp)/help.awk ## show this help
-	gawk -f $(Tmp)/help.awk $(MAKEFILE_LIST)
+	gawk -f $(Tmp)/help.awk $(Root)/Makefile
 
 pull: ## update from main
 	git pull
@@ -42,7 +47,7 @@ edit: $(Tmp)/init.lua ## edit $(it) in nvim (use: make it=file)
 	nvim --clean -u $(Tmp)/init.lua -i $(Tmp)/shada $(it)
 
 serve: ## serve docs/ at http://localhost:8000
-	cd docs && python3 -m http.server
+	cd $(Root)/docs && python3 -m http.server
 
 sh: $(Tmp)/bashrc ## bash with our prompt and aliases
 	bash --rcfile $(Tmp)/bashrc -i
@@ -52,31 +57,39 @@ $(Tmp):
 
 #-- config files ---------------------------------------------------
 H    := \#
-mark  = gawk -v RS= 'index($$0,"$(H)<$(1)>")==1' Makefile | tail -n +2 \
+mark  = gawk -v RS= 'index($$0,"$(H)<$(1)>")==1' $(Root)/Makefile | tail -n +2 \
         | sed -e 's/^$(H) \{0,1\}//' -e 's|{Tmp}|$(Tmp)|g' \
-              -e 's|{Here}|$(CURDIR)|g' -e 's|{Name}|$(notdir $(CURDIR))|g'
+              -e 's|{Here}|$(Root)|g' -e 's|{Name}|$(notdir $(Root))|g'
 
-$(Tmp)/help.awk: Makefile | $(Tmp) ; $(call mark,help.awk) > $@
-$(Tmp)/init.lua: Makefile | $(Tmp) ; $(call mark,init.lua) > $@
-$(Tmp)/bashrc:   Makefile | $(Tmp) ; $(call mark,bashrc)   > $@
-$(Tmp)/hi.py   : Makefile | $(Tmp) ; $(call mark,hi.py)    > $@
-.gitignore:      Makefile          ; $(call mark,gitignore) > $@
-LICENSE.md:      Makefile          ; $(call mark,license)   > $@
+$(Tmp)/help.awk: $(Root)/Makefile | $(Tmp) ; $(call mark,help.awk) > $@
+$(Tmp)/init.lua: $(Root)/Makefile | $(Tmp) ; $(call mark,init.lua) > $@
+$(Tmp)/bashrc:   $(Root)/Makefile | $(Tmp) ; $(call mark,bashrc)   > $@
+$(Tmp)/hi.py   : $(Root)/Makefile | $(Tmp) ; $(call mark,hi.py)    > $@
+$(Tmp)/loc.py  : $(Root)/Makefile | $(Tmp) ; $(call mark,loc.py)   > $@
+.gitignore:      $(Root)/Makefile  ; $(call mark,gitignore) > $(Root)/$@
+LICENSE.md:      $(Root)/Makefile  ; $(call mark,license)   > $(Root)/$@
+
+#-- examples ---------------------------------------------------
+# hair.py is the library; each eg/*.py is one small example of it
+loc: $(Tmp)/loc.py ## lines of code in hair.py and each eg/ file
+	cd $(Root) && python3 $(Tmp)/loc.py hair.py eg/*.py
 
 #-- website ---------------------------------------------------
 # used in publish: a parentless commit of scratch index last staged
 snap = $$(git commit-tree $$(git write-tree) -m publish)
 
-publish: $(Tmp)/hi.py ## render all sources to docs/, push to gh-pages
-	for f in *.py Makefile; do $(MAKE) hi it=$$f; done
+publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
+	cd $(Root) && for f in hair.py eg/*.py Makefile; do $(MAKE) hi it=$$f; done
 	{ $(call mark,index.top); \
-	  for f in docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
+	  for f in $(Root)/docs/*.html; do b=$$(basename $$f); [ $$b = index.html ] || \
 	    echo "<li><a href=\"$$b\">$${b%.html}</a></li>"; done; \
-	  $(call mark,index.bot); } > docs/index.html
-	export GIT_INDEX_FILE=$(Tmp)/pubindex; \
+	  echo "</ul><b>Lines of code</b><pre>"; \
+	  (cd $(Root) && python3 $(Tmp)/loc.py hair.py eg/*.py); echo "</pre>"; \
+	  $(call mark,index.bot); } > $(Root)/docs/index.html
+	cd $(Root); export GIT_INDEX_FILE=$(Tmp)/pubindex; \
 	git --work-tree=docs add -A . && \
 	git push -q -f origin $(snap):refs/heads/gh-pages
-	echo "https://timm.github.io/py/"
+	echo "https://timm.github.io/hair/"
 
 #-- highlight ---------------------------------------------------
 # render source as tiny-type, n-column, colored html (see the
@@ -106,8 +119,8 @@ hifun = $(or $(FUN_$(sfx)),$(FUN_mk))
 
 hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 	python3 $(Tmp)/hi.py $(cols) $(it) "$(hikw)" "$(hicom)" "$(hifun)" \
-	  > "docs/$(notdir $(it)).html"
-	echo "docs/$(notdir $(it)).html"
+	  > "$(Root)/docs/$(notdir $(it)).html"
+	echo "$(Root)/docs/$(notdir $(it)).html"
 
 #-- payloads: comment blocks, extracted by `mark` ---------------
 # a block is one blank-line-delimited paragraph starting
@@ -116,7 +129,6 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # ──────────────────────────────────────────────────────────────
 
 #<index.bot>
-# </ul>
 # <b>Code</b><br>
 # &nbsp;&nbsp;<a href="https://github.com/timm/{Name}">browse</a> ::
 # <a href="https://github.com/timm/{Name}/issues">issues</a>
@@ -132,7 +144,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # <body style="padding-top:2em">
 # <center><h2>timm / {Name}</h2></center>
 # <center><h3>tiny AI, explained</h3></center>
-# <center><img src="img/ant.png" width=180 alt="ant"></center>
+# <center><img src="img/hair.png" width=180 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
@@ -275,12 +287,29 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 
 # ──────────────────────────────────────────────────────────────
 
+#<loc.py>
+# # lines of code per file: no blanks, comments or top docstring
+# import ast, sys
+# for path in sys.argv[1:]:
+#   src  = open(path).read()
+#   tree = ast.parse(src)
+#   doc  = tree.body[0] if ast.get_docstring(tree) else None
+#   skip = set(range(doc.lineno, doc.end_lineno + 1)) if doc else set()
+#   print("%-12s %4d" % (path, sum(
+#     1 for i, s in enumerate(src.split("\n"), 1) if s.strip()
+#     and not s.strip().startswith("#") and i not in skip)))
+
+# ──────────────────────────────────────────────────────────────
+
 #<hi.py>
 # # a2ps for the browser: tiny type, N columns, line numbers.
 # # One pass: named-group alternation, first rule wins, so strings
 # # beat comments beat keywords -- no placeholder or state games.
-# # Section banners (#-- name ---) rotate a pale background, so
-# # the big conceptual blocks (and their relative sizes) show.
+# # Section banners (lines starting #-- name ---) each take the
+# # next pale background, so the big conceptual blocks (and their
+# # relative sizes) show. Helper sections (MISC names) all share
+# # one blue, wherever they sit. White: everything before the
+# # first banner, and main.
 # import re, sys, html
 #
 # RULES = [
@@ -293,7 +322,11 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #  ("num", r"\b\d+\.?\d*\b")]
 # COLOR = dict(str="#a31515", com="#6a737d", fun="#795e26",
 #              kw="#0033b3",  num="#098658", n="#b0b0b0")
-# BG = ["#ffffff","#eef4ff","#fff7e8","#eefaf0","#faf0f6","#f4f4f4"]
+# BG   = ["#fff4e0","#eaf8ec","#f1ecfd","#e2f6f6",  # cream green
+#         "#fdfbd8","#fdecf3","#f1f1f1","#ffe9e2"]  # lilac teal ..
+# BLUE, WHITE = "#eaf2ff", "#ffffff"
+# MISC = r"#-- *(tricks|lib|misc)\b"
+# MAIN = r"#-- *main\b"
 #
 # PAT = re.compile("|".join("(?P<%s>%s)" % kv for kv in RULES), re.M)
 #
@@ -311,9 +344,13 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 # print('<pre style="font:6.5pt/1.4 JetBrains Mono,Monaco,Menlo,monospace;'
 #       'color:#1f2328;columns:%s 80ch;column-gap:2em;'
 #       'column-rule:1px solid #dddddd">' % cols)
-# carry, bg = "", 0
-# for n, line in enumerate(out.split("\n"), 1):
-#   if "#--" in line[:60]: bg += 1          # new conceptual block
+# carry, bg, k = "", WHITE, 0
+# for n, (raw, line) in enumerate(zip(src.split("\n"),
+#                                     out.split("\n")), 1):
+#   if raw.startswith("#--"):               # new conceptual block
+#     if   re.match(MISC, raw): bg = BLUE
+#     elif re.match(MAIN, raw): bg = WHITE
+#     else: bg, k = BG[k % len(BG)], k + 1
 #   line  = carry + line
 #   opens = re.findall(r"<span[^>]*>", line)
 #   carry = ""
@@ -321,5 +358,7 @@ hi: $(Tmp)/hi.py ## render $(it) as colored html into docs/
 #     carry = opens[-1]; line += "</span>"
 #   print('<span style="display:block;background:%s">'
 #         '<span style="color:%s">%4d</span> %s</span>'
-#         % (BG[bg % len(BG)], COLOR["n"], n, line))
+#         % (bg, COLOR["n"], n, line), end="")
+# # end="": a block span already ends its line; a \n here too
+# # would show in <pre> as a blank line after every source line.
 # print("</pre>")

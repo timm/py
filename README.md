@@ -1,76 +1,143 @@
-# SA(1)
+<img src="docs/img/hair.png" width=160 align=right alt="hair">
 
-## NAME
+# hair
 
-**sa.py** — label-efficient multi-objective optimization:
-simulated annealing and active acquisition over one cache
+Tiny AI, explained. `hair.py` is the library: one file. Each file
+in `eg/` is a short example that uses it, and that you can read
+in a few minutes.
 
-## SYNOPSIS
+| file | lines of code | what |
+|---|---|---|
+| `hair.py` | 115 | tools (one-line classes, csv reader, command-line flags, table printer); then data (tables of rows, one `Num` or `Sym` summary per column, distances between rows) |
+| `eg/knn.py` | 33 | guess a row's score from its k nearest neighbours |
+| `eg/sa.py` | 60 | simulated annealing that reads one row's goals at a time |
 
-**python3 sa.py** [--how=sa|acq|rand] [--key=val ...]
+(`make loc` prints these counts: no blank lines, comments or top
+docstring.)
 
-## DESCRIPTION
+## Install
 
-Labels a few warm-up rows, splits them into *best* (top sqrt(n)
-by distance-to-heaven) and *rest*; then spends a label budget
-hunting better rows. `--how` picks the hunter: **sa** mutates
-the current row toward best and anneals; **acq** labels the
-first pool row nearer best's centroid than rest's; **rand**
-is the random baseline. Reports the best row found and the labels spent.
+    git clone https://github.com/timm/hair ~/gh/hair
+    git clone https://github.com/timm/moot ~/gits/moot   # the data
 
-## OPTIONS
+There is nothing to build, and the examples run in place: no
+`pip install` needed. You need Python 3.10 or later. If the data
+is somewhere else, set `$MOOT`.
 
-    --how     sa|acq|rand (sa)
-    --file    data file        ($MOOT/optimize/misc/auto93.csv)
-    --seed    random seed      (1)
-    --val     warm-up labels   (10)
-    --pool    unlabelled cap   (1000)
-    --budget  new labels       (30)
+## Run
 
-## DATA
+    cd ~/gh/hair/eg
+    python3 knn.py
+    python3 sa.py
 
-Comma-separated; row one names the columns. First character
-upper case means numeric, else symbolic. Last character:
+Each example prints one table, with one column per data file.
+Each example lists its flags at the top of its file. For example:
 
-    +  -   goal to maximize / minimize   (a y column)
-    X      ignore this column
-    else   an input (x) column
+    python3 knn.py --file=misc/auto93 --k=3
+    python3 sa.py  --file=misc/auto93,config/SS-A --runs=20
 
-E.g. auto93.csv. For illustration only, these rows are sorted
-by their distance to the optimum (`disty`, 0 = heaven, shown
-at right; real data files need no such order, no such column):
+Files are named relative to `--dir` (default `$MOOT/optimize`),
+without `.csv`. `--file=all` (the default) runs ten files.
+
+### knn.py
+
+Hide the scores of 100 rows. Guess each score as the mean score
+of its k nearest known rows. Cells show the percent error; row
+`mean` is the error when every guess is the mean of the known rows.
+
+          auto93  SS-A  SS-M  HSQLDB  LLVM  storm  redis  socks  coc1000  pom3d
+    k=1       18     3     2       1    28     34     46      3       19     34
+    k=2       17     3     2       0    22     30     50      3       16     31
+    k=3       16     3     2       0    20     26     49      3       15     29
+    k=4       16     3     2       1    19     25     50      4       15     27
+    k=5       16     3     2       1    18     29     51      4       15     26
+    mean      37    30    59      60    50     53     49     49       16     29
+
+### sa.py
+
+An "eval" reads the goals of one row. Cells show the "win" after
+that many evals: 100 means the search found the best row in all
+the data; 0 means it found nothing better than the median row.
+
+          auto93  SS-A  SS-M  HSQLDB  LLVM  storm  redis  socks  coc1000  pom3d
+    25        94    94    82      93    95    100     91     94       57     91
+    50        97    95    99      98   100    100     95     98       73     96
+    100       99    98   100      99   100    100     97    100       80     99
+    200      100    99   100     100   100    100    100    100       89    100
+    500      100   100   100     100   100    100    100    100       97    100
+    1000     100   100   100     100   100    100    100    100      100    100
+
+## Data
+
+Comma-separated text. Row one names the columns. In each name,
+the first character gives the type and the last gives the role:
+
+    Upper case first   numeric            (else symbolic)
+    +  -   last        goal to maximize / minimize
+    !      last        the class
+    X      last        ignore this column
+    else               an input
+
+A cell that holds `?` is unknown. For example, `auto93.csv` starts:
 
     Clndrs, Volume, HpX, Model, origin, Lbs-, Acc+, Mpg+
-         4,     90,  48,    78,      2, 1985, 21.5,   40   # disty 0.07
-         4,     90,  48,    80,      2, 2085, 21.7,   40   # disty 0.09
-         4,     85,  65,    81,      3, 1975, 19.4,   40   # disty 0.09
-    ...
-         8,    440, 215,    70,      1, 4312,  8.5,   10   # disty 0.96
-         8,    454, 220,    70,      1, 4354,  9.0,   10   # disty 0.96
-         8,    455, 225,    73,      1, 4951, 11.0,   10   # disty 0.96
+         4,     90,  48,    78,      2, 1985, 21.5,   40
 
-Numeric inputs, a symbolic input `origin`, one ignored column
-(`HpX`), and goals minimize Lbs, maximize Acc and Mpg: light,
-nimble, frugal cars up top; heavy guzzlers below. Cells
-holding `?` are unknown. Optimizers may read any x; each y
-read is a "label" and is charged to the budget.
+Two distances come from `hair.py`. `distx` is the distance
+between two rows, measured on the inputs. `disty` is the distance
+from one row to the best possible goal values: 0 is best, so a
+smaller `disty` is a better row. The "score" in the examples is
+`disty`.
 
-## INSTALL
+## Write your own example
 
-    sudo apt install -y gawk neovim   # or: brew install gawk neovim
-    git clone https://github.com/timm/py ~/gh/py
-    git clone https://github.com/timm/moot ~/gits/moot   # data
-    cd ~/gh/py && python3 sa.py
+Put a new file in `eg/`. Start it like this:
 
-Data lives in the [moot](https://github.com/timm/moot) repo;
-set `$MOOT` if you clone it somewhere other than `~/gits/moot`.
+    """
+    mine: one line that says what this does.
 
-## SEE ALSO
+    OPTIONS:
+      --dir    data directory  = $MOOT/optimize
+      --file   file(s) | all   = all
+      --seed   random seed     = 1
+    """
+    import sys; sys.path[0] += "/.."; sys.dont_write_bytecode = True
+    from hair import *
 
-Pretty-printed sources:
-[sa.py](https://timm.github.io/py/sa.py.html),
-[Makefile](https://timm.github.io/py/Makefile.html).
+    def main():
+      cli(the)
+      for f in files(the):
+        tbl = TAB(csv(f))
+        print(name(f), len(tbl.rows), tbl.mid())
 
-## AUTHOR
+    the = settings(__doc__)
+    if __name__ == "__main__": main()
+
+The first `import` line lets the file find `hair.py` one
+directory up, and stops Python from writing `__pycache__`.
+`settings` reads the defaults from the OPTIONS lines. `cli`
+updates them from `--key=val` flags. `table` prints columns.
+
+## Make
+
+`make` in the top directory, or in `eg/`, lists the rules:
+
+    make loc        lines of code in hair.py and each eg/ file
+    make hi it=F    render file F as colored html into docs/
+    make publish    render all sources, push them to the web site
+    make sh         a shell with a short prompt and some aliases
+    make it=F       edit file F in nvim
+
+Pretty-printed sources: https://timm.github.io/hair/
+
+## Use as a package
+
+    pip install .        # from a clone; installs one module, hair
+    python3 -c "from hair import *; print(TAB(csv('my.csv')).mid())"
+
+Or copy `hair.py` next to your own code. The examples in `eg/`
+are not installed.
+
+## Author
 
 Tim Menzies <timm@ieee.org>, MIT license.
