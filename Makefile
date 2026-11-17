@@ -146,20 +146,18 @@ $(page): $(it) $(Tmp)/hi.py
 # by <a href="https://timm.fyi">timm</a>.  
 # Share and enjoy.
 # </span></td></tr></table></center>
-# <p>
-# <center>
-# <a href="https://github.com/timm/{Name}"><img src="img/gh.svg" alt="github"></a>
-# &nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md"><img src="img/mit.svg" alt="MIT license"></a>
-# &nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg" alt="NC State Computer Science"></a>
-# </center>
 
 # ──────────────────────────────────────────────────────────────
 
 #<index.top>
 # <meta charset=utf-8><title>timm / {Name}</title>
 # <body style="padding-top:2em">
-# <center><h2>github.com / timm / {Name}</h2></center>
-# <center><h3>tiny AI, explained</h3></center>
+# <center>
+# <a href="https://github.com/timm/{Name}"><img src="img/gh.svg" alt="github"></a>
+# &nbsp;<a href="https://github.com/timm/{Name}/blob/main/LICENSE.md"><img src="img/mit.svg" alt="MIT license"></a>
+# &nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg" alt="NC State Computer Science"></a>
+# </center>
+# <center><h1 style="font-weight:normal">tiny AI, explained</h1></center>
 # <center><img src="img/hair.png" width=180 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
