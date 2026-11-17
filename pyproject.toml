@@ -24,9 +24,9 @@ build-backend = "setuptools.build_meta"
 
 # `hair/` is the package; its helpers (lib, data, dist, tree, stats,
 # about) are PRIVATE submodules (hair.lib, hair.data, ...), not
-# top-level names. egs/ ships as the package `hair_eg` for the scripts.
+# top-level names. eg/ ships as the package `hair_eg` for the scripts.
 [tool.setuptools]
 packages = ["hair", "hair_eg"]
 
 [tool.setuptools.package-dir]
-hair_eg = "egs"
+hair_eg = "eg"

@@ -88,8 +88,8 @@ LICENSE.md:      $(Root)/Makefile  ; $(call mark,license)   > $(Root)/$@
 
 #-- examples ---------------------------------------------------
 # hair.py is the library; each eg/*.py is one small example of it
-loc: $(Tmp)/loc.py ## lines of code in hair/ and each egs/ file
-	cd $(Root) && python3 $(Tmp)/loc.py hair/*.py egs/*.py
+loc: $(Tmp)/loc.py ## lines of code in hair/ and each eg/ file
+	cd $(Root) && python3 $(Tmp)/loc.py hair/*.py eg/*.py
 
 #-- website ---------------------------------------------------
 # used in publish: a parentless commit of scratch index last staged
@@ -106,13 +106,13 @@ links = for f in $(1); do [ -s "$$f" ] || continue; \
 # there is no trailing newline to break `$(INDEX) > file`.
 INDEX = { $(call mark,index.top); \
   echo "<b>Sources</b><ul>";       $(call links,$(Root)/hair/*.py Makefile); \
-  echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/egs/*.py); \
+  echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/eg/*.py); \
   echo "</ul><b>Lines of code</b><pre>"; \
-  (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py egs/*.py); echo "</pre>"; \
+  (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py eg/*.py); echo "</pre>"; \
   $(call mark,index.bot); }
 
 publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
-	cd $(Root) && for f in hair/*.py egs/*.py Makefile; do \
+	cd $(Root) && for f in hair/*.py eg/*.py Makefile; do \
 	  [ -s "$$f" ] && $(MAKE) hi it=$$f; done        # -s: skip empty __init__
 	$(INDEX) > $(Root)/docs/index.html
 	cd $(Root); export GIT_INDEX_FILE=$(Tmp)/pubindex; \
