@@ -10,24 +10,8 @@ prediction. `leaf` routes a row down; `leaves` yields them all;
 `show` pretty-prints.
 """
 from .lib import o, isa
-from .data import Sym, Num, add, adds, mid, div
-
-def score(a: dict|tuple, b: dict|tuple) -> float:
-  "Split cost (lower=better): size-weighted mean of spread"
-  size = lambda c: sum(c.values()) if isa(c, Sym) else c[0]
-  n, m = size(a), size(b)
-  return (div(a)*n + div(b)*m) / (n + m + 1e-32)
-
-def sub(a, b):
-  "Remove summary b from summary a (for the far half of a bin)"
-  if isa(a, Sym):
-    return {k: v for k in a if (v := a[k] - b.get(k,0)) > 0}
-  (n1,mu1,m21), (n2,mu2,m22) = a, b
-  n = n1 - n2
-  if n <= 0: return Num()
-  d  = mu2 - mu1
-  mu = (n1*mu1 - n2*mu2) / n
-  return (n, mu, max(0, m21 - m22 - d*d*n2*n1/(n1-n2+1e-32)))
+from .data import Sym, Num, add, adds, fold, mid
+from .stats import xpect
 
 def bins(tbl: o, rows: list, at: int, Y, accum, leaf=3):
   "Yield (cost, at, v) bins; both sides hold at least leaf rows"
@@ -35,7 +19,7 @@ def bins(tbl: o, rows: list, at: int, Y, accum, leaf=3):
   n   = len(xy)
   tot = adds((y for _,y in xy), accum())
   big = lambda lo: leaf <= lo <= n - leaf
-  one = lambda here,k: (score(here, sub(tot,here)), at, k)
+  one = lambda here,k: (xpect(here, fold(tot, here, -1)), at, k)
   if isa(tbl.cols[at], Sym):
     for k in {x for x,_ in xy}:
       ys = [y for x,y in xy if x==k]

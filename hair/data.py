@@ -38,6 +38,18 @@ def adds(src, out=None):
   for v in src: out = add(out, v)
   return out
 
+def fold(a, b, inc=1):
+  "Merge summary b into a (inc=-1 folds it back out)"
+  if isa(a, Sym):
+    return {k: v for k in a.keys() | b.keys()
+            if (v := a.get(k,0) + inc*b.get(k,0)) > 0}
+  (n1,mu1,m21), (n2,mu2,m22) = a, b
+  n = n1 + inc*n2
+  if n <= 0: return Num()
+  d  = mu2 - mu1
+  mu = (n1*mu1 + inc*n2*mu2) / n
+  return (n, mu, max(0, m21 + inc*m22 + inc * d*d * n1*n2 / n))
+
 def mid(col):
   "Center: mode of a Sym, mean of a Num"
   return max(col, key=col.get) if isa(col, Sym) else col[1]

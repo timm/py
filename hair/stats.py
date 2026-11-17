@@ -10,7 +10,14 @@ where the split explains the most variance, stop when `same`.
 """
 import random
 from bisect import bisect_left, bisect_right
-from .lib import o, TINY
+from .lib import o, isa, TINY
+from .data import Sym, div
+
+def xpect(a, b) -> float:
+  "Size-weighted mean spread of two summaries (lower = better)"
+  size = lambda c: sum(c.values()) if isa(c, Sym) else c[0]
+  n, m = size(a), size(b)
+  return (div(a)*n + div(b)*m) / (n + m + TINY)
 
 def cliffs(xs: list, ys: list) -> float:
   "Cliff's delta effect size in 0..1 (0 = identical)"
