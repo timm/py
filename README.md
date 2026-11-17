@@ -1,8 +1,8 @@
 <img src="docs/img/hair.png" width=160 align=right alt="hair">
 
-# hair
+# hair : hands-on AI recipes
 
-**HAIR = Hands-on AI Recipes.** Tiny AI, explained.
+Tiny AI, explained.
 
 The `hair/` package is the library, split by job: `lib` (csv,
 flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`

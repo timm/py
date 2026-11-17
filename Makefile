@@ -158,8 +158,8 @@ $(page): $(it) $(Tmp)/hi.py
 #<index.top>
 # <meta charset=utf-8><title>timm / {Name}</title>
 # <body style="padding-top:2em">
-# <center><h1 style="font-weight:normal;font-family:'Times New Roman',Times,serif">hair : tiny AI, explained</h1></center>
-# <center><h3 style="font-weight:normal;font-family:'Times New Roman',Times,serif">HAIR = <b>H</b>ands-on <b>AI</b> <b>R</b>ecipes</h3></center>
+# <center><h1 style="font-weight:normal;font-family:'Times New Roman',Times,serif">hair : hands-on AI recipes</h1></center>
+# <center><h3 style="font-weight:normal;font-family:'Times New Roman',Times,serif">tiny AI, explained</h3></center>
 # <center><img src="img/hair.png" width=180 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
