@@ -156,9 +156,9 @@ $(page): $(it) $(Tmp)/hi.py
 
 #<index.top>
 # <meta charset=utf-8><title>timm / {Name}</title>
-# <body style="margin:0;padding:2em 0;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:safe center">
+# <body style="margin:0;padding:2em 0;">
 # <center><h1 style="font-weight:normal;font-family:'Times New Roman',Times,serif">hair : hands-on AI recipes</h1></center>
-# <center><img src="img/hair.png" width=180 alt="hair"></center>
+# <center><img src="img/hair.png" width=270 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
