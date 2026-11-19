@@ -175,26 +175,34 @@ $(page): $(it) $(Tmp)/hi.py
 # optimization. They ask "which of these is risky?", "what should
 # we try next?", "is this one weird?" -- and leave you to turn
 # that into code.
-# <svg width="205" height="126" style="float:right;margin:0 0 .6em 1.2em"
+# <svg width="205" height="130" style="float:right;margin:.8em 0 .6em 1.2em"
 #      role="img" aria-label="new lines of code per new task, falling">
-# <text x="0" y="12" font-size="11" fill="#555">new lines</text>
-# <line x1="26" y1="14" x2="26" y2="88" stroke="#bbb"/>
-# <line x1="26" y1="88" x2="200" y2="88" stroke="#bbb"/>
+# <text x="0" y="20" font-size="11" fill="#555">new lines</text>
+# <line x1="26" y1="22" x2="26" y2="96" stroke="#bbb"/>
+# <line x1="26" y1="96" x2="200" y2="96" stroke="#bbb"/>
 # <polyline fill="none" stroke="#0969da" stroke-width="2"
-#  points="28,16 46,52 64,63 83,68 101,71 119,73 137,74 155,75 174,76 192,77"/>
-# <text x="20" y="104" font-size="11" fill="#555">task 1</text>
-# <text x="170" y="104" font-size="11" fill="#555">task 10</text>
-# <text x="26" y="121" font-size="10" fill="#888" font-style="italic">a claim, not a measurement</text>
+#  points="28,24 46,60 64,71 83,76 101,79 119,81 137,82 155,83 174,84 192,85"/>
+# <text x="28" y="110" font-size="9" fill="#555" text-anchor="middle">1</text>
+# <text x="46" y="110" font-size="9" fill="#555" text-anchor="middle">2</text>
+# <text x="64" y="110" font-size="9" fill="#555" text-anchor="middle">3</text>
+# <text x="83" y="110" font-size="9" fill="#555" text-anchor="middle">4</text>
+# <text x="101" y="110" font-size="9" fill="#555" text-anchor="middle">5</text>
+# <text x="119" y="110" font-size="9" fill="#555" text-anchor="middle">6</text>
+# <text x="137" y="110" font-size="9" fill="#555" text-anchor="middle">7</text>
+# <text x="155" y="110" font-size="9" fill="#555" text-anchor="middle">8</text>
+# <text x="174" y="110" font-size="9" fill="#555" text-anchor="middle">9</text>
+# <text x="192" y="110" font-size="9" fill="#555" text-anchor="middle">10</text>
+# <text x="110" y="126" font-size="11" fill="#555" text-anchor="middle">task</text>
 # </svg>
 # <p>The good news: those jobs share parts (distances between rows;
-# summaries of columns; splits; a little statistics). Build those
-# once and the next task arrives half-written -- then quickly tune
-# tools that do what you want. Implement many tasks, and task+1
-# takes nearly no effort.
+# summaries of columns; splits; a little statistics, etc). Build
+# those once and the next task arrives half-written -- then quickly
+# tune tools that do what you want. And if you implement many
+# tasks, then task+1 takes nearly no effort.
 # <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready
 # <b>I</b>mplemented (<b>R</b>eally).
-# <p>Small code pays you back. It is quicker to change when the
-# question changes, quicker to teach to someone new, and short
+# <p>And is this small code base useful? Yes, for many reasons.
+# It is quicker to change when the question changes, quicker to teach to someone new, and short
 # enough to read end to end before you trust it. This code imports
 # little, so there is not much to attack and nearly nothing to
 # install -- which is why it may still run long after the

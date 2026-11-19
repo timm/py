@@ -10,14 +10,14 @@ code.
 The good news: those jobs share parts. Distances between rows.
 Summaries of columns. Splits. A little statistics. Build those once
 and the next task arrives half-written -- then quickly tune tools
-that do what you want. Implement many tasks, and task+1 takes
-nearly no effort.
+that do what you want. And if you implement many tasks, then
+task+1 takes nearly no effort.
 
 That is the hair heuristic: **H**alf **A**lready **I**mplemented
 (**R**eally).
 
-Small code pays you back. It is quicker to change when the question
-changes, quicker to teach to someone new, and short enough to read
+And is this small code base useful? Yes, for many reasons. It is
+quicker to change when the question changes, quicker to teach to someone new, and short enough to read
 end to end before you trust it. This code imports little, so there
 is not much to attack and nearly nothing to install -- which is why
 it may still run long after the frameworks it never used have come
