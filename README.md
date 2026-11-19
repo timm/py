@@ -20,7 +20,7 @@ tune tools that do what you want. After many tasks, task+1 takes
 nearly no effort.
 
 That is the hair heuristic: **H**alf **A**lready **I**mplemented
-(**R**eally).
+(making **R**euse easy).
 
 And is this small code base useful? Yes, for many reasons. It is
 quicker to change when the question changes, quicker to teach to

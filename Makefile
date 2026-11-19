@@ -205,7 +205,7 @@ $(page): $(it) $(Tmp)/hi.py
 # quickly tune tools that do what you want. After many tasks,
 # task+1 takes nearly no effort.
 # <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready
-# <b>I</b>mplemented (<b>R</b>eally).
+# <b>I</b>mplemented (making <b>R</b>euse easy).
 # <p>And is this small code base useful? Yes, for many reasons.
 # It is quicker to change when the question changes, quicker to teach to someone new, and short
 # enough to read end to end before you trust it. This code imports
