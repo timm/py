@@ -171,6 +171,13 @@ $(page): $(it) $(Tmp)/hi.py
 
 #<index.why>
 # <center><div style="max-width:34em;text-align:left;font-size:11pt">
+# <p>Ask an LLM for an AI workbench and you often get a code base
+# too big to understand, to trust, or to change safely -- even with
+# an LLM helping. Each change calls for more code, which calls for
+# more changes. That recursive explosion has a name: AI slop.
+# <p>Domain engineering suggests a way out. Study a family of
+# systems, build what they share once, then let each new member be
+# a small delta. So what is the family here?
 # <p>Nobody walks in asking for classification, regression, or
 # optimization. They ask "which of these is risky?", "what should
 # we try next?", "is this one weird?" -- and leave you to turn
@@ -196,7 +203,7 @@ $(page): $(it) $(Tmp)/hi.py
 # </svg>
 # <p>The good news: those jobs share parts (distances between rows;
 # summaries of columns; splits; a little statistics, etc). Build
-# those once and the next task arrives half-written -- then quickly
+# those parts once and the next task arrives half-written -- then quickly
 # tune tools that do what you want. And if you implement many
 # tasks, then task+1 takes nearly no effort.
 # <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready

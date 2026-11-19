@@ -2,24 +2,33 @@
 
 # hair : hands-on AI recipes
 
+Ask an LLM for an AI workbench and you often get a code base too
+big to understand, to trust, or to change safely -- even with an
+LLM helping. Each change calls for more code, which calls for more
+changes. That recursive explosion has a name: AI slop.
+
+Domain engineering suggests a way out. Study a family of systems,
+build what they share once, then let each new member be a small
+delta. So what is the family here?
+
 Nobody walks in asking for classification, regression, or
 optimization. They ask "which of these is risky?", "what should we
 try next?", "is this one weird?" -- and leave you to turn that into
 code.
 
-The good news: those jobs share parts. Distances between rows.
-Summaries of columns. Splits. A little statistics. Build those once
-and the next task arrives half-written -- then quickly tune tools
-that do what you want. And if you implement many tasks, then
-task+1 takes nearly no effort.
+The good news: those jobs share parts (distances between rows;
+summaries of columns; splits; a little statistics, etc). Build those
+parts once and the next task arrives half-written -- then quickly
+tune tools that do what you want. And if you implement many tasks,
+then task+1 takes nearly no effort.
 
 That is the hair heuristic: **H**alf **A**lready **I**mplemented
 (**R**eally).
 
 And is this small code base useful? Yes, for many reasons. It is
-quicker to change when the question changes, quicker to teach to someone new, and short enough to read
-end to end before you trust it. This code imports little, so there
-is not much to attack and nearly nothing to install -- which is why
+quicker to change when the question changes, quicker to teach to
+someone new, and short enough to read end to end before you trust
+it. This code imports little, so there is not much to attack and nearly nothing to install -- which is why
 it may still run long after the frameworks it never used have come
 and gone.
 
