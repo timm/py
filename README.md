@@ -8,19 +8,19 @@ LLM helping. Each change calls for more code, which calls for more
 changes. That recursive explosion has a name: AI slop.
 
 Domain engineering suggests a way out. Study a family of systems,
-build what they share once, then let each new member be a small
+build what they share, then let each new member be a small
 delta. So what is the family here?
 
-Nobody walks in asking for classification, regression, or
-optimization. They ask "which of these is risky?", "what should we
+It is the work people actually bring you. Nobody walks in asking
+for classification, regression, or optimization. They ask "which of these is risky?", "what should we
 try next?", "is this one weird?" -- and leave you to turn that into
 code.
 
 The good news: those jobs share parts (distances between rows;
 summaries of columns; splits; a little statistics, etc). Build those
-parts once and the next task arrives half-written -- then quickly
-tune tools that do what you want. And if you implement many tasks,
-then task+1 takes nearly no effort.
+parts and the next task arrives half-written -- then you quickly
+tune tools that do what you want. After many tasks, task+1 takes
+nearly no effort.
 
 That is the hair heuristic: **H**alf **A**lready **I**mplemented
 (**R**eally).
