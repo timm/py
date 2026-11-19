@@ -171,6 +171,10 @@ $(page): $(it) $(Tmp)/hi.py
 
 #<index.why>
 # <center><div style="max-width:34em;text-align:left;font-size:11pt">
+# <p>Nobody walks in asking for classification, regression, or
+# optimization. They ask "which of these is risky?", "what should
+# we try next?", "is this one weird?" -- and leave you to turn
+# that into code.
 # <svg width="205" height="126" style="float:right;margin:0 0 .6em 1.2em"
 #      role="img" aria-label="new lines of code per new task, falling">
 # <text x="0" y="12" font-size="11" fill="#555">new lines</text>
@@ -182,12 +186,8 @@ $(page): $(it) $(Tmp)/hi.py
 # <text x="170" y="104" font-size="11" fill="#555">task 10</text>
 # <text x="26" y="121" font-size="10" fill="#888" font-style="italic">a claim, not a measurement</text>
 # </svg>
-# <p>Nobody walks in asking for classification, regression, or
-# optimization. They ask "which of these is risky?", "what should
-# we try next?", "is this one weird?" -- and leave you to turn
-# that into code.
-# <p>The good news: those jobs share parts. Distances between rows.
-# Summaries of columns. Splits. A little statistics. Build those
+# <p>The good news: those jobs share parts (distances between rows;
+# summaries of columns; splits; a little statistics). Build those
 # once and the next task arrives half-written -- then quickly tune
 # tools that do what you want. Implement many tasks, and task+1
 # takes nearly no effort.
