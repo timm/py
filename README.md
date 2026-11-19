@@ -14,7 +14,7 @@ flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`
 | `hair/data.py` | 69 | `Num` tuples, `Sym` dicts, `add`/`adds`/`fold`, `mid`, `div`, `norm`, `TAB` |
 | `hair/dist.py` | 25 | `minkowski`, `gap`, `distx`, `disty`, `near`, `neary` |
 | `hair/tree.py` | 64 | `bins`, `bin`, `tree`, `leaf`, `show` |
-| `hair/stats.py` | 139 | `cliffs`, `ks`, `cohen`, `same`, `rank`, `xval`, `confuse`, `auc` |
+| `hair/stats.py` | 139 | `cliffs`, `ks`, `cohen`, `same`, `rank`, `xval`, `confuse`, `auc`, `aucs` |
 | `hair/__init__.py` | 68 | the traffic cop: loads the parts, holds `the` and the tests |
 | `eg/knn.py` | 38 | guess a row's score from its k nearest rows (two kernels) |
 | `eg/nb.py` | 57 | naive bayes, scored by AUC over a 5x5 cross-validation |

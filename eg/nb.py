@@ -13,7 +13,7 @@ from hair import *
 
 DATA   = "diabetes soybean breast.w vote".split()
 SMOOTH = [1, 2, 3]                                    # m and k each range here
-EVALS  = {"auc": (auc, True),                         # bigger = better
+EVALS  = {"auc": (aucs, True),                        # bigger = better
           "acc": (lambda ps: 100*sum(w==max(p,key=p.get) for w,p in ps)
                                /(len(ps)+TINY), True)}
 
@@ -40,25 +40,15 @@ def posts(tabs: dict, row: list, n, m, k) -> dict:
   z  = sum(es.values()) + TINY
   return {c: e/z for c, e in es.items()}
 
-def cols() -> list:
-  "Treatments: the smoothing grid, m-estimate x Laplace, no spaces."
-  return ["m=%d:k=%d" % (m,k) for m in SMOOTH for k in SMOOTH]
-
-def learner(file: str) -> dict:
-  "treatment -> folds; each fold = [(want, posteriors), ...] over m*n xval."
-  random.seed(the.seed)
-  tbl = TAB(csv(file))
-  d   = {t: [] for t in cols()}
-  for train, test in xval(tbl.rows):
-    tabs = {}
-    for row in train:                             # train: one Tab per class
-      c = row[tbl.klass]; tabs.setdefault(c, clone(tbl)); addRow(tabs[c], row)
+def nb(tbl, train, test):
+  "Yield (smoothing, want, posteriors) per test row, m-estimate x Laplace."
+  tabs = {}
+  for row in train:                               # train: one Tab per class
+    c = row[tbl.klass]; tabs.setdefault(c, clone(tbl)); addRow(tabs[c], row)
+  for row in test:
     for m in SMOOTH:
       for k in SMOOTH:
-        d["m=%d:k=%d"%(m,k)].append(
-          [(row[tbl.klass], posts(tabs, row, len(train), m, k))
-           for row in test])                      # (want, posteriors) per row
-  return d
+        yield f"m={m}:k={k}", row[tbl.klass], posts(tabs, row, len(train), m, k)
 
 def main() -> None:
   cli(the)
@@ -68,6 +58,6 @@ def main() -> None:
   print(conf(the, "nb.py", eval=metric, xval="5x5"))
   print("# %s (weighted, 0..100), bigger=better; ! marks rank-1; last col = data set\n"
         % metric)
-  learn(cols(), learner, fs, err, name, reverse=big)
+  learn(fs, nb, err, name, reverse=big)
 
 if __name__ == "__main__": main()

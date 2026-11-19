@@ -8,10 +8,12 @@ three must agree before two result sets are called equal.
 where the split explains the most variance, stop when `same`.
 `confuse` scores a classifier from a list of (got, want) pairs.
 """
-import random
+import random, multiprocessing as mp
 from bisect import bisect_left, bisect_right
 from .lib import o, isa, TINY
-from .data import Sym, div
+from .about import the
+from .lib import csv
+from .data import Sym, div, TAB
 
 def xpect(a, b) -> float:
   "Size-weighted mean spread of two summaries (lower = better)"
@@ -40,9 +42,9 @@ def cohen(xs: list, ys: list) -> float:
   sd = (((n-1)*var(xs) + (m-1)*var(ys))/(n+m-2+TINY))**.5
   return abs(mu(xs) - mu(ys)) / (sd + TINY)
 
-def same(xs: list, ys: list, coh=0.35, cliff=0.195, k=1.36) -> bool:
-  "Indistinguishable: small Cohen effect AND Cliff's delta AND KS."
-  return (cohen( xs, ys) <= coh
+def same(xs: list, ys: list, cliff=0.195, k=1.36) -> bool:
+  "Indistinguishable: small Cohen effect (--eps) AND Cliff's delta AND KS."
+  return (cohen( xs, ys) <= the.eps
       and cliffs(xs, ys) <= cliff
       and ks(    xs, ys) <= k)
 
@@ -57,33 +59,38 @@ def rank(d: dict, reverse=False) -> dict:
     out[n] = r
   return out
 
-def report(cols: list, src, reverse=False, decs=0, show=True) -> dict:
+def report(src, reverse=False, decs=0, show=True) -> dict:
   """Matrix of ranked results, one row per data set, streamed.
 
-  cols: treatment names (no spaces, e.g. "mean:k=1").
-  src : iterable of (dataset_name, {treatment: [scores]}).
-  Per data set: rank the treatments (reverse=True if bigger is better),
-  print one row -- each cell is the median score (to `decs` decimals,
-  default 0), right-justified under its column name so columns line up
-  as rows stream; a "!" follows any rank-1 (winning) cell, else ",". The
-  data-set name is the last column. A final row gives each treatment's
-  WIN% -- the integer percent of data sets it topped. Rows print as they
-  complete, so a crash leaves a partial table. Returns the win counts.
+  src: iterable of (about, {treatment: [scores]}); columns are the
+  first data set's treatments (names with no spaces), in order.
+  about: the data set's name, or a dict of extra columns (e.g.
+  {"#x": 4, "dataset": "auto93"}). Per data set: rank the
+  treatments (reverse=True if bigger is better), print one row -- each cell is the median score (to
+  `decs` decimals), right-justified under its column name; a "!"
+  follows any rank-1 (winning) cell, else ",". The about columns
+  come last. A final row gives each treatment's WIN% -- the
+  integer percent of data sets it topped. Rows print as they
+  complete, so a crash leaves a partial table. Returns win counts.
   """
   mid = lambda l: sorted(l)[len(l)//2]
-  w   = [len(c) for c in cols]                      # widths from the header
-  win = {t: 0 for t in cols}
-  n   = 0
-  if show: print(", ".join(cols) + ", dataset")
+  cols, win, n = None, {}, 0
   for ds, d in src:
+    if not isa(ds, dict): ds = {"dataset": ds}
+    if cols is None:                               # header from 1st set
+      cols = list(d); w = [len(c) for c in cols]
+      win  = {t: 0 for t in cols}
+      if show: print(", ".join(cols + list(ds)))
     n += 1
     rk, row = rank(d, reverse), ""
     for i, t in enumerate(cols):
       cell = "%.*f" % (decs, mid(d[t]))
       row += "%*s%s" % (w[i], cell, "! " if rk[t] == 1 else ", ")
       if rk[t] == 1: win[t] += 1
-    if show: print(row + str(ds), flush=True)       # dataset = last column
-  if show:
+    *pre, last = ds.items()                        # last = unpadded
+    row += "".join("%*s, " % (len(k), v) for k, v in pre)
+    if show: print(row + str(last[1]), flush=True)
+  if show and cols:
     pct = "".join("%*d, " % (w[i], round(100*win[t]/max(n,1)))
                   for i, t in enumerate(cols))
     print(pct + "WIN%")
@@ -104,25 +111,43 @@ def xval(rows: list, m=5, n=5):
       train = [r for i, r in enumerate(rows) if i % n != k]
       yield train, test
 
-def relerr(pairs: list) -> float:
-  "100 * mean|want-got| / mean want, over (want,got) pairs. Lower is better."
-  n   = len(pairs) + TINY
-  gap = sum(abs(w-g) for w,g in pairs) / n
-  mu  = sum(w for w,_ in pairs) / n
-  return 100 * gap / (mu + TINY)
+def rae(pairs: list) -> float:
+  """Relative absolute error: 100 * sum|want-got| / sum|want-mean|
+  over (want,got) pairs. 100 = no better than always guessing the
+  mean; lower is better. The shift and scale of want cancel
+  out, so data sets compare directly."""
+  mu = sum(w for w,_ in pairs) / (len(pairs) + TINY)
+  return 100 * (sum(abs(w-g) for w,g in pairs)
+                / (sum(abs(w-mu) for w,_ in pairs) + TINY))
 
-def learn(cols: list, learner, files, eval, nameof=str,
-          reverse=False, decs=0) -> dict:
-  """One call for every learner. `learner(file)` returns
-  {treatment: [fold, ...]} where a fold is a list of (want, got)
-  pairs; `eval(pairs)` scores one fold (e.g. relerr, accuracy). Each
-  fold becomes one number, so treatments get a distribution to rank.
-  Streams a ranked row per data set (see `report`)."""
+_job = None                    # learn's per-file closure, for workers
+def _run(f): return _job(f)    # top-level, so Pool can pickle it
+
+def learn(files, learner, eval, nameof=str, reverse=False,
+          decs=0, m=5, n=5, about=None) -> dict:
+  """One call for every learner. Per file: seed, load, m*n xval.
+  Per fold, `learner(tbl, train, test)` yields (treatment, want,
+  got) guesses; `eval(pairs)` scores each treatment's (want, got)
+  pairs (e.g. rae, aucs), so each treatment gets one number per
+  fold, i.e. a distribution to rank. `about(tbl)` may add columns
+  (a dict) before the data-set name. Files run on --jobs cpus (0:
+  all; forked, so each worker sees `score`); each row prints as
+  soon as its file is done, so in finish order (see `report`)."""
+  global _job
   def score(f):
-    return {t: [eval(fold) for fold in folds]
-            for t, folds in learner(f).items()}
-  return report(cols, ((nameof(f), score(f)) for f in files),
-                reverse=reverse, decs=decs)
+    random.seed(the.seed)                        # reproducible per file
+    tbl, out = TAB(csv(f)), {}
+    for train, test in xval(tbl.rows, m, n):
+      fold = {}
+      for t, want, got in learner(tbl, train, test):
+        fold.setdefault(t, []).append((want, got))
+      for t, pairs in fold.items():
+        out.setdefault(t, []).append(eval(pairs))
+    return (about(tbl) if about else {}) | {"dataset": nameof(f)}, out
+  _job = score
+  if the.jobs == 1: return report(map(score, files), reverse, decs)
+  with mp.get_context("fork").Pool(the.jobs or None) as p:
+    return report(p.imap_unordered(_run, files), reverse, decs)
 
 def confuse(pairs: list) -> o:
   "Score (want, got) pairs; per-class counts and overall accuracy"
@@ -138,26 +163,30 @@ def confuse(pairs: list) -> o:
                  recall = 100*tp/(tp+fn+TINY)))
   return o(acc=100*sum(w==g for w,g in pairs)/(N+TINY), classes=per)
 
-def auc(pairs: list) -> float:
-  """Standard ROC AUC (Hanley & McNeil), for classifiers that emit
-  scores; optimizers want disty (distance to heaven) instead.
-  Prevalence-weighted one-vs-rest, 0..100, over (want, posts)
-  pairs where posts = {class: probability}. Per class: AUC = chance a
-  random in-class row scores above a random out-of-class one (Mann-
-  Whitney U, ties averaged); weight each by its in-class count."""
+def auc(xs: list) -> float:
+  """ROC AUC (Hanley & McNeil) for one class, 0..1, over (score,
+  in_class) pairs: the chance a random in-class row scores above a
+  random out-of-class one (Mann-Whitney U, ties averaged)."""
+  xs   = sorted(xs)                             # by score
+  npos = sum(y for _,y in xs); nneg = len(xs) - npos
+  if not npos or not nneg: return None          # undefined for this class
+  rsum, i = 0, 0
+  while i < len(xs):                            # average ranks within ties
+    j = i
+    while j < len(xs) and xs[j][0] == xs[i][0]: j += 1
+    rsum += (i + 1 + j) / 2 * sum(y for _,y in xs[i:j])
+    i = j
+  return (rsum - npos*(npos+1)/2) / (npos*nneg) # U / (npos*nneg)
+
+def aucs(pairs: list) -> float:
+  """Expected AUC over all classes, 0..100: one-vs-rest auc per
+  class, times that class's share of the rows. For classifiers
+  that emit scores; pairs = (want, posts), posts = {class: prob}."""
   classes = sorted({w for w,_ in pairs} | {c for _,p in pairs for c in p})
   wsum = tot = 0
   for c in classes:
-    xs = sorted((p.get(c, 0.0), w == c) for w, p in pairs)   # by score
-    npos = sum(y for _,y in xs); nneg = len(xs) - npos
-    if not npos or not nneg: continue          # AUC undefined for this class
-    rsum, i = 0, 0
-    while i < len(xs):                          # average ranks within ties
-      j = i
-      while j < len(xs) and xs[j][0] == xs[i][0]: j += 1
-      rank = (i + 1 + j) / 2                    # 1-based mean rank of the tie
-      rsum += rank * sum(y for _,y in xs[i:j])
-      i = j
-    a = (rsum - npos*(npos+1)/2) / (npos*nneg)  # U / (npos*nneg)
-    wsum += npos * a; tot += npos
+    a = auc([(p.get(c, 0.0), w == c) for w, p in pairs])
+    if a is None: continue
+    n = sum(w == c for w,_ in pairs)
+    wsum += n * a; tot += n
   return 100 * wsum / (tot + TINY)

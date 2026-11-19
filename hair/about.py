@@ -12,7 +12,7 @@ OPTIONS:
   --file   file(s)|all|fast = fast
   --seed   random seed     = 1234567891
   --k      most neighbours = 5
-  --eval   score metric    = relerr
+  --eval   score metric    = rae
   --test   rows to guess   = 100
   --pool   known rows, cap = 1000
   --runs   repeats         = 5
@@ -22,6 +22,10 @@ OPTIONS:
   --cool   cooling rate    = 0.9
   --leaf   tree min leaf   = 3
   --maxd   tree max depth  = 8
+  --eps    cohen: small d  = 0.35
+  --jobs   cpus, 0 for all = 0
 
 TESTS: run any by name, e.g. "python3 hair.py tab tree".
 """
+from .lib import settings
+the = settings(__doc__)   # one config, shared by all parts
