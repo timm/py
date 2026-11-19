@@ -16,9 +16,12 @@ nearly no effort.
 That is the hair heuristic: **H**alf **A**lready **I**mplemented
 (**R**eally).
 
-Small code pays twice. Easy to change, easy to teach, easy to audit
--- few imports, little attack surface -- and with nothing to
-install, it still runs in ten years.
+Small code pays you back. It is quicker to change when the question
+changes, quicker to teach to someone new, and short enough to read
+end to end before you trust it. It imports almost nothing, so there
+is little to attack and nothing to install -- which is why code like
+this still runs long after the frameworks it never used have come
+and gone.
 
 The `hair/` package is the library, split by job: `lib` (csv,
 flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`

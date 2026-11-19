@@ -110,7 +110,6 @@ INDEX = { $(call mark,index.top); \
   echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/eg/*.py); \
   echo "</ul><b>Lines of code</b><pre style=\"font-size:9pt\">"; \
   (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py eg/*.py); echo "</pre>"; \
-  $(call mark,decay.svg); \
   $(call mark,index.bot); }
 
 publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
@@ -167,22 +166,22 @@ $(page): $(it) $(Tmp)/hi.py
 
 # ──────────────────────────────────────────────────────────────
 
-#<decay.svg>
-# <svg width="260" height="118" role="img" aria-label="new lines of code per new task, falling">
-# <text x="2" y="12" font-size="9" fill="#555">new lines</text>
-# <line x1="30" y1="10" x2="30" y2="86" stroke="#bbb"/>
-# <line x1="30" y1="86" x2="254" y2="86" stroke="#bbb"/>
-# <polyline fill="none" stroke="#0969da" stroke-width="2"
-#  points="34,10 58,48 82,59 106,64 130,67 154,69 178,71 202,72 226,72 250,73"/>
-# <text x="30" y="99" font-size="9" fill="#555">task 1</text>
-# <text x="222" y="99" font-size="9" fill="#555">task 10</text>
-# <text x="30" y="113" font-size="9" fill="#777"><i>a claim, not a measurement</i></text>
-# </svg>
 
 # ──────────────────────────────────────────────────────────────
 
 #<index.why>
-# <center><table><tr><td style="max-width:30em;font-size:11pt">
+# <center><div style="max-width:34em;text-align:left;font-size:11pt">
+# <svg width="205" height="126" style="float:right;margin:0 0 .6em 1.2em"
+#      role="img" aria-label="new lines of code per new task, falling">
+# <text x="0" y="12" font-size="11" fill="#555">new lines</text>
+# <line x1="26" y1="14" x2="26" y2="88" stroke="#bbb"/>
+# <line x1="26" y1="88" x2="200" y2="88" stroke="#bbb"/>
+# <polyline fill="none" stroke="#0969da" stroke-width="2"
+#  points="28,16 46,52 64,63 83,68 101,71 119,73 137,74 155,75 174,76 192,77"/>
+# <text x="20" y="104" font-size="11" fill="#555">task 1</text>
+# <text x="170" y="104" font-size="11" fill="#555">task 10</text>
+# <text x="26" y="121" font-size="10" fill="#888" font-style="italic">a claim, not a measurement</text>
+# </svg>
 # <p>Nobody walks in asking for classification, regression, or
 # optimization. They ask "which of these is risky?", "what should
 # we try next?", "is this one weird?" -- and leave you to turn
@@ -194,11 +193,15 @@ $(page): $(it) $(Tmp)/hi.py
 # takes nearly no effort.
 # <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready
 # <b>I</b>mplemented (<b>R</b>eally).
-# <p>Small code pays twice. Easy to change, easy to teach, easy to
-# audit -- few imports, little attack surface -- and with nothing
-# to install, it still runs in ten years.
-# </td></tr></table></center>
-# <p>
+# <p>Small code pays you back. It is quicker to change when the
+# question changes, quicker to teach to someone new, and short
+# enough to read end to end before you trust it. It imports almost
+# nothing, so there is little to attack and nothing to install --
+# which is why code like this still runs long after the frameworks
+# it never used have come and gone.
+# </div></center>
+# <p style="clear:both">
+
 
 # ──────────────────────────────────────────────────────────────
 
