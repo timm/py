@@ -12,7 +12,7 @@ import random, multiprocessing as mp
 from bisect import bisect_left, bisect_right
 from .lib import o, isa, TINY
 from .about import the
-from .lib import csv
+from .lib import csv, name
 from .data import Sym, div, TAB
 
 def xpect(a, b) -> float:
@@ -59,41 +59,31 @@ def rank(d: dict, reverse=False) -> dict:
     out[n] = r
   return out
 
-def report(src, reverse=False, decs=0, show=True) -> dict:
+def report(src, reverse=False, decs=0) -> dict:
   """Matrix of ranked results, one row per data set, streamed.
 
-  src: iterable of (about, {treatment: [scores]}); columns are the
-  first data set's treatments (names with no spaces), in order.
-  about: the data set's name, or a dict of extra columns (e.g.
-  {"#x": 4, "dataset": "auto93"}). Per data set: rank the
-  treatments (reverse=True if bigger is better), print one row -- each cell is the median score (to
-  `decs` decimals), right-justified under its column name; a "!"
-  follows any rank-1 (winning) cell, else ",". The about columns
-  come last. A final row gives each treatment's WIN% -- the
-  integer percent of data sets it topped. Rows print as they
-  complete, so a crash leaves a partial table. Returns win counts.
-  """
-  mid = lambda l: sorted(l)[len(l)//2]
-  cols, win, n = None, {}, 0
-  for ds, d in src:
-    if not isa(ds, dict): ds = {"dataset": ds}
-    if cols is None:                               # header from 1st set
-      cols = list(d); w = [len(c) for c in cols]
-      win  = {t: 0 for t in cols}
-      if show: print(", ".join(cols + list(ds)))
-    n += 1
-    rk, row = rank(d, reverse), ""
-    for i, t in enumerate(cols):
-      cell = "%.*f" % (decs, mid(d[t]))
-      row += "%*s%s" % (w[i], cell, "! " if rk[t] == 1 else ", ")
-      if rk[t] == 1: win[t] += 1
-    *pre, last = ds.items()                        # last = unpadded
-    row += "".join("%*s, " % (len(k), v) for k, v in pre)
-    if show: print(row + str(last[1]), flush=True)
-  if show and cols:
-    pct = "".join("%*d, " % (w[i], round(100*win[t]/max(n,1)))
-                  for i, t in enumerate(cols))
-    print(pct + "WIN%")
+  src: iterable of (about, {treatment: [scores]}); about is a dict
+  of columns shown last (e.g. {"#x": 4, "dataset": "auto93"}).
+  Every data set has the same treatments (names, no spaces). Per
+  data set: rank the treatments (reverse=True if bigger is better),
+  print one row -- each cell is the median score (to `decs`
+  decimals), right-justified under its column name; "!" follows a
+  rank-1 (winning) cell, else ",". A final row gives each
+  treatment's WIN% -- the percent of data sets it topped. Rows
+  print as they complete, so a crash leaves a partial table.
+  Returns win counts."""
+  win, n = {}, 0
+  for n, (ds, d) in enumerate(src, 1):
+    if n == 1: print(", ".join([*d, *ds]))        # header from 1st set
+    rk = rank(d, reverse)
+    for t in d: win[t] = win.get(t, 0) + (rk[t] == 1)
+    mid = lambda t: sorted(d[t])[len(d[t])//2]
+    print("".join("%*.*f%s" % (len(t), decs, mid(t),
+                               "! " if rk[t] == 1 else ", ") for t in d)
+          + ", ".join("%*s" % (len(k), v) for k, v in ds.items()),
+          flush=True)
+  print("".join("%*d, " % (len(t), round(100*w/max(n, 1)))
+                for t, w in win.items()) + "WIN%")
   return win
 
 def split(rows: list, n1: int, n2: int) -> tuple:
@@ -120,32 +110,28 @@ def rae(pairs: list) -> float:
   return 100 * (sum(abs(w-g) for w,g in pairs)
                 / (sum(abs(w-mu) for w,_ in pairs) + TINY))
 
-_job = None                    # learn's per-file closure, for workers
-def _run(f): return _job(f)    # top-level, so Pool can pickle it
+def _run(f): return _job(f)    # Pool pickles by name; closures have none
 
-def learn(files, learner, eval, nameof=str, reverse=False,
-          decs=0, m=5, n=5, about=None) -> dict:
+def learn(files, learner, eval, reverse=False, decs=0, m=5, n=5):
   """One call for every learner. Per file: seed, load, m*n xval.
   Per fold, `learner(tbl, train, test)` yields (treatment, want,
   got) guesses; `eval(pairs)` scores each treatment's (want, got)
   pairs (e.g. rae, aucs), so each treatment gets one number per
-  fold, i.e. a distribution to rank. `about(tbl)` may add columns
-  (a dict) before the data-set name. Files run on --jobs cpus (0:
+  fold, i.e. a distribution to rank. Files run on --jobs cpus (0:
   all; forked, so each worker sees `score`); each row prints as
   soon as its file is done, so in finish order (see `report`)."""
   global _job
   def score(f):
     random.seed(the.seed)                        # reproducible per file
-    tbl, out = TAB(csv(f)), {}
-    for train, test in xval(tbl.rows, m, n):
-      fold = {}
+    tbl, pairs, out = TAB(csv(f)), {}, {}
+    for i, (train, test) in enumerate(xval(tbl.rows, m, n)):
       for t, want, got in learner(tbl, train, test):
-        fold.setdefault(t, []).append((want, got))
-      for t, pairs in fold.items():
-        out.setdefault(t, []).append(eval(pairs))
-    return (about(tbl) if about else {}) | {"dataset": nameof(f)}, out
+        pairs.setdefault((t, i), []).append((want, got))
+    for (t, _), ps in pairs.items():                # 1 score per fold
+      out.setdefault(t, []).append(eval(ps))
+    return {"#x": len(tbl.x), "#y": len(tbl.y), "#rows": len(tbl.rows),
+            "dataset": name(f)}, out
   _job = score
-  if the.jobs == 1: return report(map(score, files), reverse, decs)
   with mp.get_context("fork").Pool(the.jobs or None) as p:
     return report(p.imap_unordered(_run, files), reverse, decs)
 

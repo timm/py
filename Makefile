@@ -66,7 +66,7 @@ edit: $(Tmp)/init.lua ## edit $(it) in nvim (use: make it=file)
 serve: ## serve docs/ at http://localhost:8000
 	cd $(Root)/docs && python3 -m http.server
 
-sh: $(Tmp)/bashrc ## bash with our prompt and aliases
+sh: $(Tmp)/bashrc $(Tmp)/init.lua ## bash with our prompt and aliases
 	bash --rcfile $(Tmp)/bashrc -i
 
 $(Tmp):
@@ -285,6 +285,7 @@ $(page): $(it) $(Tmp)/hi.py
 # edit() { make -C {Here} edit it="$1"; }
 # hi()   { make -C {Here} hi it="$1" cols="${2:-3}"; }
 # export HISTCONTROL=ignoredups
+# export COL='grep --line-buffered --color=always -E [0-9.]*!|$' # |$COL
 # shopt -s autocd 2>/dev/null              # bare dir name = cd
 # # prompt: parent/dir (branch*) -- star = dirty working tree
 # _p() {

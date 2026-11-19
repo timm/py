@@ -20,10 +20,6 @@ def files() -> list:
   names = named.split() if named else the.file.split(",")
   return ["%s/%s.csv" % (the.dir, name) for name in names]
 
-def name(file: str) -> str:
-  "a/b/auto93.csv -> auto93"
-  return file.split("/")[-1].removesuffix(".csv")
-
 #-- tests -------------------------------------------------------
 def test_the():
   "Show the settings"

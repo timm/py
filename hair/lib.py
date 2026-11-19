@@ -34,6 +34,10 @@ def conf(the: o, prog="", **extra) -> str:
   d = {**vars(the), **extra}
   return prog + "".join(" :%s %s" % kv for kv in d.items())
 
+def name(file: str) -> str:
+  "a/b/auto93.csv -> auto93"
+  return file.split("/")[-1].removesuffix(".csv")
+
 def csv(file: str) -> Iterator[list]:
   "Yield typed rows; a leading $MOOT expands to the moot repo"
   file = os.path.expanduser(file.replace("$MOOT", MOOT, 1))

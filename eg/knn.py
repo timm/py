@@ -4,7 +4,7 @@ knn: guess a row's disty from its k nearest rows.
 Table 1: kernels flat (all neighbours count the same) and tri
 (nearer counts more: weight 1 - d/dmax) at k=1..5, plus mu
 (always guess the train mean). Table 2: flat kernel at k=4,
-trained on 32..512 rows, or all, on BIGS --dir csvs with >= BIG
+trained on 32..512 rows, or all, on BIGS --dir csvs with ROWS
 rows. Both: 5 repeats of a 2-way cross-val, scored by RAE, on at
 most --test test rows and --pool train rows.
 (c) 2026, Tim Menzies <timm@ieee.org>, MIT license
@@ -18,7 +18,7 @@ from hair import *
 
 BEST_K = 4                        # table 1's pick, used by table 2
 SIZES  = [32, 64, 128, 256, 512]  # train sizes for table 2
-BIG    = 1000                     # table 2: sets with >= BIG rows
+ROWS   = range(1000, 10000)       # table 2: sets with these #rows
 BIGS   = 20                       # table 2: how many such sets
 
 #-- kernels: guess row's disty from rows (nearest first) ------------
@@ -37,10 +37,10 @@ def T(name, f=None, k=None, n=None) -> o:
   return o(name=name, f=f or flat, k=k, n=n)   # None = all
 
 def big() -> list:
-  "BIGS random (by --seed) csvs under --dir with at least BIG rows."
+  "BIGS random (by --seed) csvs under --dir with ROWS rows."
   d  = os.path.expanduser(the.dir.replace("$MOOT", MOOT, 1))
   fs = sorted(f for f in glob(f"{d}/**/*.csv", recursive=True)
-              if sum(1 for _ in open(f)) > BIG)
+              if sum(1 for _ in open(f)) - 1 in ROWS)
   return random.Random(the.seed).sample(fs, min(BIGS, len(fs)))
 
 def knn(ts: list):
@@ -61,19 +61,17 @@ def main() -> None:
   print("# rae: 100 = no better than guessing the mean; lower=better\n"
         "# ! marks a rank-1 (best) cell; last col = data set")
   for x in [o(title = "kernels x k", 
-              files = files(), about = None,
+              files = files(),
               ts    = [T(f"{f.__name__}:k={k}", f, k)
                        for f in (flat, tri) for k in range(1, the.k+1)]
                       + [T("mu")]
               ),           # mu: flat over all train
             o(title = f"flat:k={BEST_K} x train size (all = pool)",
               files = big(),
-              about = lambda t: {"#x": len(t.x), "#y": len(t.y),
-                                 "#rows": len(t.rows)},
               ts    = [T(f"n={n or 'all'}", k=BEST_K, n=n)
                        for n in SIZES + [None]]
               )]:
     print(f"\n# {x.title}\n")
-    learn(x.files, knn(x.ts), rae, name, n=2, about=x.about)
+    learn(x.files, knn(x.ts), rae, n=2)
 
 if __name__ == "__main__": main()

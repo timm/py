@@ -58,6 +58,6 @@ def main() -> None:
   print(conf(the, "nb.py", eval=metric, xval="5x5"))
   print("# %s (weighted, 0..100), bigger=better; ! marks rank-1; last col = data set\n"
         % metric)
-  learn(fs, nb, err, name, reverse=big)
+  learn(fs, nb, err, reverse=big)
 
 if __name__ == "__main__": main()
