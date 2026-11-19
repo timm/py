@@ -195,10 +195,10 @@ $(page): $(it) $(Tmp)/hi.py
 # <b>I</b>mplemented (<b>R</b>eally).
 # <p>Small code pays you back. It is quicker to change when the
 # question changes, quicker to teach to someone new, and short
-# enough to read end to end before you trust it. It imports almost
-# nothing, so there is little to attack and nothing to install --
-# which is why code like this still runs long after the frameworks
-# it never used have come and gone.
+# enough to read end to end before you trust it. This code imports
+# little, so there is not much to attack and nearly nothing to
+# install -- which is why it may still run long after the
+# frameworks it never used have come and gone.
 # </div></center>
 # <p style="clear:both">
 
