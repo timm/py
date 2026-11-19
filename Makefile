@@ -171,17 +171,15 @@ $(page): $(it) $(Tmp)/hi.py
 
 #<index.why>
 # <center><div style="max-width:34em;text-align:left;font-size:11pt">
-# <p>Ask an LLM for an AI workbench and you often get a code base
+# <p>Ask an LLM for an AI workbench and you can get a code base
 # too big to understand, to trust, or to change safely -- even with
 # an LLM helping. Each change calls for more code, which calls for
 # more changes. That recursive explosion has a name: AI slop.
-# <p>Domain engineering suggests a way out. Study a family of
-# systems, build what they share, then let each new member be
-# a small delta. So what is the family here?
-# <p>It is the work people actually bring you. Nobody walks in
-# asking for classification, regression, or optimization. They ask "which of these is risky?", "what should
-# we try next?", "is this one weird?" -- and leave you to turn
-# that into code.
+# <p>So how do we avoid needlessly big and messy code bases? Why
+# not apply domain engineering? See, nobody walks in asking for
+# classification, regression, or optimization. They ask "which of
+# these is risky?", "what should we try next?", "is this one
+# weird?" -- and leave you to turn that into code.
 # <svg width="205" height="130" style="float:right;margin:.8em 0 .6em 1.2em"
 #      role="img" aria-label="new lines of code per new task, falling">
 # <text x="0" y="20" font-size="11" fill="#555">new lines</text>

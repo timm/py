@@ -2,19 +2,16 @@
 
 # hair : hands-on AI recipes
 
-Ask an LLM for an AI workbench and you often get a code base too
-big to understand, to trust, or to change safely -- even with an
-LLM helping. Each change calls for more code, which calls for more
+Ask an LLM for an AI workbench and you can get a code base too big
+to understand, to trust, or to change safely -- even with an LLM
+helping. Each change calls for more code, which calls for more
 changes. That recursive explosion has a name: AI slop.
 
-Domain engineering suggests a way out. Study a family of systems,
-build what they share, then let each new member be a small
-delta. So what is the family here?
-
-It is the work people actually bring you. Nobody walks in asking
-for classification, regression, or optimization. They ask "which of these is risky?", "what should we
-try next?", "is this one weird?" -- and leave you to turn that into
-code.
+So how do we avoid needlessly big and messy code bases? Why not
+apply domain engineering? See, nobody walks in asking for
+classification, regression, or optimization. They ask "which of
+these is risky?", "what should we try next?", "is this one weird?"
+-- and leave you to turn that into code.
 
 The good news: those jobs share parts (distances between rows;
 summaries of columns; splits; a little statistics, etc). Build those
