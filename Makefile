@@ -105,10 +105,12 @@ links = for f in $(1); do [ -s "$$f" ] || continue; \
 # single external redirect captures them. Plain `=` (not `define`) so
 # there is no trailing newline to break `$(INDEX) > file`.
 INDEX = { $(call mark,index.top); \
+  $(call mark,index.why); \
   echo "<b>Sources</b><ul>";       $(call links,$(Root)/hair/*.py Makefile); \
   echo "</ul><b>Examples</b><ul>"; $(call links,$(Root)/eg/*.py); \
   echo "</ul><b>Lines of code</b><pre style=\"font-size:9pt\">"; \
   (cd $(Root) && python3 $(Tmp)/loc.py hair/*.py eg/*.py); echo "</pre>"; \
+  $(call mark,decay.svg); \
   $(call mark,index.bot); }
 
 publish: $(Tmp)/hi.py $(Tmp)/loc.py ## render all sources to docs/, push to gh-pages
@@ -162,6 +164,41 @@ $(page): $(it) $(Tmp)/hi.py
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
+
+# ──────────────────────────────────────────────────────────────
+
+#<decay.svg>
+# <svg width="260" height="118" role="img" aria-label="new lines of code per new task, falling">
+# <text x="2" y="12" font-size="9" fill="#555">new lines</text>
+# <line x1="30" y1="10" x2="30" y2="86" stroke="#bbb"/>
+# <line x1="30" y1="86" x2="254" y2="86" stroke="#bbb"/>
+# <polyline fill="none" stroke="#0969da" stroke-width="2"
+#  points="34,10 58,48 82,59 106,64 130,67 154,69 178,71 202,72 226,72 250,73"/>
+# <text x="30" y="99" font-size="9" fill="#555">task 1</text>
+# <text x="222" y="99" font-size="9" fill="#555">task 10</text>
+# <text x="30" y="113" font-size="9" fill="#777"><i>a claim, not a measurement</i></text>
+# </svg>
+
+# ──────────────────────────────────────────────────────────────
+
+#<index.why>
+# <center><table><tr><td style="max-width:30em;font-size:11pt">
+# <p>Nobody walks in asking for classification, regression, or
+# optimization. They ask "which of these is risky?", "what should
+# we try next?", "is this one weird?" -- and leave you to turn
+# that into code.
+# <p>The good news: those jobs share parts. Distances between rows.
+# Summaries of columns. Splits. A little statistics. Build those
+# once and the next task arrives half-written -- then quickly tune
+# tools that do what you want. Implement many tasks, and task+1
+# takes nearly no effort.
+# <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready
+# <b>I</b>mplemented (<b>R</b>eally).
+# <p>Small code pays twice. Easy to change, easy to teach, easy to
+# audit -- few imports, little attack surface -- and with nothing
+# to install, it still runs in ten years.
+# </td></tr></table></center>
+# <p>
 
 # ──────────────────────────────────────────────────────────────
 

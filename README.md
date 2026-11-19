@@ -2,6 +2,24 @@
 
 # hair : hands-on AI recipes
 
+Nobody walks in asking for classification, regression, or
+optimization. They ask "which of these is risky?", "what should we
+try next?", "is this one weird?" -- and leave you to turn that into
+code.
+
+The good news: those jobs share parts. Distances between rows.
+Summaries of columns. Splits. A little statistics. Build those once
+and the next task arrives half-written -- then quickly tune tools
+that do what you want. Implement many tasks, and task+1 takes
+nearly no effort.
+
+That is the hair heuristic: **H**alf **A**lready **I**mplemented
+(**R**eally).
+
+Small code pays twice. Easy to change, easy to teach, easy to audit
+-- few imports, little attack surface -- and with nothing to
+install, it still runs in ten years.
+
 The `hair/` package is the library, split by job: `lib` (csv,
 flags, printing), `data` (tables, `Num`/`Sym` summaries), `dist`
 (distances, distance-to-heaven), `tree` (splits, trees), `stats`
