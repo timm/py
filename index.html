@@ -1,0 +1,90 @@
+<meta charset=utf-8><title>timm / hair</title>
+<body style="margin:0;padding:2em 0;">
+<center><h1 style="font-weight:normal;font-family:'Times New Roman',Times,serif">hair : hands-on AI recipes</h1></center>
+<p>
+<center><table cellspacing=0 cellpadding=0 border=0>
+<tr><td align="left"><span style="font-size:12pt">
+<center><div style="max-width:600px;text-align:left;font-size:11pt">
+<center><img src="img/hair.png" width=230 alt="hair"></center>
+<p>Do stakeholdes want  classification, regression, or
+optimization? In my experience, they ask all sorts of quirky questions
+like "which of these is risky?", "what should
+we try next?", "is this one weird?. Then they leave you to turn that
+into code.
+<p>Here's the good news: all thise things
+they ask you to do often share parts (distances between rows;
+summaries of columns; splits; a little statistics, etc). And 
+once they build
+those parts once and the next task arrives half-written. >
+<svg width="205" height="130" style="float:right;margin:.8em 0 .6em 1.2em"
+     role="img" aria-label="new lines of code per new task, falling">
+<text x="0" y="20" font-size="11" fill="#555">new lines</text>
+<line x1="26" y1="22" x2="26" y2="96" stroke="#bbb"/>
+<line x1="26" y1="96" x2="200" y2="96" stroke="#bbb"/>
+<polyline fill="none" stroke="#0969da" stroke-width="2"
+ points="28,24 46,60 64,71 83,76 101,79 119,81 137,82 155,83 174,84 192,85"/>
+<text x="28" y="110" font-size="9" fill="#555" text-anchor="middle">1</text>
+<text x="46" y="110" font-size="9" fill="#555" text-anchor="middle">2</text>
+<text x="64" y="110" font-size="9" fill="#555" text-anchor="middle">3</text>
+<text x="83" y="110" font-size="9" fill="#555" text-anchor="middle">4</text>
+<text x="101" y="110" font-size="9" fill="#555" text-anchor="middle">5</text>
+<text x="119" y="110" font-size="9" fill="#555" text-anchor="middle">6</text>
+<text x="137" y="110" font-size="9" fill="#555" text-anchor="middle">7</text>
+<text x="155" y="110" font-size="9" fill="#555" text-anchor="middle">8</text>
+<text x="174" y="110" font-size="9" fill="#555" text-anchor="middle">9</text>
+<text x="192" y="110" font-size="9" fill="#555" text-anchor="middle">10</text>
+<text x="110" y="126" font-size="11" fill="#555" text-anchor="middle">task</text>
+</svg>
+<p>I call this
+the 
+<b>hair</b> heuristic: <b>H</b>alf <b>A</b>lready <b>I</b>mplemented
+(making <b>R</b>euse easy); i.e.  after many tasks, task+1 takes nearly
+no effort.
+<p>Now compare this to asking an LLM for an AI workbench: you get code too big
+to understand, trust, or change safely, where each change calls
+for more code, which calls for more changes. That recursive
+explosion is AI slop. <p>Small code is an antidote  to AI slop: easy to
+read, trust, change and teach; little to install or attack; and
+likely to outlive the frameworks it never used.
+</div></center>
+<p style="clear:both">
+<b>Sources</b><ul>
+<li><a href="__init__.py.html">__init__.py</a></li>
+<li><a href="__main__.py.html">__main__.py</a></li>
+<li><a href="about.py.html">about.py</a></li>
+<li><a href="data.py.html">data.py</a></li>
+<li><a href="dist.py.html">dist.py</a></li>
+<li><a href="lib.py.html">lib.py</a></li>
+<li><a href="stats.py.html">stats.py</a></li>
+<li><a href="tree.py.html">tree.py</a></li>
+<li><a href="Makefile.html">Makefile</a></li>
+</ul><b>Examples</b><ul>
+<li><a href="knn.py.html">knn.py</a></li>
+<li><a href="nb.py.html">nb.py</a></li>
+<li><a href="sa.py.html">sa.py</a></li>
+</ul><b>Lines of code</b><pre style="font-size:9pt">
+   64  hair/__init__.py
+    2  hair/__main__.py
+    2  hair/about.py
+   69  hair/data.py
+   25  hair/dist.py
+   44  hair/lib.py
+  152  hair/stats.py
+   64  hair/tree.py
+   56  eg/knn.py
+   48  eg/nb.py
+   60  eg/sa.py
+</pre>
+<b>Problems</b><br>
+&nbsp;&nbsp;<a href="https://github.com/timm/hair/issues">raise an issue</a>
+<p>
+<b>License</b><br>
+&nbsp;&nbsp;<a href="https://github.com/timm/hair/blob/main/LICENSE.md">(c) 2026</a>
+by <a href="https://timm.fyi">timm</a>.  
+Share and enjoy.
+</span></td></tr></table></center>
+<p>
+<center>
+<a href="https://github.com/timm/hair"><img src="img/gh.svg?v=5" alt="github"></a>
+&nbsp;<a href="https://www.csc.ncsu.edu"><img src="img/ncsu.svg?v=5" alt="NC State Computer Science"></a>
+</center>
