@@ -23,8 +23,13 @@ def gap(col, u, v) -> float:
   if v == "?": v = 1 if u < .5 else 0
   return abs(u - v)
 
-def distx(tbl, r1: list, r2: list) -> float:
-  return minkowski(gap(tbl.cols[a], r1[a], r2[a]) for a in tbl.x)
+def distx(tbl, r: list, q) -> float:
+  "r to query q over q's known x values; q = row or {index: value}"
+  if isa(q, list):
+    return minkowski(gap(tbl.cols[a], r[a], q[a])
+                     for a in tbl.x if q[a] != "?")
+  return minkowski(gap(tbl.cols[a], r[a], v)
+                   for a, v in q.items() if v != "?")
 
 def disty(tbl, row: list) -> float:
   return minkowski(abs(norm(tbl.cols[a], row[a]) - tbl.goal[a])

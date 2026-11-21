@@ -72,17 +72,18 @@ def report(src, reverse=False, decs=0) -> dict:
   treatment's WIN% -- the percent of data sets it topped. Rows
   print as they complete, so a crash leaves a partial table.
   Returns win counts."""
-  win, n = {}, 0
+  win, n, W = {}, 0, lambda s: max(len(s), 5)    # W = column width
   for n, (ds, d) in enumerate(src, 1):
-    if n == 1: print(", ".join([*d, *ds]))        # header from 1st set
+    if n == 1: print(", ".join("%*s" % (W(c), c) for c in [*d, *ds]))
     rk = rank(d, reverse)
     for t in d: win[t] = win.get(t, 0) + (rk[t] == 1)
     mid = lambda t: sorted(d[t])[len(d[t])//2]
-    print("".join("%*.*f%s" % (len(t), decs, mid(t),
+    print("".join("%*.*f%s" % (W(t), decs, mid(t),
                                "! " if rk[t] == 1 else ", ") for t in d)
-          + ", ".join("%*s" % (len(k), v) for k, v in ds.items()),
+          + ", ".join(("%-*s" if isa(v, str) else "%*s") % (W(k), v)
+                      for k, v in ds.items()),   # text left, nums right
           flush=True)
-  print("".join("%*d, " % (len(t), round(100*w/max(n, 1)))
+  print("".join("%*d, " % (W(t), round(100*w/max(n, 1)))
                 for t, w in win.items()) + "WIN%")
   return win
 
@@ -93,13 +94,14 @@ def split(rows: list, n1: int, n2: int) -> tuple:
   return rows[:n], rows[n:n+n2]
 
 def xval(rows: list, m=5, n=5):
-  "m*n cross-val: reshuffle, then n folds; yield (train, test) each."
+  """m*n cross-val: reshuffle, then n folds; yield (train, test)
+  each, capped at --pool train and --test test rows."""
   for _ in range(m):
     rows = random.sample(rows, len(rows))        # new order per repeat
     for k in range(n):
       test  = rows[k::n]                          # every n-th row, offset k
       train = [r for i, r in enumerate(rows) if i % n != k]
-      yield train, test
+      yield train[:the.pool], test[:the.test]
 
 def rae(pairs: list) -> float:
   """Relative absolute error: 100 * sum|want-got| / sum|want-mean|

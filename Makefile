@@ -159,7 +159,6 @@ $(page): $(it) $(Tmp)/hi.py
 # <meta charset=utf-8><title>timm / {Name}</title>
 # <body style="margin:0;padding:2em 0;">
 # <center><h1 style="font-weight:normal;font-family:'Times New Roman',Times,serif">hair : hands-on AI recipes</h1></center>
-# <center><img src="img/hair.png" width=270 alt="hair"></center>
 # <p>
 # <center><table cellspacing=0 cellpadding=0 border=0>
 # <tr><td align="left"><span style="font-size:12pt">
@@ -170,16 +169,18 @@ $(page): $(it) $(Tmp)/hi.py
 # ──────────────────────────────────────────────────────────────
 
 #<index.why>
-# <center><div style="max-width:34em;text-align:left;font-size:11pt">
-# <p>Ask an LLM for an AI workbench and you can get a code base
-# too big to understand, to trust, or to change safely -- even with
-# an LLM helping. Each change calls for more code, which calls for
-# more changes. That recursive explosion has a name: AI slop.
-# <p>So how do we avoid needlessly big and messy code bases? Why
-# not apply domain engineering? See, nobody walks in asking for
-# classification, regression, or optimization. They ask "which of
-# these is risky?", "what should we try next?", "is this one
-# weird?" -- and leave you to turn that into code.
+# <center><div style="max-width:600px;text-align:left;font-size:11pt">
+# <center><img src="img/hair.png" width=230 alt="hair"></center>
+# <p>Do stakeholdes want  classification, regression, or
+# optimization? In my experience, they ask all sorts of quirky questions
+# like "which of these is risky?", "what should
+# we try next?", "is this one weird?. Then they leave you to turn that
+# into code.
+# <p>Here's the good news: all thise things
+# they ask you to do often share parts (distances between rows;
+# summaries of columns; splits; a little statistics, etc). And 
+# once they build
+# those parts once and the next task arrives half-written. >
 # <svg width="205" height="130" style="float:right;margin:.8em 0 .6em 1.2em"
 #      role="img" aria-label="new lines of code per new task, falling">
 # <text x="0" y="20" font-size="11" fill="#555">new lines</text>
@@ -199,19 +200,17 @@ $(page): $(it) $(Tmp)/hi.py
 # <text x="192" y="110" font-size="9" fill="#555" text-anchor="middle">10</text>
 # <text x="110" y="126" font-size="11" fill="#555" text-anchor="middle">task</text>
 # </svg>
-# <p>The good news: those jobs share parts (distances between rows;
-# summaries of columns; splits; a little statistics, etc). Build
-# those parts and the next task arrives half-written -- then you
-# quickly tune tools that do what you want. After many tasks,
-# task+1 takes nearly no effort.
-# <p>That is the hair heuristic: <b>H</b>alf <b>A</b>lready
-# <b>I</b>mplemented (making <b>R</b>euse easy).
-# <p>And is this small code base useful? Yes, for many reasons.
-# It is quicker to change when the question changes, quicker to teach to someone new, and short
-# enough to read end to end before you trust it. This code imports
-# little, so there is not much to attack and nearly nothing to
-# install -- which is why it may still run long after the
-# frameworks it never used have come and gone.
+# <p>I call this
+# the 
+# <b>hair</b> heuristic: <b>H</b>alf <b>A</b>lready <b>I</b>mplemented
+# (making <b>R</b>euse easy); i.e.  after many tasks, task+1 takes nearly
+# no effort.
+# <p>Now compare this to asking an LLM for an AI workbench: you get code too big
+# to understand, trust, or change safely, where each change calls
+# for more code, which calls for more changes. That recursive
+# explosion is AI slop. <p>Small code is an antidote  to AI slop: easy to
+# read, trust, change and teach; little to install or attack; and
+# likely to outlive the frameworks it never used.
 # </div></center>
 # <p style="clear:both">
 

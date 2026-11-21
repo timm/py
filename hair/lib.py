@@ -2,7 +2,8 @@
 lib: general stuff; nothing here knows about tables or AI.
 (c) 2026, Tim Menzies <timm@ieee.org>, MIT license
 """
-import os, re, sys
+import os, re, sys, random
+from glob import glob
 from types import SimpleNamespace as o
 from collections.abc import Iterator
 
@@ -38,9 +39,19 @@ def name(file: str) -> str:
   "a/b/auto93.csv -> auto93"
   return file.split("/")[-1].removesuffix(".csv")
 
+def path(file: str) -> str:
+  "Expand a leading $MOOT (the moot repo) and ~"
+  return os.path.expanduser(file.replace("$MOOT", MOOT, 1))
+
+def csvs(dir: str, rows=range(10**9), n=20, seed=1) -> list:
+  "n random (seeded) csvs under dir whose row count is in rows"
+  fs = sorted(f for f in glob(f"{path(dir)}/**/*.csv", recursive=True)
+              if sum(1 for _ in open(f)) - 1 in rows)
+  return random.Random(seed).sample(fs, min(n, len(fs)))
+
 def csv(file: str) -> Iterator[list]:
   "Yield typed rows; a leading $MOOT expands to the moot repo"
-  file = os.path.expanduser(file.replace("$MOOT", MOOT, 1))
+  file = path(file)
   with open(file, encoding="utf-8") as f:
     for line in f:
       row = [x.strip() for x in line.split(",")]

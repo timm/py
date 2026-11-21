@@ -12,8 +12,7 @@ most --test test rows and --pool train rows.
 import os, sys  # make hair importable from source or installed
 sys.path.insert(0, os.path.dirname(os.path.dirname(
                    os.path.abspath(__file__))))
-import random
-from glob import glob
+from functools import partial
 from hair import *
 
 BEST_K = 4                        # table 1's pick, used by table 2
@@ -31,47 +30,34 @@ def tri(tbl, rows: list, row: list) -> float:
   return (sum(w*disty(tbl, r) for w, r in zip(ws, rows))
           / (sum(ws) + TINY))
 
-#-- learner: each treatment t = o(name, f, k, n) --------------------
-def T(name, f=None, k=None, n=None) -> o:
-  "Kernel f (default flat) on the k nearest of the first n train rows."
-  return o(name=name, f=f or flat, k=k, n=n)   # None = all
-
-def big() -> list:
-  "BIGS random (by --seed) csvs under --dir with ROWS rows."
-  d  = os.path.expanduser(the.dir.replace("$MOOT", MOOT, 1))
-  fs = sorted(f for f in glob(f"{d}/**/*.csv", recursive=True)
-              if sum(1 for _ in open(f)) - 1 in ROWS)
-  return random.Random(the.seed).sample(fs, min(BIGS, len(fs)))
-
-def knn(ts: list):
+#-- learner: treatment t = o(name, f, k, n); k,n None = all ------
+def knn(tbl, train, test, ts: list):
   "Learner: sort train once per test row; every t slices that sort."
-  def learner(tbl, train, test):
-    train, test = train[:the.pool], test[:the.test]  # caps: speed
-    pos = {id(r): i for i, r in enumerate(train)}  # xval shuffled train
-    for row in test:
-      want, ns = disty(tbl, row), near(tbl, train, row, len(train))
-      for t in ts:
-        rows = [r for r in ns if t.n is None or pos[id(r)] < t.n]
-        yield t.name, want, t.f(tbl, rows[:t.k], row)
-  return learner
+  for row in test:                     # xval shuffled train, so
+    want = disty(tbl, row)             # i < n = a random n rows
+    ns = sorted(range(len(train)), 
+                key= lambda i: distx(tbl, train[i], row))
+    for t in ts:
+      rows = [train[i] for i in ns if t.n is None or i < t.n]
+      yield t.name, want, t.f(tbl, rows[:t.k], row)
 
 def main() -> None:
-  cli(the)                         # so the config below reflects flags
+  cli(the)                         
   print(conf(the, "knn.py", eval="rae", xval="5x2"))
   print("# rae: 100 = no better than guessing the mean; lower=better\n"
         "# ! marks a rank-1 (best) cell; last col = data set")
   for x in [o(title = "kernels x k", 
               files = files(),
-              ts    = [T(f"{f.__name__}:k={k}", f, k)
+              ts    = [o(name=f"{f.__name__}:k={k}", f=f, k=k, n=None)
                        for f in (flat, tri) for k in range(1, the.k+1)]
-                      + [T("mu")]
-              ),           # mu: flat over all train
+                      + [o(name="mu", f=flat, k=None, n=None)]
+              ),           
             o(title = f"flat:k={BEST_K} x train size (all = pool)",
-              files = big(),
-              ts    = [T(f"n={n or 'all'}", k=BEST_K, n=n)
+              files = csvs(the.dir, ROWS, BIGS, the.seed),
+              ts    = [o(name=f"n={n or 'all'}", f=flat, k=BEST_K, n=n)
                        for n in SIZES + [None]]
               )]:
     print(f"\n# {x.title}\n")
-    learn(x.files, knn(x.ts), rae, n=2)
+    learn(x.files, partial(knn, ts=x.ts), rae, n=2)
 
 if __name__ == "__main__": main()
